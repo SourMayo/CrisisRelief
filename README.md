@@ -36,7 +36,7 @@ The following step should be performed by every student in the team, including t
    | Student  | Full Name            | SFSU Email            | GitHub Username      | Discord Username      |  Role(s)  | Contract Signed (Yes or No) |
    |:--------:|:--------------------:|:---------------------:|:--------------------:|:---------------------:|:---------:|:---------------------------:|
    |    #1    |                      |                       |                      |                       | Team-lead |             No              |
-   |    #2    |                      |                       |                      |                       |           |             No              |
+   |    #2    |  Anshaj Vats                    |     avats@sfsu.edu                  |     Anshaj Vats                 |                       |           |             Yes            |
    |    #3    |                      |                       |                      |                       |           |             No              |
    |    #4    |                      |                       |                      |                       |           |             No              |
    |    #5    |                      |                       |                      |                       |           |             No              |
