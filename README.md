@@ -36,11 +36,11 @@ The following step should be performed by every student in the team, including t
    | Student  | Full Name            | SFSU Email            | GitHub Username      | Discord Username      |  Role(s)  | Contract Signed (Yes or No) |
    |:--------:|:--------------------:|:---------------------:|:--------------------:|:---------------------:|:---------:|:---------------------------:|
    |    #1    |           Francis Aviles           |              faviles1@sfsu.edu         |        AviGeck              |          Ghome            | Team-lead |             Yes              |
-   |    #2    |  Anshaj Vats                    |     avats@sfsu.edu                  |     AnshajVats                 |       Anshaj Vats                |           |             Yes            |
-   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |           |             No              |
-   |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |           |             Yes              |
-   |    #5    |     Hilary Lui                 |               hlui@sfsu.edu        |            Hluii          |                   EAahohO    |           |             Yes              |
-   |    #6    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |           |             Yes              |
+   |    #2    |  Anshaj Vats                    |     avats@sfsu.edu                  |     AnshajVats                 |       Anshaj Vats                |     Backend Lead      |             Yes            |
+   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Frontend Lead        |             No              |
+   |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master     |             Yes              |
+   |    #5    |     Hilary Lui                 |               hlui@sfsu.edu        |            Hluii          |                   EAahohO    |       Technical Writer      |             Yes              |
+   |    #6    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |         |             Yes              |
    |    #7    |                      |                       |                      |                       |           |             No              |
 
    - A role, in this course, indicates the main responsibility each student will handle, but **EVERY STUDENT** must 
