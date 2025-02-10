@@ -40,7 +40,7 @@ The following step should be performed by every student in the team, including t
    |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Frontend Lead        |             No              |
    |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master     |             Yes              |
    |    #5    |     Hilary Lui                 |               hlui@sfsu.edu        |            Hluii          |                   EAahohO    |       Technical Writer      |             Yes              |
-   |    #6    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |         |             Yes              |
+   |    #6    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |     Database Administrator    |             Yes              |
    |    #7    |                      |                       |                      |                       |           |             No              |
 
    - A role, in this course, indicates the main responsibility each student will handle, but **EVERY STUDENT** must 
