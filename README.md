@@ -37,7 +37,7 @@ The following step should be performed by every student in the team, including t
    |:--------:|:--------------------:|:---------------------:|:--------------------:|:---------------------:|:---------:|:---------------------------:|
    |    #1    |           Francis Aviles           |              faviles1@sfsu.edu         |        Ghome              |          CSC648-848 Software Engineering/ CSC675-775 Databases Systems            | Team-lead |             Yes              |
    |    #2    |  Anshaj Vats                    |     avats@sfsu.edu                  |     AnshajVats                 |       Anshaj Vats                |           |             Yes            |
-   |    #3    |                      |                       |                      |                       |           |             No              |
+   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      ayeshairum                |                       |           |             No              |
    |    #4    |                      |                       |                      |                       |           |             No              |
    |    #5    |                      |                       |                      |                       |           |             No              |
    |    #6    |                      |                       |                      |                       |           |             No              |
