@@ -37,7 +37,7 @@ The following step should be performed by every student in the team, including t
    |:--------:|:--------------------:|:---------------------:|:--------------------:|:---------------------:|:---------:|:---------------------------:|
    |    #1    |           Francis Aviles           |              faviles1@sfsu.edu         |        AviGeck              |          Ghome            | Team-lead |             Yes              |
    |    #2    |  Anshaj Vats                    |     avats@sfsu.edu                  |     AnshajVats                 |       Anshaj Vats                |     Backend Lead      |             Yes            |
-   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Frontend Lead        |             No              |
+   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Frontend Lead        |             Yes              |
    |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master     |             Yes              |
    |    #5    |     Hilary Lui                 |               hlui@sfsu.edu        |            Hluii          |                   EAahohO    |       Technical Writer      |             Yes              |
    |    #6    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |     Database Administrator    |             Yes              |
