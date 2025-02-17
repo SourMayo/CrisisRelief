@@ -1,4 +1,5 @@
 import { anshajImg } from "../assets";
+import { francisImg } from "../assets";
 
 const teamMembers = [
   {
@@ -22,18 +23,14 @@ const teamMembers = [
   },
   // Other teammates will add their details here
   {
-    id: "anshajVats",
-    name: "Anshaj Vats",
-    image: anshajImg,
-    bio: "Backend Engineer | AI Enthusiast | Passionate about Machine Learning",
-    portfolio: "https://anshajvats.github.io/Portfolio/",
+    id: "francisAviles",
+    name: "Francis Aviles",
+    image: francisImg,
+    bio: "What's up! My name is Francis. I play both video games and board games.",
+    role: "Backend Lead",
     skills: [
-      "Node.js",
-      "Python",
-      "PostgreSQL",
-      "Machine Learning",
-      "Docker",
-      "TypeScript",
+      "C++",
+      "C#",
     ],
   },
   {
