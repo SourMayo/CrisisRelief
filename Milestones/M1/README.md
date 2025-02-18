@@ -723,10 +723,10 @@ in your default branch (Master or Main branch)**
 
       | **Item**               | **Credentials**                                      |
       |------------------------|------------------------------------------------------|
-      | **Website URL**        | [Insert URL]                                         |
-      | **SSH URL**            | [Insert SSH URL]                                     |
-      | **SSH Username**       | [Insert SSH Username]                                |
-      | **SSH Password/Key**   | [Insert SSH Password/Key]                            |
+      | **Website URL**        | http://crsismanagement.duckdns.org:3000/                                         |
+      | **SSH URL**            | ssh -i /path/to/key.pem ec2-user@crsismanagement.duckdns.org                                     |
+      | **SSH Username**       | ec2-user                                |
+      | **SSH Password/Key**   | in credentails folder                            |
       | **Database URL**       | [Insert Database URL]                                |
       | **Database Username**  | [Insert Database Username]                           |
       | **Database Password**  | [Insert Database Password]                           |

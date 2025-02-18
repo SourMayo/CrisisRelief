@@ -1,4 +1,4 @@
-import {anshajImg, kyleImg} from "../assets";
+import {anshajImg, kyleImg, geoartImg} from "../assets";
 import { francisImg } from "../assets";
 import { ayeshaImg } from "../assets";
 
@@ -47,6 +47,16 @@ const teamMembers = [
         "I enjoy going out with my friends during my free time",
     role: "Technical Writer",
     skills: ["Node.js", "Python", "C++", "React"],
+  },
+  {
+    id: "geoartCorral",
+    name: "Geoart Corral",
+    image: geoartImg,
+    bio: `Hi! My name is Geoart Corral and I am a Junior at SFSU. 
+          I am a fan of the game series Monster Hunter and I 
+          recently got into collecting Pokemon cards with my girlfriend.`,
+    role: "GitHub Master",
+    skills: ["Java", "HTML", "CSS", "C++", "C"],
   },
 
 ];
