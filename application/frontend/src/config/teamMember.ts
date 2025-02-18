@@ -1,5 +1,6 @@
 import { anshajImg } from "../assets";
 import { francisImg } from "../assets";
+import { ayeshaImg } from "../assets";
 
 const teamMembers = [
   {
@@ -28,25 +29,15 @@ const teamMembers = [
     image: francisImg,
     bio: "What's up! My name is Francis. I play both video games and board games.",
     role: "Backend Lead",
-    skills: [
-      "C++",
-      "C#",
-    ],
+    skills: ["C++", "C#"],
   },
   {
-    id: "anshajVats",
-    name: "Anshaj Vats",
-    image: anshajImg,
-    bio: "Backend Engineer | AI Enthusiast | Passionate about Machine Learning",
-    portfolio: "https://anshajvats.github.io/Portfolio/",
-    skills: [
-      "Node.js",
-      "Python",
-      "PostgreSQL",
-      "Machine Learning",
-      "Docker",
-      "TypeScript",
-    ],
+    id: "AyeshaIrum",
+    name: "Ayesha Irum",
+    image: ayeshaImg,
+    bio: "Hello! I am Ayesha Irum. I am a final year student at San Francisco State University.",
+    portfolio: "https://aayeshaa.netlify.app/",
+    skills: ["React", "Python", "Workbench MySQL"],
   },
 ];
 export default teamMembers;
