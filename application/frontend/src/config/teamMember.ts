@@ -1,4 +1,4 @@
-import {anshajImg, kyleImg, geoartImg} from "../assets";
+import {anshajImg, kyleImg, geoartImg, karlaImg} from "../assets";
 import { francisImg } from "../assets";
 import { ayeshaImg } from "../assets";
 
@@ -57,6 +57,16 @@ const teamMembers = [
           recently got into collecting Pokemon cards with my girlfriend.`,
     role: "GitHub Master",
     skills: ["Java", "HTML", "CSS", "C++", "C"],
+  },
+  {
+    id: "KarlaCardenas",
+    name: "Karla Cardenas",
+    image: karlaImg,
+    bio: `Hi! My name is Karla Cardenas, and I am a Senior at SFSU.
+          I'm looking forward to working with all of you this semester!
+          In my free time, I enjoy watching movies and hanging out with friends.`,
+    role: "Database Administrator ",
+    skills: ["Node.js", "C++","C", "HTML"],
   },
 
 ];
