@@ -1,4 +1,4 @@
-import { anshajImg } from "../assets";
+import {anshajImg, kyleImg} from "../assets";
 import { francisImg } from "../assets";
 import { ayeshaImg } from "../assets";
 
@@ -39,5 +39,15 @@ const teamMembers = [
     portfolio: "https://aayeshaa.netlify.app/",
     skills: ["React", "Python", "Workbench MySQL"],
   },
+  {
+    id: "kyleNguyen",
+    name: "Kyle Nguyen",
+    image: kyleImg,
+    bio: "Hello. I am Kyle Nguyen. I am on my final year at SFSU and am looking forward to working with all of you" +
+        "I enjoy going out with my friends during my free time",
+    role: "Technical Writer",
+    skills: ["Node.js", "Python", "C++", "React"],
+  },
+
 ];
 export default teamMembers;
