@@ -724,12 +724,12 @@ in your default branch (Master or Main branch)**
       | **Item**               | **Credentials**                                      |
       |------------------------|------------------------------------------------------|
       | **Website URL**        | http://crisisrelief.duckdns.org:3000/                                         |
-      | **SSH URL**            | ssh -i /path/to/key.pem ec2-user@crisisrelief.duckdns.org                                     |
+      | **SSH URL**            | ssh -i ./application/credentials/CSC648Team5PairKey.pem ec2-user@crisisrelief.duckdns.org                                     |
       | **SSH Username**       | ec2-user                                |
-      | **SSH Password/Key**   | In credentails folder                            |
-      | **Database URL**       | [Insert Database URL]                                |
-      | **Database Username**  | [Insert Database Username]                           |
-      | **Database Password**  | [Insert Database Password]                           |
+      | **SSH Password/Key**   | In credentials folder                            |
+      | **Database URL**       | http://crisisreliefdatabase.duckdns.org:3000/                                |
+      | **Database Username**  | root                           |
+      | **Database Password**  | hApq*9&TrZVps4                           |
 
       **Additional Information:**
 
