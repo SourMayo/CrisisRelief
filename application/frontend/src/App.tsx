@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { About, MemberPage, Home } from "./pages";
+import { About, MemberPage, Home, SignUp } from "./pages";
 import Navbar from "./components/navbar";
 
 function App() {
@@ -13,6 +13,8 @@ function App() {
         <Route path="/about" element={<About />} />
         {/* Nested route for member details under /about */}
         <Route path="/about/:memberId" element={<MemberPage />} />
+        {/* Sign Up page */}
+        <Route path="/signUp" element={<SignUp />} />
       </Routes>
     </Router>
   );
