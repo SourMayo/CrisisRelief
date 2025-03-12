@@ -6,6 +6,39 @@ import { Field, Label, Switch } from "@headlessui/react";
 
 export default function Example() {
   const [agreed, setAgreed] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!agreed) {
+      alert("Please agree to the privacy policy.");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:5001/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log("Response from the backend:", data);
+      alert("Successfully registered!");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to register!");
+    }
+  };
 
   return (
     <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
