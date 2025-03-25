@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { About, MemberPage, Home, SignUp } from "./pages";
+import { About, MemberPage, Home, SignUp, Login, NotFound } from "./pages";
 import Navbar from "./components/navbar";
 
 function App() {
@@ -14,7 +14,12 @@ function App() {
         {/* Nested route for member details under /about */}
         <Route path="/about/:memberId" element={<MemberPage />} />
         {/* Sign Up page */}
-        <Route path="/signUp" element={<SignUp />} />
+        <Route path="/Register" element={<SignUp />} />
+        {/* Login page */}
+        <Route path="/Login" element={<Login />} />
+
+        {/* 404 page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

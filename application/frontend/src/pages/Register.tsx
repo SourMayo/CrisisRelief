@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Field, Label, Switch } from "@headlessui/react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate as UseNavigate } from "react-router-dom";
 
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
@@ -18,13 +18,13 @@ const signUp = () => {
   });
   const [loading, setLoading] = UseState(false);
   const [devMode, setDevMode] = UseState(false);
-  const navigate = useNavigate();
+  const navigate = UseNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!devMode) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,14 +44,30 @@ const signUp = () => {
     const toastId = toast.loading("Loading...");
     setLoading(true);
     // Simulate a backend request
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const response = await fetch("http://localhost:5001/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.dismiss(toastId);
+        toast.error(errorData.message || "Registration failed");
+        return;
+      }
       toast.dismiss(toastId);
       toast.success("Request simulated successfully! Redirecting...");
       setTimeout(() => {
         navigate("/signin");
       }, 1000);
-    }, 2000);
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error("An error occurred while registering");
+      console.error("Registration error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
