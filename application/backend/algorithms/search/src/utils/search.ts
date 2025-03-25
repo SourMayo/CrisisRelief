@@ -25,7 +25,7 @@ export async function simpleSearch(userInput: string) {
     return await db
         .selectFrom('resources')
         .selectAll()
-        .where(sql<boolean>`(name) @@ to_tsquery(${userInput})`)
+        .where(sql<boolean>`to_tsvector(name) @@ to_tsquery(${userInput})`)
         .execute();
 
 }

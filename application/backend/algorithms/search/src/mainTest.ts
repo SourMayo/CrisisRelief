@@ -11,7 +11,7 @@ async function main() {
 
 
     // Display resources with "place" it its name
-    console.log("\n\Simple Search Test:")
+    console.log("\nSimple Search Test:")
     
     // TODO: userInput should take in value from website
     let userInput:string = "place"
