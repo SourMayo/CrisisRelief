@@ -45,11 +45,14 @@ const signUp = () => {
     setLoading(true);
     // Simulate a backend request
     try {
-      const response = await fetch("http://localhost:5001/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://crisisrelief.duckdns.org:5001/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json();
         toast.dismiss(toastId);
