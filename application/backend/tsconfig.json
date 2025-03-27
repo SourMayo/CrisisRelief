@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "NodeNext",
     "outDir": "./dist",
+    "rootDir": "../",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleResolution": "NodeNext"
   },
-  "include": ["src"]
+  "include": ["./**/*.ts", "../Database/knexfile.ts"],
+  "exclude": ["node_modules"]
 }

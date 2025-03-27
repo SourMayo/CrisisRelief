@@ -1,21 +1,16 @@
 import express from "express";
 import cors from "cors";
+import { registerRouter } from "./routes/register";
 
 const app = express();
-const port = process.env.PORT || 5001;
+const port = 5001;
 
 app.use(cors());
 app.use(express.json());
 
-app.post("/register", (req, res) => {
-  const { firstName, lastName, username, email, password, phoneNumber } =
-    req.body;
-  console.log("Received registration data:", req.body);
+// Mount the register router at '/register'
+app.use("/register", registerRouter);
 
-  // Here you would add validation, password hashing, database operations, etc.
-  res.status(201).json({ message: "User registered successfully" });
-});
-
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server is listening on port ${port}`);
 });
