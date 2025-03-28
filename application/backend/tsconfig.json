@@ -3,12 +3,16 @@
     "target": "ES2022",
     "module": "NodeNext",
     "outDir": "./dist",
-    "rootDir": "../",
+    "rootDir": "./", // Changed from "../"
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".", // Add this
+    "paths": {
+      "@db/*": ["Database/*"] // Optional but recommended
+    }
   },
-  "include": ["./**/*.ts", "../Database/knexfile.ts"],
+  "include": ["src/**/*.ts", "Database/**/*.ts"], // Fixed paths
   "exclude": ["node_modules"]
 }
