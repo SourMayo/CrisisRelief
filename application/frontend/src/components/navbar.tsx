@@ -52,7 +52,7 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-          <div className="absolute left-[60%] top-1/2 -translate-x-1/2 -translate-y-1/2 hidden sm:block md:block">
+          <div className="absolute left-[60%] top-1/2 -translate-x-1/2 -translate-y-1/2  sm:block hidden">
             <div className="w-[420px]">
               <SearchForm />
             </div>
