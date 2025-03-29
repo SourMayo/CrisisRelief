@@ -46,7 +46,8 @@ const signUp = () => {
     // Simulate a backend request
     try {
       const response = await fetch(
-        "http://crisisrelief.duckdns.org:5001/register",
+        `${import.meta.env.VITE_API_URL}/register`,
+
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

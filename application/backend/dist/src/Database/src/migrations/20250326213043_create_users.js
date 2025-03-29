@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.down = exports.up = void 0;
+exports.up = up;
+exports.down = down;
 async function up(knex) {
     return knex.schema.createTable("users", (table) => {
         table.increments("user_id").primary();
@@ -15,8 +16,6 @@ async function up(knex) {
         table.integer("location_id").references("location_id").inTable("locations");
     });
 }
-exports.up = up;
 async function down(knex) {
     return knex.schema.dropTable("users");
 }
-exports.down = down;

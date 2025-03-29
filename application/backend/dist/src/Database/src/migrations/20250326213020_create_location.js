@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.down = exports.up = void 0;
+exports.up = up;
+exports.down = down;
 async function up(knex) {
     return knex.schema.createTable("locations", (table) => {
         table.increments("location_id").primary();
@@ -13,8 +14,6 @@ async function up(knex) {
         table.boolean("is_safe_zone").defaultTo(false);
     });
 }
-exports.up = up;
 async function down(knex) {
     return knex.schema.dropTable("locations");
 }
-exports.down = down;

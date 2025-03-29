@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.down = exports.up = void 0;
+exports.up = up;
+exports.down = down;
 async function up(knex) {
     return knex.schema.createTable("weather_zones", (table) => {
         table.increments("weather_zone_id").primary();
@@ -13,8 +14,6 @@ async function up(knex) {
         table.timestamp("last_updated").defaultTo(knex.fn.now());
     });
 }
-exports.up = up;
 async function down(knex) {
     return knex.schema.dropTable("weather_zones");
 }
-exports.down = down;

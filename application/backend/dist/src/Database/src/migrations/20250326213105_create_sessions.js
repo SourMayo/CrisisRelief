@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.down = exports.up = void 0;
+exports.up = up;
+exports.down = down;
 async function up(knex) {
     return knex.schema.createTable("sessions", (table) => {
         table.increments("session_id").primary();
@@ -13,8 +14,6 @@ async function up(knex) {
         table.timestamp("expires_at").notNullable();
     });
 }
-exports.up = up;
 async function down(knex) {
     return knex.schema.dropTable("sessions");
 }
-exports.down = down;
