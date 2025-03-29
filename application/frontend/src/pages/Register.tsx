@@ -8,6 +8,7 @@ import { useNavigate as UseNavigate } from "react-router-dom";
 
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
+  const apiUrl = import.meta.env.VITE_API_URL as string;
   const [formData, setFormData] = UseState({
     firstName: "",
     lastName: "",
@@ -45,14 +46,11 @@ const signUp = () => {
     setLoading(true);
     // Simulate a backend request
     try {
-      const response = await fetch(
-        "http://crisisrelief.duckdns.org:5001/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${apiUrl}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       if (!response.ok) {
         const errorData = await response.json();
         toast.dismiss(toastId);
@@ -62,7 +60,7 @@ const signUp = () => {
       toast.dismiss(toastId);
       toast.success("Request simulated successfully! Redirecting...");
       setTimeout(() => {
-        navigate("/signin");
+        navigate("/Login");
       }, 1000);
     } catch (error) {
       toast.dismiss(toastId);
