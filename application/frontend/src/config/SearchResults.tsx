@@ -1,7 +1,9 @@
 // src/types/search.ts
 export interface BaseResult {
   type: "location" | "weather" | "review" | "food";
+  id: number; // Common identifier
   name: string;
+  location_name?: string; // Added location_name
 }
 
 export interface LocationResult extends BaseResult {
@@ -37,6 +39,7 @@ export interface FoodResult extends BaseResult {
     [key: string]: string[];
   };
   shortage: boolean;
+  location_name: string; // Make mandatory for food results
 }
 
 export interface ReviewResult extends BaseResult {

@@ -33,16 +33,18 @@ const search = {
         [userInput.toLowerCase() + ":*"]
       );
   },
-
   async simpleFoodBanks(userInput: string) {
     return db
-      .select("food_banks.*", "locations.name as location_name")
+      .select([
+        "food_banks.*",
+        db.raw("locations.name as location_name"), // Get name from locations
+      ])
       .from("food_banks")
       .join("locations", "food_banks.location_id", "locations.location_id")
       .whereRaw(
         `
-        to_tsvector('english', 
-          coalesce(locations.name, '') || ' ' ||
+        to_tsvector('english',
+          coalesce(locations.name, '') || ' ' || 
           coalesce(food_banks.inventory::text, '')
         ) @@ plainto_tsquery('english', ?)
       `,

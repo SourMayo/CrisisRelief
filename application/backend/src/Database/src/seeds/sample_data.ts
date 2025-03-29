@@ -45,6 +45,24 @@ export async function seed(knex: Knex): Promise<void> {
         is_high_risk: true,
         is_safe_zone: false,
       },
+      {
+        name: "Central City Urban Area",
+        address: "789 Downtown Ave",
+        type: "Urban",
+        photos: ["central1.jpg"],
+        description: "Main metropolitan area with multiple services",
+        is_high_risk: false,
+        is_safe_zone: true,
+      },
+      {
+        name: "Central Park District",
+        address: "456 Green Valley Rd",
+        type: "Park",
+        photos: ["parkday.jpg"],
+        description: "Large green space with emergency shelters",
+        is_high_risk: false,
+        is_safe_zone: true,
+      },
     ])
     .returning("location_id");
 
@@ -71,6 +89,24 @@ export async function seed(knex: Knex): Promise<void> {
       current_capacity: 80,
       inventory: { items: ["beans", "pasta"] },
     },
+    {
+      location_id: insertedLocations[0].location_id,
+      max_capacity: 200,
+      current_capacity: 150,
+      inventory: {
+        items: ["bread", "water", "canned vegetables", "baby formula"],
+        dietary: ["gluten-free", "diabetic-friendly"],
+      },
+    },
+    {
+      location_id: insertedLocations[1].location_id,
+      max_capacity: 100,
+      current_capacity: 90,
+      inventory: {
+        items: ["rice", "pasta", "cereal", "canned fruits"],
+        special: ["emergency kits"],
+      },
+    },
   ]);
 
   // Insert sample weather zones using the location_ids
@@ -84,6 +120,37 @@ export async function seed(knex: Knex): Promise<void> {
       location_id: locationIds[1],
       weather_info: { temperature: "15°C", condition: "Cloudy" },
       last_updated: knex.fn.now(),
+    },
+    {
+      location_id: insertedLocations[0].location_id,
+      weather_info: {
+        temperature: "22°C",
+        condition: "sunny",
+        alert: "UV index high",
+      },
+    },
+    {
+      location_id: insertedLocations[1].location_id,
+      weather_info: {
+        temperature: "18°C",
+        condition: "cloudy",
+        forecast: "possible evening showers",
+      },
+    },
+  ]);
+
+  await knex("reviews").insert([
+    {
+      location_id: insertedLocations[0].location_id,
+      user_id: 1, // Assume user exists
+      content:
+        "Central City services were quick to respond during the last power outage. Well-stocked food bank!",
+    },
+    {
+      location_id: insertedLocations[1].location_id,
+      user_id: 2,
+      content:
+        "Park District weather updates saved us from getting caught in sudden rain. Cloudy mornings but clear afternoons.",
     },
   ]);
 }
