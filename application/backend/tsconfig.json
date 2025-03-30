@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "rootDir": "./", // Changed from "../"
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".", // Add this
+    "paths": {
+      "@db/*": ["Database/*"] // Optional but recommended
+    }
+  },
+  "include": ["src/**/*.ts", "Database/**/*.ts"], // Fixed paths
+  "exclude": ["node_modules"]
+}

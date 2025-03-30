@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { About, MemberPage, Home, SignUp } from "./pages";
+import { About, MemberPage, Home, SignUp, Login, NotFound } from "./pages";
 import Navbar from "./components/navbar";
+import RankedResources from "./pages/RankedResources";
 
 function App() {
   return (
@@ -14,7 +15,14 @@ function App() {
         {/* Nested route for member details under /about */}
         <Route path="/about/:memberId" element={<MemberPage />} />
         {/* Sign Up page */}
-        <Route path="/signUp" element={<SignUp />} />
+        <Route path="/Register" element={<SignUp />} />
+        {/* Login page */}
+        <Route path="/Login" element={<Login />} />
+
+        <Route path="/ranked-resources" element={<RankedResources />} />
+
+        {/* 404 page */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
