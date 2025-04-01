@@ -1,53 +1,71 @@
-import { db } from "../db"
+// services/search.ts
+import { db } from "../db";
 
-export const search = {
-    // Return everything from specified table
-    async showAllLocation() {
-        return db.select('*').from('locations');
-    },
+const search = {
+  async simpleLocations(userInput: string) {
+    return db
+      .select("locations.*")
+      .from("locations")
+      .whereRaw(
+        `
+        to_tsvector('english', 
+          coalesce(locations.name, '') || ' ' ||
+          coalesce(locations.description, '') || ' ' ||
+          coalesce(locations.address, '')
+        ) @@ plainto_tsquery('english', ?)
+      `,
+        [userInput.toLowerCase() + ":*"]
+      );
+  },
 
-    async showALLWeatherZones() {
-        return db.select('*').from('weather_zones');
-    },
+  async simpleWeatherZones(userInput: string) {
+    return db
+      .select("weather_zones.*", "locations.name as location_name")
+      .from("weather_zones")
+      .join("locations", "weather_zones.location_id", "locations.location_id")
+      .whereRaw(
+        `
+        to_tsvector('english', 
+          coalesce(locations.name, '') || ' ' ||
+          coalesce(weather_zones.weather_info::text, '')
+        ) @@ plainto_tsquery('english', ?)
+      `,
+        [userInput.toLowerCase() + ":*"]
+      );
+  },
+  async simpleFoodBanks(userInput: string) {
+    return db
+      .select([
+        "food_banks.*",
+        db.raw("locations.name as location_name"), // Get name from locations
+      ])
+      .from("food_banks")
+      .join("locations", "food_banks.location_id", "locations.location_id")
+      .whereRaw(
+        `
+        to_tsvector('english',
+          coalesce(locations.name, '') || ' ' || 
+          coalesce(food_banks.inventory::text, '')
+        ) @@ plainto_tsquery('english', ?)
+      `,
+        [userInput.toLowerCase() + ":*"]
+      );
+  },
 
-    async showAllReviews() {
-        return db.select('*').from('reviews');
-    },
-    
-    async showAllFoodBanks() {
-        return db.select('*').from('food_banks');
-    },
+  async simpleReviews(userInput: string) {
+    return db
+      .select("reviews.*", "locations.name as location_name")
+      .from("reviews")
+      .join("locations", "reviews.location_id", "locations.location_id")
+      .whereRaw(
+        `
+        to_tsvector('english', 
+          coalesce(reviews.content, '')
+        ) @@ plainto_tsquery('english', ?)
+      `,
+        [userInput.toLowerCase() + ":*"]
+      );
+  },
+};
 
-
-    // Simple searches by user inputted names
-    async simpleLocations(userInput: string) {
-        db
-            .select('*')
-            .from('locations')
-            // Using raw in knex uses '?' to fill in values
-            .whereRaw(`to_tsvector(name) @@ to_tsquery(?)`, [userInput]);
-    },
-
-    async simpleWeatherZones(userInput: string) {
-        db
-            .select('*')
-            .from('weather_zones')
-            .whereRaw(`to_tsvector(name) @@ to_tsquery(?)`, [userInput]);
-    },
-
-    async simpleReviews(userInput: string) {
-        db
-            .select('*')
-            .from('reviews')
-            .whereRaw(`to_tsvector(name) @@ to_tsquery(?)`, [userInput]);
-    },
-
-    async simpleFoodBanks(userInput: string) {
-        db
-            .select('*')
-            .from('food_banks')
-            .whereRaw(`to_tsvector(name) @@ to_tsquery(?)`, [userInput]);
-    }
-}
-
-export default search
+export default search;

@@ -11,6 +11,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { navigation } from "../config";
 import { Link, useLocation } from "react-router-dom";
 import { logo } from "../assets";
+import SearchForm from "./search";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -49,6 +50,11 @@ export default function Navbar() {
                   </Link>
                 ))}
               </div>
+            </div>
+          </div>
+          <div className="absolute left-[60%] top-1/2 -translate-x-1/2 -translate-y-1/2  sm:block hidden">
+            <div className="w-[420px]">
+              <SearchForm />
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

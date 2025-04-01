@@ -1,11 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { About, MemberPage, Home, SignUp, Login, NotFound } from "./pages";
 import Navbar from "./components/navbar";
-import RankedResources from "./pages/RankedResources";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <Router>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        theme="colored"
+        style={{
+          zIndex: 2000,
+          marginTop: "4rem", // Add space for navbar
+        }}
+      />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

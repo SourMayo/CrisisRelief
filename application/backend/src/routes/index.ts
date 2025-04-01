@@ -1,4 +1,4 @@
 import { registerRouter } from "./register";
-import { search } from "./search";
+import search from "./search";
 
-export { registerRouter, search };
+export { registerRouter, search as search };
