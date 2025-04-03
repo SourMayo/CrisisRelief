@@ -31,8 +31,6 @@ function App() {
         {/* Login page */}
         <Route path="/Login" element={<Login />} />
 
-        <Route path="/ranked-resources" element={<RankedResources />} />
-
         {/* 404 page */}
         <Route path="*" element={<NotFound />} />
       </Routes>
