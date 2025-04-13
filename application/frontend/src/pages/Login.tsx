@@ -6,10 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   return (
-    <div>
-      {/* Notifcation overlay */}
+    // Background gradient
+    <div className="min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
       <ToastContainer />
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="isolate px-6 py-24 sm:py-32 lg:px-8">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-[-10rem] -z-10 pointer-events-none transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
