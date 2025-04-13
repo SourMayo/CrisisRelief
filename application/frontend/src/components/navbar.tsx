@@ -8,7 +8,7 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { navigation } from "../config";
+import { navigation, loginnav } from "../config";
 import { Link, useLocation } from "react-router-dom";
 import { logo } from "../assets";
 import SearchForm from "./search";
@@ -34,6 +34,8 @@ export default function Navbar() {
               <img alt="Logo" src={logo} className="h-8 w-auto" />
             </div>
             <div className="hidden sm:ml-6 sm:block">
+              
+              {/* Navigation buttons */}
               <div className="flex space-x-4">
                 {navigation.map((item) => (
                   <Link
@@ -52,11 +54,30 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-          <div className="absolute left-[60%] top-1/2 -translate-x-1/2 -translate-y-1/2  sm:block hidden">
+          <div className="flex-1 space-x-4 justify center">
             <div className="w-[420px]">
               <SearchForm />
             </div>
           </div>
+
+            {/* Login navigation buttons */}
+              <div className="flex space-x-4">
+                  {loginnav.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={classNames(
+                        location.pathname === item.href
+                          ? "bg-gray-900 text-white"
+                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        "rounded-md px-3 py-2 text-sm font-medium"
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+              </div>
+
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <button
               type="button"
