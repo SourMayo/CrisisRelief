@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { About, MemberPage, Home, SignUp, Login, NotFound, Resources } from "./pages";
+import { About, MemberPage, Home, SignUp, Login, NotFound, Resources, MedicalResources, FoodBanks } from "./pages";
 import Navbar from "./components/navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,6 +36,10 @@ function App() {
         {/* Login page */}
         <Route path="/Resources" element={<Resources />} />
         
+        {/* Medical Resources Page */}
+        <Route path="/medicalResources" element={<MedicalResources />} />
+        {/* Food Banks Page */}
+        <Route path="/foodBanks" element={<FoodBanks />} /> {/* Placeholder for Food Banks */}
 
         {/* 404 page */}
         <Route path="*" element={<NotFound />} />

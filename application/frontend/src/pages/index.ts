@@ -5,3 +5,5 @@ export { default as SignUp } from "./Register";
 export { default as Login } from "./Login";
 export { default as NotFound } from "./NotFound";
 export { default as Resources } from "./resources";
+export { default as MedicalResources } from "./medicalResources";
+export { default as FoodBanks } from "./foodBanks";
