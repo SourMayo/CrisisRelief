@@ -39,6 +39,7 @@ const Login = () => {
           className="mx-auto mt-16 max-w-xl sm:mt-20"
         >
           <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+            {/* Username */}
             <div className="sm:col-span-2">
               <label
                 htmlFor="username"
@@ -59,6 +60,7 @@ const Login = () => {
               </div>
             </div>
             
+            {/* Password */}
             <div className="sm:col-span-2">
               <label
                 htmlFor="password"
