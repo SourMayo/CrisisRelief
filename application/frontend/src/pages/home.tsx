@@ -10,11 +10,11 @@ const home = () => {
   return (
     <div className="@container">
       {/* Background gradient */}
-      <div className="relative min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3] -z-1">
+      <div className="relative min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
         
         {/* Painted laides image */}
         <img 
-          className="absolute right-0 top-0 -z-1 max-w-617 max-h-200 translate-x-1 hidden @[1450px]:block"
+          className="absolute right-0 top-0 max-w-617 max-h-200 translate-x-1 hidden @[1450px]:block"
           alt="Image of the Painted Ladies in SF"
           src={paintedLadies}
         />
@@ -32,7 +32,7 @@ const home = () => {
               to receive the basic needs they require for their day-to-day
               lives.
             </p>
-          
+
             {/* Redirect to resources */}
             {/* TODO: Fix redirect */}
             <div>
@@ -44,6 +44,11 @@ const home = () => {
                 {"Find Local Support Services"}
               </button>
             </div>
+
+            <br></br>
+            <p className="font-light font-style italic text-gray-800 text-1xl mb-8">
+              Image courtsey of Pexels
+            </p>
           </div>
           
         </div>      
