@@ -107,7 +107,9 @@ const home = () => {
               </p>
             </div>
 
-            <img src={logo} alt="CrisisRelief logo"></img>
+            <div className="hidden @[1170px]:block">
+              <img src={logo} alt="CrisisRelief logo"></img>
+            </div>
           </div>
 
         </div>
