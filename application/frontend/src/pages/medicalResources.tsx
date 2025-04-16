@@ -87,16 +87,44 @@ const facilities = [
 export default function MedicalResources() {
   const [selectedId, setSelectedId] = useState(facilities[0].id);
   const selectedFacility = facilities.find((f) => f.id === selectedId);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3] relative">
+      {/* Mobile Toggle Button */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="w-full bg-[#1F2A40] text-white py-3 text-xl font-semibold tracking-wide"
+        >
+          {sidebarOpen ? "▲ Hide Facilities" : "▼ Show Facilities"}
+        </button>
+      </div>{" "}
       {/* Sidebar */}
-      <aside className="w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 h-[95vh] overflow-y-auto mt-8">
-        <h2 className="text-[30px] font-bold text-black mb-4">Food Banks</h2>
+      <aside
+        className={`${
+          sidebarOpen ? "block" : "hidden"
+        } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
+      >
+        <h2 className="text-[30px] font-bold text-black mb-4">Medical Help</h2>
+
+        {/* Close button on mobile only */}
+        <div className="lg:hidden mb-2">
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="text-black bg-white rounded px-3 py-1 font-semibold hover:bg-gray-200 transition"
+          >
+            ▲ Hide Facilities
+          </button>
+        </div>
+
         {facilities.map((f) => (
           <button
             key={f.id}
-            onClick={() => setSelectedId(f.id)}
+            onClick={() => {
+              setSelectedId(f.id);
+              setSidebarOpen(false);
+            }}
             className={`w-full text-left p-4 rounded-lg font-medium transition ${
               selectedId === f.id
                 ? "bg-[#715FFF] text-white"
@@ -109,7 +137,6 @@ export default function MedicalResources() {
           </button>
         ))}
       </aside>
-
       {/* Main Content */}
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
         <div className="bg-[#BCD3F2] p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6">
