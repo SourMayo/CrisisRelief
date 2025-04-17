@@ -1,5 +1,5 @@
 import { useState } from "react";
-import mapImage from "../assets/icons/map.jpg";
+import { Map } from "../assets";
 
 export default function WeatherWarning() {
   const [sidebarOpen] = useState(true);
@@ -89,7 +89,7 @@ export default function WeatherWarning() {
               San Francisco Weather Map
             </h2>
             <img
-              src={mapImage}
+              src={Map}
               alt="San Francisco Map"
               className="w-full rounded-lg"
             />
