@@ -1,10 +1,62 @@
-import { ToastContainer } from "react-toastify";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 // Code adapted from ./Register.tsx
 // Originally authored by Anshaj Vats
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://crisisrelief.duckdns.org:5001/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include", // this is important for session cookies
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Login failed");
+        throw new Error(errorData.error || "Login failed");
+      }
+
+      toast.success("Login successful!", {
+        onClose: () => {
+          window.dispatchEvent(new Event("login"));
+          navigate("/");
+        },
+        autoClose: 500,
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     // Background gradient
     <div className="min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
@@ -35,7 +87,7 @@ const Login = () => {
 
         {/* Username and Password */}
         <form
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           className="mx-auto mt-16 max-w-xl sm:mt-20"
         >
           <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
@@ -53,13 +105,13 @@ const Login = () => {
                   name="username"
                   type="text"
                   autoComplete="username"
-                  // value={formData.username}
-                  // onChange={handleChange}
+                  value={formData.username}
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
               </div>
             </div>
-            
+
             {/* Password */}
             <div className="sm:col-span-2">
               <label
@@ -74,8 +126,8 @@ const Login = () => {
                   name="password"
                   type="password"
                   autoComplete="new-password"
-                  // value={formData.password}
-                  // onChange={handleChange}
+                  value={formData.password}
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
               </div>
@@ -86,7 +138,7 @@ const Login = () => {
           <div className="mt-10">
             <button
               type="submit"
-              // disabled={loading}
+              disabled={loading}
               className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               {"Login"}
