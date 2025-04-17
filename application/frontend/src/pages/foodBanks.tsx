@@ -1,4 +1,5 @@
 import { useState } from "react";
+import mapImage from "../assets/icons/map.jpg";
 
 const facilities = [
   {
@@ -178,7 +179,7 @@ export default function FoodBanks() {
           {/* Middle Section */}
           <div className="flex flex-col lg:flex-row gap-6 items-stretch">
             {/* Hours Box */}
-            <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[600px]">
+            <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[720px]">
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
                 <li>Monday : 10:00 AM – 8:00 PM</li>
@@ -194,7 +195,7 @@ export default function FoodBanks() {
             {/* Right Column */}
             <div className="flex-1 flex flex-col gap-6">
               {/* Quick Info */}
-              <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[300px] overflow-y-auto">
+              <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[300px]">
                 <h2 className="text-xl font-bold mb-4">Quick Info</h2>
                 <ul className="space-y-3 text-med leading-relaxed">
                   {selectedFacility?.quickInfo.map((info, i) => (
@@ -204,9 +205,9 @@ export default function FoodBanks() {
               </div>
 
               {/* Map Box */}
-              <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[180px]">
+              <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
                 <img
-                  src="https://via.placeholder.com/600x300?text=Map+Preview"
+                  src={mapImage}
                   alt="Map preview"
                   className="w-full h-full object-cover rounded-md"
                 />
