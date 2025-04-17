@@ -11,6 +11,8 @@ import {
   FoodBanks,
   OvernightShelters,
   WeatherWarning,
+  Profile,
+  Settings
 } from "./pages";
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
@@ -51,11 +53,14 @@ function App() {
           <Route path="/medicalResources" element={<MedicalResources />} />
           {/* Food Banks Page */}
           <Route path="/foodBanks" element={<FoodBanks />} />{" "}
-          {/* Placeholder for Food Banks */}
           {/* Overnight Shelters Page */}
           <Route path="/overnightShelters" element={<OvernightShelters />} />
           {/* Weather Warning Page */}
           <Route path="/weatherWarnings" element={<WeatherWarning />} />
+          {/* User Profile Page */}
+          <Route path="/profile" element={<Profile />} />
+          {/* Settings Page */}
+          <Route path="/settings" element={<Settings />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
