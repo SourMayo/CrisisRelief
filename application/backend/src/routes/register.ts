@@ -6,23 +6,33 @@ export const registerRouter = Router();
 
 // POST /register
 registerRouter.post("/", async (req, res) => {
-  const { firstName, lastName, username, email, password, phoneNumber } =
-    req.body;
+  const {
+    firstName,
+    middleName,
+    lastName,
+    username,
+    email,
+    password,
+    phoneNumber,
+  } = req.body;
 
-  // Example validation (in real apps, do more robust checks!)
+  // Example validation (in real apps, perform more robust checks)
   if (!email || !password) {
     return res.status(400).json({ error: "Missing email or password" });
   }
 
   try {
-    // Insert into the "users" table (assuming you have a migration for that)
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert into "users" table using column names that match your migration
     await db("users").insert({
       first_name: firstName,
+      middle_name: middleName || "", // default to empty string if middleName not provided
       last_name: lastName,
       username: username,
       email: email,
-      password: hashedPassword,
+      hashed_password: hashedPassword,
       phone_number: phoneNumber,
     });
 

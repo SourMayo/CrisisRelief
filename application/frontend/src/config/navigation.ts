@@ -1,7 +1,10 @@
-const navigation = [
-  { name: "Dashboard", href: "/", current: true },
+export const navigation = [
+  { name: "Home", href: "/home", current: true },
+  { name: "Resources", href: "/resources", current: false },
   { name: "About Us", href: "/about", current: false },
-  { name: "Register", href: "/Register", current: false },
 ];
 
-export default navigation;
+export const loginnav = [
+  { name: "Registration", href: "/Register", current: false },
+  { name: "Login", href: "/Login", current: false },
+];

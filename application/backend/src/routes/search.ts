@@ -1,4 +1,3 @@
-// services/search.ts
 import { db } from "../db";
 
 const search = {
@@ -11,7 +10,10 @@ const search = {
         to_tsvector('english', 
           coalesce(locations.name, '') || ' ' ||
           coalesce(locations.description, '') || ' ' ||
-          coalesce(locations.address, '')
+          coalesce(locations.street, '') || ' ' ||
+          coalesce(locations.city, '') || ' ' ||
+          coalesce(locations.state, '') || ' ' ||
+          coalesce(locations.zipcode, '')
         ) @@ plainto_tsquery('english', ?)
       `,
         [userInput.toLowerCase() + ":*"]
@@ -36,27 +38,40 @@ const search = {
   async simpleFoodBanks(userInput: string) {
     return db
       .select([
-        "food_banks.*",
-        db.raw("locations.name as location_name"), // Get name from locations
+        "locations.*",
+        db.raw("json_agg(DISTINCT inventory.name) as inventory"),
+        db.raw("json_agg(DISTINCT items_needed.name) as items_needed"),
       ])
-      .from("food_banks")
-      .join("locations", "food_banks.location_id", "locations.location_id")
+      .from("locations")
+      .leftJoin("inventory", "locations.location_id", "inventory.location_id")
+      .leftJoin(
+        "items_needed",
+        "locations.location_id",
+        "items_needed.location_id"
+      )
+      .where("locations.type", "food_bank")
       .whereRaw(
-        `
-        to_tsvector('english',
-          coalesce(locations.name, '') || ' ' || 
-          coalesce(food_banks.inventory::text, '')
-        ) @@ plainto_tsquery('english', ?)
-      `,
-        [userInput.toLowerCase() + ":*"]
-      );
+        `to_tsvector('english',
+          coalesce(locations.name, '') || ' ' ||
+          coalesce(locations.description, '') || ' ' ||
+          coalesce(inventory.name, '') || ' ' ||
+          coalesce(items_needed.name, '')
+        ) @@ plainto_tsquery('english', ?)`,
+        [`${userInput.toLowerCase()}:*`]
+      )
+      .groupBy("locations.location_id");
   },
 
   async simpleReviews(userInput: string) {
     return db
-      .select("reviews.*", "locations.name as location_name")
+      .select(
+        "reviews.*",
+        "locations.name as location_name",
+        "users.username as reviewer"
+      )
       .from("reviews")
       .join("locations", "reviews.location_id", "locations.location_id")
+      .leftJoin("users", "reviews.user_id", "users.user_id")
       .whereRaw(
         `
         to_tsvector('english', 

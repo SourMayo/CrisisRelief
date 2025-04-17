@@ -4,14 +4,15 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable("users", (table) => {
     table.increments("user_id").primary();
     table.string("first_name").notNullable();
+    table.string("middle_name").notNullable();
     table.string("last_name").notNullable();
     table.string("username").unique();
     table.string("email").unique().notNullable();
-    table.string("password").notNullable();
+    table.string("hashed_password").notNullable();
     table.string("phone_number");
     table.timestamps(true, true);
-    table.boolean("isa").defaultTo(false);
-    table.integer("location_id").references("location_id").inTable("locations");
+    table.timestamp("date_of_birth");
+    //table.integer("location_id").references("location_id").inTable("locations");
   });
 }
 

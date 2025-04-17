@@ -9,6 +9,16 @@ export async function up(knex: Knex): Promise<void> {
       .references("location_id")
       .inTable("locations");
     table.text("description");
+    table.text("safe_zones");
+
+    table.string("street");
+    table.string("city");
+    table.string("state", 2);
+    table.string("zipcode", 20);
+
+    table.float("latitude", 9, 6);
+    table.float("longitude", 9, 6);
+    table.integer("radius_miles");
   });
 }
 

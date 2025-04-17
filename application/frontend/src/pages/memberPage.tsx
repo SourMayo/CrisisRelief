@@ -14,10 +14,11 @@ const MemberPage = () => {
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <section className="relative isolate overflow-hidden min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3] px-6 py-24 sm:py-32 lg:px-8">
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10 w-full h-full bg-[radial-gradient(80rem_80rem_at_top,var(--color-indigo-100),white)] opacity-30" />
-      <div className="absolute inset-0 -z-10 w-[150%] h-screen skew-x-[-30deg] bg-white ring-1 shadow-xl shadow-indigo-600/10 ring-indigo-50 xl:origin-top-left right-0" />
+      {/* Old skew effect */}
+      {/* <div className="absolute inset-0 -z-10 w-[150%] h-screen skew-x-[-30deg] bg-white ring-1 shadow-xl shadow-indigo-600/10 ring-indigo-50 xl:origin-top-left right-0" /> */}
 
       {/* Main Content */}
       <div className="mx-auto max-w-2xl lg:max-w-4xl">

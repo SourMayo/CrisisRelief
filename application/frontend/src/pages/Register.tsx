@@ -8,7 +8,7 @@ import { useNavigate as UseNavigate } from "react-router-dom";
 
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
-  const apiUrl = import.meta.env.VITE_API_URL as string;
+  const apiUrl = "http://crisisrelief.duckdns.org:5001";
   const [formData, setFormData] = UseState({
     firstName: "",
     lastName: "",
@@ -72,9 +72,9 @@ const signUp = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
       <ToastContainer />
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="isolate px-6 py-24 sm:py-32 lg:px-8">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-[-10rem] -z-10 pointer-events-none transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
