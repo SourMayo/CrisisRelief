@@ -123,7 +123,7 @@ const SearchForm = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5001/search?query=${encodeURIComponent(
+        `http://crisisrelief.duckdns.org:5001/search?query=${encodeURIComponent(
           searchQuery
         )}&category=${encodeURIComponent(selectedCategory)}`
       );
