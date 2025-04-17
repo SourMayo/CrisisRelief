@@ -14,7 +14,13 @@ export default function WeatherWarning() {
 
   const [selectedId, setSelectedId] = useState(1); // Default to the first location
 
-  const weatherData = {
+  type WeatherEntry = {
+    hourly: string[];
+    weekly: string[];
+    mapImage: string;
+  };
+
+  const weatherData: Record<number, WeatherEntry> = {
     1: {
       hourly: [
         "1PM  ☁︎ 65°F", "2PM  ☁︎ 66°F", "3PM  ☁︎ 67°F", "4PM  ☁︎ 68°F",
