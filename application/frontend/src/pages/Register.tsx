@@ -8,7 +8,7 @@ import { useNavigate as UseNavigate } from "react-router-dom";
 
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
-  const apiUrl = import.meta.env.VITE_API_URL as string;
+  const apiUrl = "http://crisisrelief.duckdns.org:5001";
   const [formData, setFormData] = UseState({
     firstName: "",
     lastName: "",
