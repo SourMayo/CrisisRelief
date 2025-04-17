@@ -47,7 +47,7 @@ const home = () => {
 
             <br></br>
             <p className="font-light font-style italic text-gray-800 text-1xl mb-8">
-              Image courtsey of Pexels
+              Image courtesy of Pexels
             </p>
           </div>
           
@@ -101,9 +101,8 @@ const home = () => {
               </h2>
             
               <p className="text-2xl font-light text-gray-800 mb-8 max-w-[587px] text-center mx-auto mt-[20px]">
-                Find all your resources quickly and accurately! Need a place to stay?
-                Need medical help? Want to be on top of weather emergencies?
-                We have all you need!
+                Login or Sign Up to let us send you the 
+                services you need, when you need it!
               </p>
             </div>
 
