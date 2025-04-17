@@ -5,6 +5,6 @@ export const navigation = [
 ];
 
 export const loginnav = [
-  { name: "Registration", href: "/Register", current: true },
+  { name: "Registration", href: "/Register", current: false },
   { name: "Login", href: "/Login", current: false },
 ];
