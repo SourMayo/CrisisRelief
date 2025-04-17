@@ -8,6 +8,6 @@ export { default as Resources } from "./resources";
 export { default as MedicalResources } from "./medicalResources";
 export { default as FoodBanks } from "./foodBanks";
 export { default as OvernightShelters } from "./overnightShelters";
-export { default as WeatherWarning } from "./WheatherWarning";
+export { default as WeatherWarning } from "./weatherWarning";
 export { default as Profile } from "./profile";
 export { default as Settings } from "./settings";

@@ -17,8 +17,7 @@ const Resources = () => {
         </p>
 
         {/* Resource Options */}
-        <div className="absolute top-[35%] w-full flex justify-center flex-wrap gap-16 px-4">
-          {/* Card Component Template */}
+        <div className="absolute top-[35%] w-full flex justify-center flex-wrap gap-12 px-4">
           {[
             {
               to: "/medicalResources",
@@ -42,13 +41,15 @@ const Resources = () => {
             },
           ].map(({ to, icon, label }) => (
             <Link to={to} key={label}>
-              <div className="group flex flex-col items-center cursor-pointer transition-transform transform hover:scale-105 duration-300">
-                <img
-                  src={icon}
-                  alt={`${label} Icon`}
-                  className="w-24 h-24 group-hover:scale-110 transition-transform duration-300"
-                />
-                <p className="mt-4 italic text-gray-800 text-2xl mb-8 group-hover:scale-105 transition-transform duration-300">
+              <div className="w-50 flex flex-col items-center text-center cursor-pointer transition-transform transform hover:scale-105 duration-300">
+                <div className="w-40 h-40 flex items-center justify-center">
+                  <img
+                    src={icon}
+                    alt={`${label} Icon`}
+                    className="w-40 h-40 object-contain "
+                  />
+                </div>
+                <p className="mt-4 text-gray-800 text-lg italic">
                   {label}
                 </p>
               </div>
