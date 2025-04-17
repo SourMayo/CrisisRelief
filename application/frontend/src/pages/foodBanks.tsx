@@ -1,5 +1,5 @@
 import { useState } from "react";
-import mapImage from "../assets/icons/map.jpg";
+import { Map } from "../assets";
 
 const facilities = [
   {
@@ -207,7 +207,7 @@ export default function FoodBanks() {
               {/* Map Box */}
               <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
                 <img
-                  src={mapImage}
+                  src={Map}
                   alt="Map preview"
                   className="w-full h-full object-cover rounded-md"
                 />
