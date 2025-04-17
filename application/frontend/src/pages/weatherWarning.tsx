@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import mapImage from "../assets/icons/map.jpg";
+import { Map } from "../assets";
 
 export default function WeatherWarning() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -188,7 +188,7 @@ export default function WeatherWarning() {
                 {/* Map Section */}
                 <div className="bg-[#1F2A40] rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2">
                   <img
-                    src={mapImage}
+                    src={Map}
                     alt="Map preview"
                     className="w-full h-full object-cover rounded-md"
                   />
