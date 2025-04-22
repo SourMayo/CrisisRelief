@@ -5,6 +5,8 @@ import { Field, Label, Switch } from "@headlessui/react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate as UseNavigate } from "react-router-dom";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+
 
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
@@ -20,6 +22,21 @@ const signUp = () => {
   const [loading, setLoading] = UseState(false);
   const [devMode, setDevMode] = UseState(false);
   const navigate = UseNavigate();
+
+
+  const [showPassword, setShowPassword] = UseState(false);
+  const [isPasswordValid, setIsPasswordValid] = UseState(true);
+
+  const validatePassword = (password: string) => {
+    const minLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    return minLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
+  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,10 +54,11 @@ const signUp = () => {
         toast.error("Username should not contain spaces");
         return;
       }
-      if (formData.password.length < 8) {
-        toast.error("Password must be at least 8 characters long");
+      if (!validatePassword(formData.password)) {
+        toast.error("Password does not meet security requirements");
         return;
       }
+
     }
     const toastId = toast.loading("Loading...");
     setLoading(true);
@@ -183,27 +201,52 @@ const signUp = () => {
               >
                 Password
               </label>
-              <div className="mt-2.5">
+              <div className="relative mt-2.5">
                 <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={formData.password}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setIsPasswordValid(validatePassword(e.target.value));
+                    }}
+                    className={`block w-full pr-10 rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 ${
+                        isPasswordValid ? "outline-gray-300" : "outline-red-500"
+                    } placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600`}
                 />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600"
+                >
+                  {showPassword ? (
+                      <EyeSlashIcon className="h-5 w-5" />
+                  ) : (
+                      <EyeIcon className="h-5 w-5" />
+                  )}
+                </button>
               </div>
+
+              {!isPasswordValid && (
+                  <p className="text-red-500 text-sm mt-2">
+                    Password must be at least 8 characters, include uppercase, lowercase, number, and special character.
+                  </p>
+              )}
+
+
             </div>
             <div className="sm:col-span-2">
               <label
-                htmlFor="phone-number"
-                className="block text-sm/6 font-semibold text-gray-900"
+                  htmlFor="phone-number"
+                  className="block text-sm/6 font-semibold text-gray-900"
               >
                 Phone number
               </label>
               <div className="mt-2.5">
-                <div className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
+                <div
+                    className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                   <div className="grid shrink-0 grid-cols-1 focus-within:relative">
                     <select
                       id="country"
