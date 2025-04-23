@@ -59,7 +59,7 @@ const Login = () => {
   };
   return (
     // Background gradient
-    <div className="min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
+    <div className="min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
       <ToastContainer />
       <div className="isolate px-6 py-24 sm:py-32 lg:px-8">
         <div
@@ -80,7 +80,7 @@ const Login = () => {
           <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
             Login
           </h2>
-          <p className="mt-2 text-lg/8 text-gray-600">
+          <p className="mt-2 text-lg/8 text-gray-700">
             Who are we helping today?
           </p>
         </div>

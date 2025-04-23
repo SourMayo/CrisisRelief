@@ -14,7 +14,7 @@ const MemberPage = () => {
   }
 
   return (
-    <section className="relative isolate overflow-hidden min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3] px-6 py-24 sm:py-32 lg:px-8">
+    <section className="relative isolate overflow-hidden min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] px-6 py-24 sm:py-32 lg:px-8">
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10 w-full h-full bg-[radial-gradient(80rem_80rem_at_top,var(--color-indigo-100),white)] opacity-30" />
       {/* Old skew effect */}
@@ -50,7 +50,7 @@ const MemberPage = () => {
               >
                 <circle r={1} cx={1} cy={1} />
               </svg>
-              <div className="text-gray-600">
+              <div className="text-gray-700">
                 {member.role || "Team Member"}
               </div>
             </div>

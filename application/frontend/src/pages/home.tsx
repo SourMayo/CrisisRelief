@@ -19,12 +19,12 @@ const home = () => {
   return (
     <div className="@container overflow-x-hidden">
       {/* Background gradient */}
-      <div className="relative min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
+      <div className="min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
 
         {/* Introduction */}
-        <div className="pt-32 px-10 justify-center items-center flex flex-col md:flex-row">
+        <div className="pt-32 px-10 justify-center items-center flex flex-col md:flex-row max-w-[1500px] mx-auto">
           <div className="">
-            <div className="max-w-[617px]">
+            <div className="max-w-[617px] md:min-w-[500px]">
               <h1 className="text-[48px] font-bold text-gray-800 mb-8">
                 We are here to help bring you a better tomorrow
               </h1>
@@ -50,7 +50,7 @@ const home = () => {
           </div>
           
           {/* Icons and "One Stop Aid" */}
-          <div className="mt-[100px] md:mt-[0px] flex flex-wrap md:flex-col justify-center items-center">
+          <div className="mt-[150px] md:mt-[0px] flex flex-wrap justify-center items-center">
             {[
               {
                 to: "/medicalResources",
@@ -76,27 +76,33 @@ const home = () => {
               <Link
                 to={to}
                 key={label}
-                className="w-[50%] md:w-[30%] lg:w-[22%] p-2"
+                className="w-[50%] md:w-[50%] lg:w-[50%%] p-2"
               >
-                <div className="px-16 pt-5 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                  <div className="w-20 h-20 md:w-20 md:h-20 flex items-center justify-center">
+                <div className="pt-5 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                  <div className="w-30 h-30 md:w-30 md:h-30 flex items-center justify-center">
                     <img
                       src={icon}
                       alt={`${label} Icon`}
                       className="w-full h-full object-contain"
                     />
                   </div>
+                  <p className="mt-4 text-gray-800 text-sm md:text-lg ">
+                  {label}
+                  </p>
                 </div>
               </Link>
             ))}
-          </div>
+          </div>          
+        </div>
 
-          {/* Text Piece */}
+        {/* Informational Pieces */}
+        <div className="mt-[150px] text-center px-8 md:px-16">
+          {/* Steps */}
           <div className="md:px-16">
-            <h2 className="text-[48px] font-bold text-gray-800 mb-8 text-center md:text-left mt-[20px]">
+            <h2 className="text-[48px] font-bold text-gray-800 mb-8 text-center mt-[20px]">
               One Stop Aid
             </h2>
-            <p className="text-2xl font-light text-gray-800 mb-8 max-w-[587px] text-center md:text-left mx-auto mt-[20px]">
+            <p className="text-2xl font-light text-gray-800 mb-8 max-w-[587px] text-center mx-auto mt-[20px]">
               Find all your resources quickly and accurately! 
               <br/>
               <b>
@@ -115,14 +121,9 @@ const home = () => {
             </p>
 
           </div>
-        </div>
-
-
-        {/* Informational Pieces */}
-        <div className="mt-[150px] text-center px-8 md:px-16">
 
           {/* Bring Help to You */}
-          <div className="mt-[20px] flex items-center gap-x-50 mx-auto w-fit">
+          <div className="mt-[150px] flex items-center gap-x-50 mx-auto w-fit">
             <div>
               <h2 className="text-[48px] font-bold text-gray-800 mb-8 text-center mt-[20]">
                 Bring Help to You

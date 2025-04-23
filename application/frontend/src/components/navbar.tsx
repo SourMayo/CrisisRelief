@@ -63,7 +63,7 @@ export default function Navbar() {
     }
   };
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-linear-to-r from-[#1F2A40] via-[#344466] to-[#1F2A40]">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -200,7 +200,7 @@ export default function Navbar() {
 
       <DisclosurePanel className="sm:hidden">
         {/* Normal Navigation Buttons */}
-        <div className="space-y-1 px-2 pt-2 pb-3">
+        <div className="space-y-1 px-2 pt-2 pb-1">
           {navigation.map((item) => (
             <DisclosureButton
               key={item.name}
@@ -220,7 +220,7 @@ export default function Navbar() {
 
         {/* Login Navigation Buttons */}
         {!isLoggedIn && (
-          <div className="px-2 pt-2 pb-3">
+          <div className="px-2 pb-3">
             {loginnav.map((item) => (
               <DisclosureButton
                 key={item.name}

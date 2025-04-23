@@ -90,7 +90,7 @@ const signUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
+    <div className="min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
       <ToastContainer />
       <div className="isolate px-6 py-24 sm:py-32 lg:px-8">
         <div
@@ -109,7 +109,7 @@ const signUp = () => {
           <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
             Register
           </h2>
-          <p className="mt-2 text-lg/8 text-gray-600">
+          <p className="mt-2 text-lg/8 text-gray-700">
             Detailed information about the Help near you.
           </p>
         </div>
@@ -291,7 +291,7 @@ const signUp = () => {
                   />
                 </Switch>
               </div>
-              <Label className="text-sm/6 text-gray-600">
+              <Label className="text-sm/6 text-gray-700">
                 By selecting this, you agree to our{" "}
                 <a href="#" className="font-semibold text-indigo-600">
                   privacy&nbsp;policy
@@ -308,7 +308,7 @@ const signUp = () => {
               onChange={(e) => setDevMode(e.target.checked)}
               className="mr-2"
             />
-            <label htmlFor="devMode" className="text-sm text-gray-600">
+            <label htmlFor="devMode" className="text-sm text-gray-700">
               Development mode (disable validations)
             </label>
           </div>
