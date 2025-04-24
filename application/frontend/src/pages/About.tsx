@@ -6,7 +6,7 @@ export default function About() {
     <div className="min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
-          <h2 className="text-2xl font-bold text-gray-800 text-center">
+          <h2 className="pb-8 px-4 text-center font-bold text-gray-800 text-4xl">
             Meet Our Team
           </h2>
 

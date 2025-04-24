@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Settings = () => {
   return (
-    <div className="@container min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3]">
+    <div className="@container min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
       {/* Page Heading */}
       <h1 className="pt-8 pb-4 text-3xl md:text-4xl text-center font-semibold text-[#1F2A40]">
         Account Settings

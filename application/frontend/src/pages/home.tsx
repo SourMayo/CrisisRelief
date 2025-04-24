@@ -10,6 +10,7 @@ import {
   instagramIcon,
 } from "../assets";
 import { Link } from "react-router-dom";
+import {Card, CardHeader, CardBody, Image} from "@heroui/react";
 import { useNavigate as UseNavigate } from "react-router-dom";
 
 const home = () => {
@@ -25,7 +26,7 @@ const home = () => {
         <div className="pt-32 px-10 justify-center items-center flex flex-col md:flex-row max-w-[1500px] mx-auto">
           <div className="">
             <div className="max-w-[617px] md:min-w-[500px]">
-              <h1 className="text-[48px] font-bold text-gray-800 mb-8">
+              <h1 className="text-5xl font-bold text-gray-800 mb-8">
                 We are here to help bring you a better tomorrow
               </h1>
               <p className="font-light text-gray-800 text-2xl mb-8">
@@ -73,24 +74,45 @@ const home = () => {
                 label: "Weather Warnings",
               },
             ].map(({ to, icon, label }) => (
-              <Link
-                to={to}
-                key={label}
-                className="w-[50%] md:w-[50%] lg:w-[50%%] p-2"
-              >
-                <div className="pt-5 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-                  <div className="w-30 h-30 md:w-30 md:h-30 flex items-center justify-center">
-                    <img
-                      src={icon}
-                      alt={`${label} Icon`}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                  <p className="mt-4 text-gray-800 text-sm md:text-lg ">
-                  {label}
-                  </p>
-                </div>
-              </Link>
+              // <Link
+              //   to={to}
+              //   key={label}
+              //   className="w-[50%] md:w-[50%] lg:w-[50%%] p-2"
+              // >
+              //   <div className="pt-5 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+              //     <div className="w-30 h-30 md:w-30 md:h-30 flex items-center justify-center">
+              //       <img
+              //         src={icon}
+              //         alt={`${label} Icon`}
+              //         className="w-full h-full object-contain"
+              //       />
+              //     </div>
+              //     <p className="mt-4 text-gray-800 text-sm md:text-lg ">
+              //     {label}
+              //     </p>
+              //   </div>
+              // </Link>
+            
+            <Link
+              to={to}
+              key={label}
+              className="w-[50%]"
+            >
+              <Card className="pt-5 flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
+                <CardBody className="overflow-visible items-center justify-center py-2">
+                  <Image
+                    alt={label}
+                    className="object-cover rounded-xl"
+                    src={icon}
+                    width={100}
+                  />
+                </CardBody>
+                <CardHeader className="pt-2 flex-col items-center justify-center text-center">
+                  <p className="mt-4 text-gray-800 font-bold text-lg">{label}</p>
+                </CardHeader>
+              </Card>
+            </Link>
+              
             ))}
           </div>          
         </div>

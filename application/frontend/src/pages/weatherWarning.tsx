@@ -104,7 +104,7 @@ export default function WeatherWarning() {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-b from-[#DCE7FC] via-[#ADC4EF] to-[#7F9EE3] relative">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
       <div className="lg:hidden">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
