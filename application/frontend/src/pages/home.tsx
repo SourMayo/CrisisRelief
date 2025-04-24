@@ -158,7 +158,7 @@ const home = () => {
             </div>
 
             <div className="hidden @[1170px]:block">
-              <img src={logo} alt="CrisisRelief logo"></img>
+              <img src={logo} alt="CrisisRelief logo" className="drop-shadow-lg rounded-xl"></img>
             </div>
           </div>
         </div>
