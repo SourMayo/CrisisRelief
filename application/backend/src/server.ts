@@ -5,6 +5,7 @@ import {
   loginRouter,
   authRouter,
   weatherRouter,
+  googleRouter
 } from "./routes";
 import { searchController } from "./controllers/searchController";
 import { sessionMiddleware } from "./middlewares/sessions";
@@ -29,6 +30,8 @@ app.use("/search", searchController);
 app.use("/login", loginRouter);
 app.use("/auth", authRouter);
 app.use("/weather", weatherRouter);
+app.use("/google", googleRouter);
+
 
 app.get("/dashboard", (req, res) => {
   if (!req.session.user) {
