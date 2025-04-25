@@ -1,6 +1,11 @@
 import express from "express";
 import cors from "cors";
-import { registerRouter, loginRouter, authRouter } from "./routes";
+import {
+  registerRouter,
+  loginRouter,
+  authRouter,
+  weatherRouter,
+} from "./routes";
 import { searchController } from "./controllers/searchController";
 import { sessionMiddleware } from "./middlewares/sessions";
 
@@ -23,6 +28,7 @@ app.use("/register", registerRouter);
 app.use("/search", searchController);
 app.use("/login", loginRouter);
 app.use("/auth", authRouter);
+app.use("/weather", weatherRouter);
 
 app.get("/dashboard", (req, res) => {
   if (!req.session.user) {
