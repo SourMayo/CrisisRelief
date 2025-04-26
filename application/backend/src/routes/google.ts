@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const googleRouter = Router();
-const GOOGLE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+const GOOGLE_API_KEY = "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ";
 
 googleRouter.get("/places", async (req, res) => {
   const { query, lat, lng, type } = req.query;
