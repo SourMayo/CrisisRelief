@@ -11,3 +11,4 @@ export { default as OvernightShelters } from "./overnightShelters";
 export { default as WeatherWarning } from "./weatherWarning";
 export { default as Profile } from "./profile";
 export { default as Settings } from "./settings";
+export { default as Preferences } from "./preferences";

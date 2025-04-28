@@ -12,7 +12,8 @@ import {
   OvernightShelters,
   WeatherWarning,
   Profile,
-  Settings
+  Settings,
+  Preferences,
 } from "./pages";
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
@@ -61,6 +62,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           {/* Settings Page */}
           <Route path="/settings" element={<Settings />} />
+          {/* Preferences Page */}
+          <Route path="/app-preferences" element={<Preferences />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
