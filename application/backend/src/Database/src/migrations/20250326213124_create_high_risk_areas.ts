@@ -10,6 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       .inTable("locations");
     table.text("description");
     table.text("safe_zones");
+    table.text("type");
 
     table.string("street");
     table.string("city");

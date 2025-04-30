@@ -6,6 +6,8 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("notification_id").primary();
         table.integer("location_id").references("location_id").inTable("locations");
         table.text("message");
+        table.string("type");
+        table.timestamp("timestamp");
       });
 }
 

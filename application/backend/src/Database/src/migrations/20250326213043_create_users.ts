@@ -12,7 +12,6 @@ export async function up(knex: Knex): Promise<void> {
     table.string("phone_number");
     table.timestamps(true, true);
     table.timestamp("date_of_birth");
-    //table.integer("location_id").references("location_id").inTable("locations");
   });
 }
 
