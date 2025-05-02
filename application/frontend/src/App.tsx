@@ -17,6 +17,7 @@ import {
 } from "./pages";
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
+import MapView from "./components/mapView";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -62,6 +63,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           {/* Settings Page */}
           <Route path="/settings" element={<Settings />} />
+          {/* Map View Page */}
+          <Route path="/map" element={<MapView />} />
           {/* Preferences Page */}
           <Route path="/app-preferences" element={<Preferences />} />
           {/* 404 page */}

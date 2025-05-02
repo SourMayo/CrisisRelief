@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Map } from "../assets";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
 const facilities = [
   {
@@ -9,6 +9,8 @@ const facilities = [
     type: "Family Food Bank",
     phone: "(123) 456–7890",
     website: "https://www.karlasfamilyhelp.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Karla’s Family Help offers weekly grocery pickups, nutritional programs for families, and emergency food assistance for those in need.",
     quickInfo: [
@@ -27,6 +29,8 @@ const facilities = [
     type: "Family Food Bank",
     phone: "(555) 321–1234",
     website: "https://www.kylesfood.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Kyle's Family Food Help focuses on child-friendly meals and nutritional boxes for low-income households, with weekend pickup hours.",
     quickInfo: [
@@ -43,6 +47,8 @@ const facilities = [
     type: "Woman's Food Bank",
     phone: "(789) 654–3210",
     website: "https://www.geoartswomenshelp.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Geoart’s center supports women and children with nutritious meals, hygiene supplies, and mental wellness check-ins.",
     quickInfo: [
@@ -60,6 +66,8 @@ const facilities = [
     type: "Veterans Food Bank",
     phone: "(888) 444–2020",
     website: "https://www.veteranrelief.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Serving our veterans with honor, Anshaj’s Food Bank offers military-friendly meals, PTSD support, and dedicated volunteer staff.",
     quickInfo: [
@@ -76,6 +84,8 @@ const facilities = [
     type: "Homeless Food Bank",
     phone: "(999) 222–0000",
     website: "https://www.ayeshafoodbank.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Daily walk-in service for those experiencing homelessness, with warm meals, hydration, and helpful staff around the clock.",
     quickInfo: [
@@ -87,10 +97,20 @@ const facilities = [
     ],
   },
 ];
+
+const containerStyle = {
+  width: "100%",
+  height: "100%",
+};
+
 export default function FoodBanks() {
   const [selectedId, setSelectedId] = useState(facilities[0].id);
-  const selectedFacility = facilities.find((f) => f.id === selectedId);
+  const selectedFacility = facilities.find((f) => f.id === selectedId)!;
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+  });
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
@@ -206,11 +226,25 @@ export default function FoodBanks() {
 
               {/* Map Box */}
               <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
-                <img
-                  src={Map}
-                  alt="Map preview"
-                  className="w-full h-full object-cover rounded-md"
-                />
+                {isLoaded ? (
+                  <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                      lat: selectedFacility.lat,
+                      lng: selectedFacility.lng,
+                    }}
+                    zoom={14}
+                  >
+                    <Marker
+                      position={{
+                        lat: selectedFacility.lat,
+                        lng: selectedFacility.lng,
+                      }}
+                    />
+                  </GoogleMap>
+                ) : (
+                  <div className="text-white">Loading map...</div>
+                )}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Map } from "../assets";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
 const facilities = [
   {
@@ -8,6 +8,8 @@ const facilities = [
     address: "124 Castro Street",
     phone: "(334) 456-5632",
     website: "https://www.KylesHavenShelter.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Kyle’s Haven Shelter provides 24/7 support, offering a safe, welcoming environment with meals, emergency beds, and access to essential resources for individuals experiencing homelessness .",
     quickInfo: [
@@ -23,6 +25,8 @@ const facilities = [
     address: "562 Church Ave",
     phone: "(555) 887-9876",
     website: "https://www.KarlasRefuge.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Karla's Refuges focuses on providing basic necessities to those who are in need of a safe place to sleep.",
     quickInfo: [
@@ -38,6 +42,8 @@ const facilities = [
     address: "124 2nd Street",
     phone: "(789) 654–3210",
     website: "https://www.AyeshasHopeShelter.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Ayeshas Hope Shelter center supports all communities providing a warm place to sleep and relief from hard weather envirnment",
     quickInfo: [
@@ -54,6 +60,8 @@ const facilities = [
     address: "Civic Center",
     phone: "(989) 334-8567",
     website: "https://www.Anshaj'sShelter.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Anshaj's shelter is open to anyone looking for a bed, a place to rest, and a sense of community. ",
     quickInfo: [
@@ -69,6 +77,8 @@ const facilities = [
     address: "124 Main Street",
     phone: "(112) 4098–0500 ",
     website: "https://www.ayeshaHopeShelter.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Ayeshs's  Hope Shelters aims to provide a place to rest to those who are unable to find one. LGBT+ friendly.",
     quickInfo: [
@@ -80,10 +90,20 @@ const facilities = [
     ],
   },
 ];
+
+const containerStyle = {
+  width: "100%",
+  height: "100%",
+};
+
 export default function OvernightShelters() {
   const [selectedId, setSelectedId] = useState(facilities[0].id);
-  const selectedFacility = facilities.find((f) => f.id === selectedId);
+  const selectedFacility = facilities.find((f) => f.id === selectedId)!;
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+  });
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
@@ -198,11 +218,25 @@ export default function OvernightShelters() {
 
               {/* Map Box */}
               <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
-                <img
-                  src={Map}
-                  alt="Map preview"
-                  className="w-full h-full object-cover rounded-md"
-                />
+                {isLoaded ? (
+                  <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                      lat: selectedFacility.lat,
+                      lng: selectedFacility.lng,
+                    }}
+                    zoom={14}
+                  >
+                    <Marker
+                      position={{
+                        lat: selectedFacility.lat,
+                        lng: selectedFacility.lng,
+                      }}
+                    />
+                  </GoogleMap>
+                ) : (
+                  <div className="text-white">Loading map...</div>
+                )}
               </div>
             </div>
           </div>

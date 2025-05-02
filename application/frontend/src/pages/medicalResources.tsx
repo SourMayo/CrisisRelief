@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Map } from "../assets";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
 const facilities = [
   {
@@ -9,6 +9,8 @@ const facilities = [
     type: "Medical Care",
     phone: "(123) 456–7890",
     website: "https://www.karlashospital.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Karla’s Hospital provides 24/7 general medical services, outpatient care, lab testing, and urgent assistance for non-life-threatening conditions. Walk-ins accepted.",
     quickInfo: [
@@ -26,6 +28,8 @@ const facilities = [
     type: "ER",
     phone: "(321) 555–6789",
     website: "https://www.kyleser.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Kyle’s ER provides rapid emergency care, trauma services, and overnight stabilization. Open 24/7 with ambulance access.",
     quickInfo: [
@@ -42,6 +46,8 @@ const facilities = [
     type: "Mental Health",
     phone: "(415) 222–4444",
     website: "https://www.geoarttherapy.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Geoarts Therapy specializes in individual and group counseling, crisis intervention, and mental health support for all ages.",
     quickInfo: [
@@ -58,6 +64,8 @@ const facilities = [
     type: "Medical Care",
     phone: "(408) 333–7890",
     website: "https://www.anshajsgeneral.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Anshajs General provides preventive care, outpatient visits, and family medicine. Walk-ins welcome with no appointment.",
     quickInfo: [
@@ -74,6 +82,8 @@ const facilities = [
     type: "Veterinarian",
     phone: "(707) 888–9000",
     website: "https://www.ayeshavet.org",
+    lat: 37.7749,
+    lng: -122.4194,
     description:
       "Ayeshas Vet provides comprehensive veterinary care including vaccines, surgery, and emergency services for pets.",
     quickInfo: [
@@ -85,10 +95,19 @@ const facilities = [
   },
 ];
 
+const containerStyle = {
+  width: "100%",
+  height: "100%",
+};
+
 export default function MedicalResources() {
   const [selectedId, setSelectedId] = useState(facilities[0].id);
-  const selectedFacility = facilities.find((f) => f.id === selectedId);
+  const selectedFacility = facilities.find((f) => f.id === selectedId)!;
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+  });
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
@@ -202,11 +221,25 @@ export default function MedicalResources() {
 
               {/* Map Box */}
               <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
-                <img
-                  src={Map}
-                  alt="Map preview"
-                  className="w-full h-full object-cover rounded-md"
-                />
+                {isLoaded ? (
+                  <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                      lat: selectedFacility.lat,
+                      lng: selectedFacility.lng,
+                    }}
+                    zoom={14}
+                  >
+                    <Marker
+                      position={{
+                        lat: selectedFacility.lat,
+                        lng: selectedFacility.lng,
+                      }}
+                    />
+                  </GoogleMap>
+                ) : (
+                  <div className="text-white">Loading map...</div>
+                )}
               </div>
             </div>
           </div>
