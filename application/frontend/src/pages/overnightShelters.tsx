@@ -1,7 +1,53 @@
 import { useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
-const facilities = [
+
+
+
+async function FindShelters() {
+  const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
+  
+  const request = {
+    textQuery: 'Homeless Shelters',
+    fields: ['id', 'editorialSummary', 'formattedAddress', 'allowsDogs', 'businessStatus', 'displayName', 'internationalPhoneNumber', 'location', 'photos', 'priceLevel', 'primaryTypeDisplayName', 'rating', 'regularOpeningHours', 'websiteURI', 'userRatingCount'],
+    language: 'en-US',
+    maxResultCount: 8,
+    locationBias: { lat: 37.4161493, lng: -122.0812166 }, //Center on SF
+    region: 'us',
+  };
+
+  const { places } = await Place.searchByText(request);
+
+  if (places.length > 0) {
+    console.log(places.length);
+    var offset = 10;
+    places.forEach(place => {
+      var newLocation = {
+        id: offset,
+        name: place.displayName ?? 'Name Unavaiable',
+        address: place.formattedAddress ?? 'Address Unavaiable',
+        phone: place.internationalPhoneNumber ?? place.nationalPhoneNumber ?? 'Number Unavailable',
+        website: place.websiteURI ?? 'Website Unavailable',
+        lat: place.location?.lat()!,
+        lng: place.location?.lng()!,
+        description: place.editorialSummary ?? 'Description Unavailable',
+        quickInfo: [
+          "📞 Emergency:" + place.internationalPhoneNumber,
+          "🛏️ Beds Available: " + "Unknown",
+          "💬 Language Support: English, Spanish",
+          "⌛️ 24/7 walkins",
+        ],
+      }
+      facilities.push(newLocation);
+      offset++;
+    });
+  } else {
+    console.log('No results');
+  }
+}
+window.onload = FindShelters;
+document.addEventListener("load", FindShelters);
+var facilities = [
   {
     id: 1,
     name: "Kyles Haven Shelter",
@@ -97,6 +143,7 @@ const containerStyle = {
 };
 
 export default function OvernightShelters() {
+  FindShelters();
   const [selectedId, setSelectedId] = useState(facilities[0].id);
   const selectedFacility = facilities.find((f) => f.id === selectedId)!;
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -104,6 +151,7 @@ export default function OvernightShelters() {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
   });
+  
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
