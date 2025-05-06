@@ -17,6 +17,7 @@ const SearchForm = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [zipQuery, setZipQuery] = useState("");
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null
   );
@@ -125,7 +126,9 @@ const SearchForm = () => {
       const response = await fetch(
         `http://crisisrelief.duckdns.org:5001/search?query=${encodeURIComponent(
           searchQuery
-        )}&category=${encodeURIComponent(selectedCategory)}`
+        )}&category=${encodeURIComponent(selectedCategory)}&zip=${encodeURIComponent(
+          zipQuery
+        )}`
       );
 
       if (!response.ok) {
@@ -282,7 +285,21 @@ const SearchForm = () => {
           portalContainer &&
           createPortal(categoryDropdown, portalContainer)}
 
+        {/* Accept ZIP code input */}
+        <input
+          ref={inputRef}
+          type="text"
+          id="search-zip"
+          value={zipQuery}
+          onChange={(e) => setZipQuery(e.target.value)}
+          className="block p-2.5 w-[59px] z-20 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+          placeholder={`ZIP`}
+          autoComplete="off"
+        />
+
         <div className="relative w-full">
+          
+          {/* Regular search input */}
           <input
             ref={inputRef}
             type="search"
