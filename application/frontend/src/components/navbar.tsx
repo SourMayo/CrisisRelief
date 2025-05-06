@@ -27,12 +27,9 @@ export default function Navbar() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch(
-          "http://crisisrelief.duckdns.org:5001/auth/check",
-          {
-            credentials: "include",
-          }
-        );
+        const response = await fetch("http://localhost:5001/auth/check", {
+          credentials: "include",
+        });
         setIsLoggedIn(response.ok);
       } catch {
         setIsLoggedIn(false);
@@ -63,7 +60,10 @@ export default function Navbar() {
     }
   };
   return (
-    <Disclosure as="nav" className="bg-linear-to-r from-[#1F2A40] via-[#344466] to-[#1F2A40]">
+    <Disclosure
+      as="nav"
+      className="bg-linear-to-r from-[#1F2A40] via-[#344466] to-[#1F2A40]"
+    >
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -74,7 +74,11 @@ export default function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
-              <img alt="Logo" src={logo} className="h-8 w-auto drop-shadow-lg rounded-md" />
+              <img
+                alt="Logo"
+                src={logo}
+                className="h-8 w-auto drop-shadow-lg rounded-md"
+              />
             </div>
             <div className="hidden sm:ml-6 sm:block">
               {/* Navigation buttons */}
