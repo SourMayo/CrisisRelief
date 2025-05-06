@@ -11,14 +11,13 @@ import {
 import { searchController } from "./controllers/searchController";
 import { sessionMiddleware } from "./middlewares/sessions";
 
-
 const app = express();
 const port = 5001;
 
 // Update CORS config to allow credentials
 app.use(
   cors({
-    origin: "http://crisisrelief.duckdns.org:3000", // Your frontend URL
+    origin: "http://crisisrelief.duckdns.org:3000",
     credentials: true,
   })
 );
@@ -34,7 +33,6 @@ app.use("/auth", authRouter);
 app.use("/weather", weatherRouter);
 app.use("/google", googleRouter);
 app.use("/reviews", reviewsRouter);
-
 
 app.get("/dashboard", (req, res) => {
   if (!req.session.user) {

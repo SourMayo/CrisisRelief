@@ -1,131 +1,133 @@
 import { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
-// Array with default data
-var defaultFacilities = [
-  {
-    id: 1,
-    name: "Karla's Family Help",
-    address: "124 Main Street",
-    phone: "(123) 456–7890",
-    website: "https://www.karlasfamilyhelp.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Karla’s Family Help offers weekly grocery pickups, nutritional programs for families, and emergency food assistance for those in need.",
-    hours:[
-      "Monday : 10:00 AM – 8:00 PM", 
-      "Tuesday : 10:00 AM – 8:00 PM", 
-      "Wednesday : 10:00 AM – 8:00 PM", 
-      "Thursday : 10:00 AM – 8:00 PM", 
-      "Friday : 10:00 AM – 8:00 PM",
-      "Saturday : 10:00 AM – 8:00 PM",
-      "Sunday : 10:00 AM – 8:00 PM"
-    ],
-  },
-  {
-    id: 2,
-    name: "Kyle's Family Food Help",
-    address: "562 Oak Ave",
-    phone: "(555) 321–1234",
-    website: "https://www.kylesfood.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Kyle's Family Food Help focuses on child-friendly meals and nutritional boxes for low-income households, with weekend pickup hours.",
-    hours:[
-      "Monday : 10:00 AM – 8:00 PM", 
-      "Tuesday : 10:00 AM – 8:00 PM", 
-      "Wednesday : 10:00 AM – 8:00 PM", 
-      "Thursday : 10:00 AM – 8:00 PM", 
-      "Friday : 10:00 AM – 8:00 PM",
-      "Saturday : 10:00 AM – 8:00 PM",
-      "Sunday : 10:00 AM – 8:00 PM"
-    ],
-  },
-];
+interface Review {
+  review_id: number;
+  content: string;
+  rating: number;
+  user_id: number;
+}
 
-const containerStyle = {
-  width: "100%",
-  height: "100%",
-};
+interface Facility {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  website: string;
+  lat: number;
+  lng: number;
+  description: string;
+  hours: string[];
+}
 
 export default function FoodBanks() {
-  const [facilities, setFacilities] = useState(defaultFacilities);
-  const [selectedId, setSelectedId] = useState(defaultFacilities[0].id);
-  const selectedFacility = facilities.find((f) => f.id === selectedId)!;
+  const [facilities, setFacilities] = useState<Facility[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const selectedFacility = facilities.find((f) => f.id === selectedId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  
+  const [reviews, setReviews] = useState<Review[]>([]);
+
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
   });
 
   useEffect(() => {
+    async function fetchReviews() {
+      if (!selectedFacility) return;
+      try {
+        const res = await fetch(
+          `http://crisisrelief.duckdns.org:5001/reviews?location_id=${selectedFacility.id}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setReviews(data);
+        } else {
+          console.error("Failed to fetch reviews.");
+        }
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    }
+
+    if (selectedFacility?.id) {
+      fetchReviews();
+    }
+  }, [selectedFacility]);
+
+  useEffect(() => {
     async function FindFoodBanks() {
-      const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
-      
+      if (typeof google === "undefined" || !google.maps?.importLibrary) {
+        console.warn("Google Maps API not yet loaded.");
+        return;
+      }
+
+      const { Place } = (await google.maps.importLibrary(
+        "places"
+      )) as google.maps.PlacesLibrary;
+
       const request = {
-        textQuery: 'Food Bank',
+        textQuery: "Food Bank",
         fields: [
-          'id', 
-          'editorialSummary', 
-          'formattedAddress', 
-          'allowsDogs', 
-          'businessStatus', 
-          'displayName', 
-          'internationalPhoneNumber', 
-          'location', 
-          'photos', 
-          'priceLevel', 
-          'primaryTypeDisplayName', 
-          'rating', 
-          'regularOpeningHours', 
-          'websiteURI', 
-          'userRatingCount'
+          "id",
+          "editorialSummary",
+          "formattedAddress",
+          "allowsDogs",
+          "businessStatus",
+          "displayName",
+          "internationalPhoneNumber",
+          "location",
+          "photos",
+          "priceLevel",
+          "primaryTypeDisplayName",
+          "rating",
+          "regularOpeningHours",
+          "websiteURI",
+          "userRatingCount",
         ],
-        language: 'en-US',
+        language: "en-US",
         maxResultCount: 8,
         locationBias: { lat: 37.4161493, lng: -122.0812166 }, //Center on SF
-        region: 'us',
+        region: "us",
       };
-  
+
       const { places } = await Place.searchByText(request);
 
       if (places.length > 0) {
         console.log(places.length);
         const googleFacilities = places.map((place, i) => ({
           id: i + 1,
-          name: place.displayName ?? 'Name Unavaiable',
-          address: place.formattedAddress ?? 'Address Unavaiable',
-          phone: place.internationalPhoneNumber ?? place.nationalPhoneNumber ?? 'Number Unavailable',
-          website: place.websiteURI ?? 'Website Unavailable',
-          lat: place.location?.lat()!,
-          lng: place.location?.lng()!,
-          description: place.editorialSummary ?? 'Description Unavailable',
-          hours: [
-            place.regularOpeningHours?.weekdayDescriptions[0] ?? 'Day Unavailable',
-            place.regularOpeningHours?.weekdayDescriptions[1] ?? 'Day Unavailable',
-            place.regularOpeningHours?.weekdayDescriptions[2] ?? 'Day Unavailable',
-            place.regularOpeningHours?.weekdayDescriptions[3] ?? 'Day Unavailable',
-            place.regularOpeningHours?.weekdayDescriptions[4] ?? 'Day Unavailable',
-            place.regularOpeningHours?.weekdayDescriptions[5] ?? 'Day Unavailable',
-            place.regularOpeningHours?.weekdayDescriptions[6] ?? 'Day Unavailable',
-          ],
+          name: place.displayName ?? "Name Unavaiable",
+          address: place.formattedAddress ?? "Address Unavaiable",
+          phone:
+            place.internationalPhoneNumber ??
+            place.nationalPhoneNumber ??
+            "Number Unavailable",
+          website: place.websiteURI ?? "Website Unavailable",
+          lat: place.location?.lat() ?? 0,
+          lng: place.location?.lng() ?? 0,
+          description: place.editorialSummary ?? "Description Unavailable",
+          hours: Array.from(
+            { length: 7 },
+            (_, j) =>
+              place.regularOpeningHours?.weekdayDescriptions?.[j] ??
+              "Day Unavailable"
+          ),
         }));
 
         setFacilities(googleFacilities);
         setSelectedId(googleFacilities[0]?.id ?? null);
-
       } else {
-        console.log('No results');
+        console.log("No results");
       }
     }
-    
-    FindFoodBanks();
+
+    if (isLoaded) {
+      FindFoodBanks();
+    }
   }, [isLoaded]);
-  
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
       {/* Mobile Toggle Button */}
@@ -201,26 +203,22 @@ export default function FoodBanks() {
           </div>
 
           {/* Middle Section */}
-          <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Hours Box */}
-            <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+            <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
-                <li>{selectedFacility?.hours[0]}</li>
-                <li>{selectedFacility?.hours[1]}</li>
-                <li>{selectedFacility?.hours[2]}</li>
-                <li>{selectedFacility?.hours[3]}</li>
-                <li>{selectedFacility?.hours[4]}</li>
-                <li>{selectedFacility?.hours[5]}</li>
-                <li>{selectedFacility?.hours[6]}</li>
+                {selectedFacility?.hours.map((hour: string, index: number) => (
+                  <li key={index}>{hour}</li>
+                ))}
               </ul>
             </div>
 
             {/* Map */}
-            <div className="flex-1 bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
-              {isLoaded ? (
+            <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[300px] lg:h-[400px]">
+              {isLoaded && selectedFacility ? (
                 <GoogleMap
-                  mapContainerStyle={containerStyle}
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
                   center={{
                     lat: selectedFacility.lat,
                     lng: selectedFacility.lng,
@@ -239,37 +237,49 @@ export default function FoodBanks() {
               )}
             </div>
           </div>
-
           {/* Reviews Section */}
           <div className="w-full bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
+                console.log("Submitting review...");
                 const form = e.currentTarget;
                 const content = form.review.value;
                 const rating = form.rating.value;
 
                 const userId = 1; // TODO: replace with real user ID from session/auth
+                if (!selectedFacility) return;
+
                 const locationId = selectedFacility.id;
 
                 if (content.trim().length > 0 && rating) {
-                  const res = await fetch("/api/reviews", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      content,
-                      rating: parseInt(rating),
-                      user_id: userId,
-                      location_id: locationId,
-                    }),
-                  });
+                  try {
+                    const res = await fetch(
+                      "http://crisisrelief.duckdns.org:5001/reviews",
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          content,
+                          rating: parseInt(rating),
+                          user_id: userId,
+                          location_id: locationId,
+                        }),
+                      }
+                    );
 
-                  if (res.ok) {
-                    alert("Review submitted!");
-                    form.reset();
-                  } else {
-                    alert("Failed to submit review.");
+                    if (res.ok) {
+                      alert("Review submitted!");
+                      form.reset();
+                    } else {
+                      const errorMsg = await res.text();
+                      console.error("Error submitting review:", errorMsg);
+                      alert("Failed to submit review.");
+                    }
+                  } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while submitting the review.");
                   }
                 }
               }}
@@ -319,6 +329,31 @@ export default function FoodBanks() {
                 Submit Review
               </button>
             </form>
+            {/* Display Reviews */}
+            <div className="mt-8 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold mb-4">Recent Reviews</h2>
+              {reviews.length === 0 ? (
+                <p className="text-gray-300">No reviews yet.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {reviews.map((review) => (
+                    <li
+                      key={review.review_id}
+                      className="bg-white text-black rounded-lg p-4 shadow"
+                    >
+                      <div className="text-yellow-400 text-lg mb-1">
+                        {"★".repeat(review.rating)}
+                        {"☆".repeat(5 - review.rating)}
+                      </div>
+                      <p className="mb-1">{review.content}</p>
+                      <p className="text-sm text-gray-500">
+                        User #{review.user_id}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </main>
