@@ -48,9 +48,6 @@ async function FindShelters() {
         website: place.websiteURI ?? "Website Unavailable",
         lat: place.location?.lat()!,
         lng: place.location?.lng()!,
-<<<<<<< HEAD
-        description: place.editorialSummary ?? "Description Unavailable",
-=======
         description: place.editorialSummary ?? 'Description Unavailable',
         hours: [
           place.regularOpeningHours?.weekdayDescriptions[0] ?? 'Day Unavailable',
@@ -61,19 +58,14 @@ async function FindShelters() {
           place.regularOpeningHours?.weekdayDescriptions[5] ?? 'Day Unavailable',
           place.regularOpeningHours?.weekdayDescriptions[6] ?? 'Day Unavailable',
         ],
->>>>>>> ca914e664b3ec757951524781d925ee87e09c772
         quickInfo: [
           "📞 Emergency:" + place.internationalPhoneNumber,
           "🛏️ Beds Available: " + "Unknown",
           "💬 Language Support: English, Spanish",
           "⌛️ 24/7 walkins",
         ],
-<<<<<<< HEAD
-      };
-=======
       }
       console.log(place.regularOpeningHours?.weekdayDescriptions[0]);
->>>>>>> ca914e664b3ec757951524781d925ee87e09c772
       facilities.push(newLocation);
       offset++;
     });
