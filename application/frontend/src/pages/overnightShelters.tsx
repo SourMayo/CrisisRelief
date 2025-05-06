@@ -48,14 +48,32 @@ async function FindShelters() {
         website: place.websiteURI ?? "Website Unavailable",
         lat: place.location?.lat()!,
         lng: place.location?.lng()!,
+<<<<<<< HEAD
         description: place.editorialSummary ?? "Description Unavailable",
+=======
+        description: place.editorialSummary ?? 'Description Unavailable',
+        hours: [
+          place.regularOpeningHours?.weekdayDescriptions[0] ?? 'Day Unavailable',
+          place.regularOpeningHours?.weekdayDescriptions[1] ?? 'Day Unavailable',
+          place.regularOpeningHours?.weekdayDescriptions[2] ?? 'Day Unavailable',
+          place.regularOpeningHours?.weekdayDescriptions[3] ?? 'Day Unavailable',
+          place.regularOpeningHours?.weekdayDescriptions[4] ?? 'Day Unavailable',
+          place.regularOpeningHours?.weekdayDescriptions[5] ?? 'Day Unavailable',
+          place.regularOpeningHours?.weekdayDescriptions[6] ?? 'Day Unavailable',
+        ],
+>>>>>>> ca914e664b3ec757951524781d925ee87e09c772
         quickInfo: [
           "📞 Emergency:" + place.internationalPhoneNumber,
           "🛏️ Beds Available: " + "Unknown",
           "💬 Language Support: English, Spanish",
           "⌛️ 24/7 walkins",
         ],
+<<<<<<< HEAD
       };
+=======
+      }
+      console.log(place.regularOpeningHours?.weekdayDescriptions[0]);
+>>>>>>> ca914e664b3ec757951524781d925ee87e09c772
       facilities.push(newLocation);
       offset++;
     });
@@ -82,6 +100,15 @@ var facilities = [
       "💬 Language Support: English, Spanish",
       "⌛️ 24/7 walkins",
     ],
+    hours:[
+      "Monday : 10:00 AM – 8:00 PM", 
+      "Tuesday : 10:00 AM – 8:00 PM", 
+      "Wednesday : 10:00 AM – 8:00 PM", 
+      "Thursday : 10:00 AM – 8:00 PM", 
+      "Friday : 10:00 AM – 8:00 PM",
+      "Saturday : 10:00 AM – 8:00 PM",
+      "Sunday : 10:00 AM – 8:00 PM"
+    ],
   },
   {
     id: 2,
@@ -99,58 +126,14 @@ var facilities = [
       "💬 Language Support: English, Vietnamese",
       "♿ Accessibility: Ramp Access",
     ],
-  },
-  {
-    id: 3,
-    name: "Ayeshas Hope Shelter  ",
-    address: "124 2nd Street",
-    phone: "(789) 654–3210",
-    website: "https://www.AyeshasHopeShelter.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Ayeshas Hope Shelter center supports all communities providing a warm place to sleep and relief from hard weather envirnment",
-    quickInfo: [
-      "📞 Emergency: (765) 614–1120",
-      "🛏️ provides blankets to take",
-      "🍲 warm meals if needed",
-      "💬 Language Support: English, Spanish",
-      "♿ Accessible Building",
-    ],
-  },
-  {
-    id: 4,
-    name: "Anshaj's shelter",
-    address: "Civic Center",
-    phone: "(989) 334-8567",
-    website: "https://www.Anshaj'sShelter.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Anshaj's shelter is open to anyone looking for a bed, a place to rest, and a sense of community. ",
-    quickInfo: [
-      "📞 Emergency: (989) 334-8567",
-      "👥 counseling Services",
-      "♿ Wheelchair Accessible",
-      "💼 Job Assistance",
-    ],
-  },
-  {
-    id: 5,
-    name: "Ayesha's Hope Shelter",
-    address: "124 Main Street",
-    phone: "(112) 4098–0500 ",
-    website: "https://www.ayeshaHopeShelter.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Ayeshs's  Hope Shelters aims to provide a place to rest to those who are unable to find one. LGBT+ friendly.",
-    quickInfo: [
-      "📞 Emergency: (112) 4098–0500",
-      "👕 Laundry Facilities",
-      "🚿 Access to bathrooms and showers",
-      "💬 Language Support: English",
-      "♿ Wheelchair Accessible",
+    hours:[
+      "Monday : 10:00 AM – 8:00 PM", 
+      "Tuesday : 10:00 AM – 8:00 PM", 
+      "Wednesday : 10:00 AM – 8:00 PM", 
+      "Thursday : 10:00 AM – 8:00 PM", 
+      "Friday : 10:00 AM – 8:00 PM",
+      "Saturday : 10:00 AM – 8:00 PM",
+      "Sunday : 10:00 AM – 8:00 PM"
     ],
   },
 ];
@@ -253,13 +236,13 @@ export default function OvernightShelters() {
             <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
-                <li>Monday : 10:00 AM – 8:00 PM</li>
-                <li>Tuesday : 10:00 AM – 8:00 PM</li>
-                <li>Wednesday : 10:00 AM – 8:00 PM</li>
-                <li>Thursday : 10:00 AM – 8:00 PM</li>
-                <li>Friday : 10:00 AM – 8:00 PM</li>
-                <li>Saturday : 10:00 AM – 8:00 PM</li>
-                <li>Sunday : 10:00 AM – 8:00 PM</li>
+                <li>{selectedFacility?.hours[0]}</li>
+                <li>{selectedFacility?.hours[1]}</li>
+                <li>{selectedFacility?.hours[2]}</li>
+                <li>{selectedFacility?.hours[3]}</li>
+                <li>{selectedFacility?.hours[4]}</li>
+                <li>{selectedFacility?.hours[5]}</li>
+                <li>{selectedFacility?.hours[6]}</li>
               </ul>
             </div>
 
