@@ -1,19 +1,34 @@
 import { useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
-
-
-
 async function FindShelters() {
-  const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
-  
+  const { Place } = (await google.maps.importLibrary(
+    "places"
+  )) as google.maps.PlacesLibrary;
+
   const request = {
-    textQuery: 'Homeless Shelters',
-    fields: ['id', 'editorialSummary', 'formattedAddress', 'allowsDogs', 'businessStatus', 'displayName', 'internationalPhoneNumber', 'location', 'photos', 'priceLevel', 'primaryTypeDisplayName', 'rating', 'regularOpeningHours', 'websiteURI', 'userRatingCount'],
-    language: 'en-US',
+    textQuery: "Homeless Shelters",
+    fields: [
+      "id",
+      "editorialSummary",
+      "formattedAddress",
+      "allowsDogs",
+      "businessStatus",
+      "displayName",
+      "internationalPhoneNumber",
+      "location",
+      "photos",
+      "priceLevel",
+      "primaryTypeDisplayName",
+      "rating",
+      "regularOpeningHours",
+      "websiteURI",
+      "userRatingCount",
+    ],
+    language: "en-US",
     maxResultCount: 8,
     locationBias: { lat: 37.4161493, lng: -122.0812166 }, //Center on SF
-    region: 'us',
+    region: "us",
   };
 
   const { places } = await Place.searchByText(request);
@@ -21,28 +36,31 @@ async function FindShelters() {
   if (places.length > 0) {
     console.log(places.length);
     var offset = 10;
-    places.forEach(place => {
+    places.forEach((place) => {
       var newLocation = {
         id: offset,
-        name: place.displayName ?? 'Name Unavaiable',
-        address: place.formattedAddress ?? 'Address Unavaiable',
-        phone: place.internationalPhoneNumber ?? place.nationalPhoneNumber ?? 'Number Unavailable',
-        website: place.websiteURI ?? 'Website Unavailable',
+        name: place.displayName ?? "Name Unavaiable",
+        address: place.formattedAddress ?? "Address Unavaiable",
+        phone:
+          place.internationalPhoneNumber ??
+          place.nationalPhoneNumber ??
+          "Number Unavailable",
+        website: place.websiteURI ?? "Website Unavailable",
         lat: place.location?.lat()!,
         lng: place.location?.lng()!,
-        description: place.editorialSummary ?? 'Description Unavailable',
+        description: place.editorialSummary ?? "Description Unavailable",
         quickInfo: [
           "📞 Emergency:" + place.internationalPhoneNumber,
           "🛏️ Beds Available: " + "Unknown",
           "💬 Language Support: English, Spanish",
           "⌛️ 24/7 walkins",
         ],
-      }
+      };
       facilities.push(newLocation);
       offset++;
     });
   } else {
-    console.log('No results');
+    console.log("No results");
   }
 }
 window.onload = FindShelters;
@@ -147,11 +165,12 @@ export default function OvernightShelters() {
   const [selectedId, setSelectedId] = useState(facilities[0].id);
   const selectedFacility = facilities.find((f) => f.id === selectedId)!;
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
   });
-  
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
@@ -207,29 +226,21 @@ export default function OvernightShelters() {
       {/* Main Content */}
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
         <div className="bg-[#BCD3F2] p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6">
-          {/* Info Box */}
-          <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[300px] space-y-2">
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              🏥 {selectedFacility?.name}
-            </h1>
-            <p className="text-med text-gray-300">
-              {selectedFacility?.address}
+          {/* Facility Info */}
+          <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 space-y-2">
+            <h1 className="text-xl font-bold">🏥 {selectedFacility?.name}</h1>
+            <p className="text-gray-300">📍 {selectedFacility?.address}</p>
+            <p className="text-gray-300">📞 Phone: {selectedFacility?.phone}</p>
+            <p className="text-gray-300">
+              📝 Description: {selectedFacility?.description}
             </p>
-            <p className="text-med  text-gray-300"></p>
-            <p className="text-med text-gray-300">
-              Phone: {selectedFacility?.phone}
-            </p>
-            <p className="text-med text-gray-300">
-              {" "}
-              Description : {selectedFacility?.description}
-            </p>
-            <p className="text-med text-gray-300">
-              Website:{" "}
+            <p className="text-gray-300">
+              🌐 Website:{" "}
               <a
                 href={selectedFacility?.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 underline hover:text-blue-300"
+                className="underline text-blue-400"
               >
                 {selectedFacility?.website}
               </a>
@@ -239,7 +250,7 @@ export default function OvernightShelters() {
           {/* Middle Section */}
           <div className="flex flex-col lg:flex-row gap-6 items-stretch">
             {/* Hours Box */}
-            <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[720px]">
+            <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
                 <li>Monday : 10:00 AM – 8:00 PM</li>
@@ -252,41 +263,109 @@ export default function OvernightShelters() {
               </ul>
             </div>
 
-            {/* Right Column */}
-            <div className="flex-1 flex flex-col gap-6">
-              {/* Quick Info */}
-              <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[300px]">
-                <h2 className="text-xl font-bold mb-4">Quick Info</h2>
-                <ul className="space-y-3 text-med leading-relaxed">
-                  {selectedFacility?.quickInfo.map((info, i) => (
-                    <li key={i}>{info}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Map Box */}
-              <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
-                {isLoaded ? (
-                  <GoogleMap
-                    mapContainerStyle={containerStyle}
-                    center={{
+            {/* Map */}
+            <div className="flex-1 bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
+              {isLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={containerStyle}
+                  center={{
+                    lat: selectedFacility.lat,
+                    lng: selectedFacility.lng,
+                  }}
+                  zoom={14}
+                >
+                  <Marker
+                    position={{
                       lat: selectedFacility.lat,
                       lng: selectedFacility.lng,
                     }}
-                    zoom={14}
-                  >
-                    <Marker
-                      position={{
-                        lat: selectedFacility.lat,
-                        lng: selectedFacility.lng,
-                      }}
-                    />
-                  </GoogleMap>
-                ) : (
-                  <div className="text-white">Loading map...</div>
-                )}
-              </div>
+                  />
+                </GoogleMap>
+              ) : (
+                <div className="text-white">Loading map...</div>
+              )}
             </div>
+          </div>
+
+          {/* Reviews Section */}
+          <div className="w-full bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+            <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const content = form.review.value;
+                const rating = form.rating.value;
+
+                const userId = 1; // TODO: replace with real user ID from session/auth
+                const locationId = selectedFacility.id;
+
+                if (content.trim().length > 0 && rating) {
+                  const res = await fetch("/api/reviews", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      content,
+                      rating: parseInt(rating),
+                      user_id: userId,
+                      location_id: locationId,
+                    }),
+                  });
+
+                  if (res.ok) {
+                    alert("Review submitted!");
+                    form.reset();
+                  } else {
+                    alert("Failed to submit review.");
+                  }
+                }
+              }}
+            >
+              <div className="bg-white text-black rounded-lg p-4 space-y-4">
+                <textarea
+                  name="review"
+                  className="w-full h-24 p-2 rounded border border-gray-300"
+                  placeholder="Write your review here..."
+                  required
+                ></textarea>
+
+                {/* Star Rating */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-black font-semibold">Rating:</span>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={`text-2xl cursor-pointer transition-colors ${
+                        ((hoveredRating ?? 0) || (selectedRating ?? 0)) >= star
+                          ? "text-yellow-400"
+                          : "text-gray-400"
+                      }`}
+                      onMouseEnter={() => setHoveredRating(star)}
+                      onMouseLeave={() => setHoveredRating(null)}
+                      onClick={() => {
+                        setSelectedRating(star);
+                      }}
+                    >
+                      ★
+                    </span>
+                  ))}
+                  {/* Hidden input to submit the selected rating */}
+                  <input
+                    type="hidden"
+                    name="rating"
+                    value={selectedRating ?? ""}
+                    required
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="mt-4 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white font-semibold"
+              >
+                Submit Review
+              </button>
+            </form>
           </div>
         </div>
       </main>

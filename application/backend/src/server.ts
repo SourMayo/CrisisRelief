@@ -5,10 +5,12 @@ import {
   loginRouter,
   authRouter,
   weatherRouter,
-  googleRouter
+  googleRouter,
+  reviewsRouter,
 } from "./routes";
 import { searchController } from "./controllers/searchController";
 import { sessionMiddleware } from "./middlewares/sessions";
+
 
 const app = express();
 const port = 5001;
@@ -31,6 +33,7 @@ app.use("/login", loginRouter);
 app.use("/auth", authRouter);
 app.use("/weather", weatherRouter);
 app.use("/google", googleRouter);
+app.use("/reviews", reviewsRouter);
 
 
 app.get("/dashboard", (req, res) => {
