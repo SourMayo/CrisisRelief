@@ -1,4 +1,4 @@
-const Settings = () => {
+const Profile = () => {
     return (
         <section className="relative isolate overflow-hidden min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] px-6 py-24 sm:py-32 lg:px-8">
             {/* Background Effects */}
@@ -48,4 +48,4 @@ const Settings = () => {
 
 }
 
-export default Settings;
+export default Profile;
