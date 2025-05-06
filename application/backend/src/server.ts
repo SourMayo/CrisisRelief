@@ -16,14 +16,26 @@ const port = 5001;
 
 // Update CORS config to allow credentials
 app.use(
-  cors({
-    origin: "http://crisisrelief.duckdns.org:3000",
+    cors({
+      origin: "http://localhost:5180", //kyle it should match with frontend
     credentials: true,
-  })
+
+    })
 );
+
+  //cors({
+   // origin: "http://crisisrelief.duckdns.org:3000",
+    //credentials: true,
+
 
 app.use(sessionMiddleware);
 app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl}`);
+  next();
+});
+
 
 // Mount the register router at '/register'
 app.use("/register", registerRouter);

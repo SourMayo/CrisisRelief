@@ -21,9 +21,13 @@ export default function WeatherWarning() {
 
   const fetchWeather = async (cityName: string) => {
     try {
-      const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=imperial&appid=${import.meta.env.VITE_WEATHER_API_KEY}`
-      );
+
+      const res = await fetch(`http://localhost:5001/weather?city=${cityName}`, {
+        credentials: "include", // this line is important if you're using sessions/cookies
+      });
+
+
+
       const data = await res.json();
 
       if (data.cod !== "200") {
