@@ -1,113 +1,132 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
-const facilities = [
-  {
-    id: 1,
-    name: "Karlas Hospital",
-    address: "124 Main Street",
-    type: "Medical Care",
-    phone: "(123) 456–7890",
-    website: "https://www.karlashospital.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Karla’s Hospital provides 24/7 general medical services, outpatient care, lab testing, and urgent assistance for non-life-threatening conditions. Walk-ins accepted.",
-    quickInfo: [
-      "📞 Emergency: (123) 456–7890",
-      "🧠 Mental Health Support",
-      "💬 Languages: English, Spanish",
-      "♿ Accessibility: Wheelchair Access",
-      "📟 Crisis Hotline: (800) 123–HELP",
-    ],
-  },
-  {
-    id: 2,
-    name: "Kyles ER",
-    address: "562 Oak Ave",
-    type: "ER",
-    phone: "(321) 555–6789",
-    website: "https://www.kyleser.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Kyle’s ER provides rapid emergency care, trauma services, and overnight stabilization. Open 24/7 with ambulance access.",
-    quickInfo: [
-      "📞 Emergency: (321) 555–6789",
-      "🚨 24/7 Trauma Services",
-      "🚑 Ambulance Access",
-      "💬 Languages: English",
-    ],
-  },
-  {
-    id: 3,
-    name: "Geoarts Therapy",
-    address: "124 2nd Street",
-    type: "Mental Health",
-    phone: "(415) 222–4444",
-    website: "https://www.geoarttherapy.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Geoarts Therapy specializes in individual and group counseling, crisis intervention, and mental health support for all ages.",
-    quickInfo: [
-      "🧠 Counseling Services",
-      "💬 Languages: English, Tagalog",
-      "📟 Crisis Hotline: (800) 444–HEAL",
-      "♿ Accessibility: Yes",
-    ],
-  },
-  {
-    id: 4,
-    name: "Anshajs General",
-    address: "124 Vatts Street",
-    type: "Medical Care",
-    phone: "(408) 333–7890",
-    website: "https://www.anshajsgeneral.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Anshajs General provides preventive care, outpatient visits, and family medicine. Walk-ins welcome with no appointment.",
-    quickInfo: [
-      "📞 Walk-in Friendly",
-      "🩺 Family Physicians",
-      "💬 Languages: English, Vietnamese",
-      "♿ Accessibility: Full Access",
-    ],
-  },
-  {
-    id: 5,
-    name: "Ayeshas Vet",
-    address: "124 Francis Street",
-    type: "Veterinarian",
-    phone: "(707) 888–9000",
-    website: "https://www.ayeshavet.org",
-    lat: 37.7749,
-    lng: -122.4194,
-    description:
-      "Ayeshas Vet provides comprehensive veterinary care including vaccines, surgery, and emergency services for pets.",
-    quickInfo: [
-      "🐾 Pet Emergency Services",
-      "💉 Vaccinations Available",
-      "🚗 Curbside Pickup",
-      "♿ Accessibility: Ramp Access",
-    ],
-  },
-];
+interface Review {
+  review_id: number;
+  content: string;
+  rating: number;
+  user_id: number;
+}
 
-const containerStyle = {
-  width: "100%",
-  height: "100%",
-};
+interface Facility {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  website: string;
+  lat: number;
+  lng: number;
+  description: string;
+  hours: string[];
+}
 
 export default function MedicalResources() {
-  const [selectedId, setSelectedId] = useState(facilities[0].id);
-  const selectedFacility = facilities.find((f) => f.id === selectedId)!;
+  const [facilities, setFacilities] = useState<Facility[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const selectedFacility = facilities.find((f) => f.id === selectedId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
   });
+
+  useEffect(() => {
+    async function fetchReviews() {
+      if (!selectedFacility) return;
+      try {
+        const res = await fetch(
+          `http://crisisrelief.duckdns.org:5001/reviews?location_id=${selectedFacility.id}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setReviews(data);
+        } else {
+          console.error("Failed to fetch reviews.");
+        }
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    }
+
+    if (selectedFacility?.id) {
+      fetchReviews();
+    }
+  }, [selectedFacility]);
+
+  useEffect(() => {
+    async function FindHospitals() {
+      if (typeof google === "undefined" || !google.maps?.importLibrary) {
+        console.warn("Google Maps API not yet loaded.");
+        return;
+      }
+
+      const { Place } = (await google.maps.importLibrary(
+        "places"
+      )) as google.maps.PlacesLibrary;
+
+      const request = {
+        textQuery: "Hospital",
+        fields: [
+          "id",
+          "editorialSummary",
+          "formattedAddress",
+          "allowsDogs",
+          "businessStatus",
+          "displayName",
+          "internationalPhoneNumber",
+          "location",
+          "photos",
+          "priceLevel",
+          "primaryTypeDisplayName",
+          "rating",
+          "regularOpeningHours",
+          "websiteURI",
+          "userRatingCount",
+        ],
+        language: "en-US",
+        maxResultCount: 8,
+        locationBias: { lat: 37.4161493, lng: -122.0812166 }, //Center on SF
+        region: "us",
+      };
+
+      const { places } = await Place.searchByText(request);
+
+      if (places.length > 0) {
+        console.log(places.length);
+        const googleFacilities = places.map((place, i) => ({
+          id: i + 1,
+          name: place.displayName ?? "Name Unavaiable",
+          address: place.formattedAddress ?? "Address Unavaiable",
+          phone:
+            place.internationalPhoneNumber ??
+            place.nationalPhoneNumber ??
+            "Number Unavailable",
+          website: place.websiteURI ?? "Website Unavailable",
+          lat: place.location?.lat() ?? 0,
+          lng: place.location?.lng() ?? 0,
+          description: place.editorialSummary ?? "Description Unavailable",
+          hours: Array.from(
+            { length: 7 },
+            (_, j) =>
+              place.regularOpeningHours?.weekdayDescriptions?.[j] ??
+              "Day Unavailable"
+          ),
+        }));
+
+        setFacilities(googleFacilities);
+        setSelectedId(googleFacilities[0]?.id ?? null);
+      } else {
+        console.log("No results");
+      }
+    }
+
+    if (isLoaded) {
+      FindHospitals();
+    }
+  }, [isLoaded]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
@@ -119,7 +138,8 @@ export default function MedicalResources() {
         >
           {sidebarOpen ? "▲ Hide Facilities" : "▼ Show Facilities"}
         </button>
-      </div>{" "}
+      </div>
+
       {/* Sidebar */}
       <aside
         className={`${
@@ -153,38 +173,29 @@ export default function MedicalResources() {
           >
             <h3 className="text-lg font-semibold">{f.name}</h3>
             <p className="text-med ">{f.address}</p>
-            <span className="text-med text-indigo-300">{f.type}</span>
+            {/* <span className="text-med text-indigo-300">{f.type}</span> */}
           </button>
         ))}
       </aside>
+
       {/* Main Content */}
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
         <div className="bg-[#BCD3F2] p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6">
-          {/* Info Box */}
-          <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[300px] space-y-2">
-            <h1 className="text-xl font-bold flex items-center gap-2">
-              🏥 {selectedFacility?.name}
-            </h1>
-            <p className="text-med text-gray-300">
-              {selectedFacility?.address}
+          {/* Facility Info */}
+          <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 space-y-2">
+            <h1 className="text-xl font-bold">🏥 {selectedFacility?.name}</h1>
+            <p className="text-gray-300">📍 {selectedFacility?.address}</p>
+            <p className="text-gray-300">📞 Phone: {selectedFacility?.phone}</p>
+            <p className="text-gray-300">
+              📝 Description: {selectedFacility?.description}
             </p>
-            <p className="text-med  text-gray-300">
-              Type: {selectedFacility?.type}
-            </p>
-            <p className="text-med text-gray-300">
-              Phone: {selectedFacility?.phone}
-            </p>
-            <p className="text-med text-gray-300">
-              {" "}
-              Description : {selectedFacility?.description}
-            </p>
-            <p className="text-med text-gray-300">
-              Website:{" "}
+            <p className="text-gray-300">
+              🌐 Website:{" "}
               <a
                 href={selectedFacility?.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 underline hover:text-blue-300"
+                className="underline text-blue-400"
               >
                 {selectedFacility?.website}
               </a>
@@ -192,55 +203,156 @@ export default function MedicalResources() {
           </div>
 
           {/* Middle Section */}
-          <div className="flex flex-col lg:flex-row gap-6 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Hours Box */}
-            <div className="flex-1 bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[720px]">
+            <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
-                <li>Monday : 10:00 AM – 8:00 PM</li>
-                <li>Tuesday : 10:00 AM – 8:00 PM</li>
-                <li>Wednesday : 10:00 AM – 8:00 PM</li>
-                <li>Thursday : 10:00 AM – 8:00 PM</li>
-                <li>Friday : 10:00 AM – 8:00 PM</li>
-                <li>Saturday : 10:00 AM – 8:00 PM</li>
-                <li>Sunday : 10:00 AM – 8:00 PM</li>
+                {selectedFacility?.hours.map((hour: string, index: number) => (
+                  <li key={index}>{hour}</li>
+                ))}
               </ul>
             </div>
 
-            {/* Right Column */}
-            <div className="flex-1 flex flex-col gap-6">
-              {/* Quick Info */}
-              <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 h-[300px] overflow-y-auto">
-                <h2 className="text-xl font-bold mb-4">Quick Info</h2>
-                <ul className="space-y-3 text-med leading-relaxed">
-                  {selectedFacility?.quickInfo.map((info, i) => (
-                    <li key={i}>{info}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Map Box */}
-              <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[400px]">
-                {isLoaded ? (
-                  <GoogleMap
-                    mapContainerStyle={containerStyle}
-                    center={{
+            {/* Map */}
+            <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[300px] lg:h-[400px]">
+              {isLoaded && selectedFacility ? (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
+                  center={{
+                    lat: selectedFacility.lat,
+                    lng: selectedFacility.lng,
+                  }}
+                  zoom={14}
+                >
+                  <Marker
+                    position={{
                       lat: selectedFacility.lat,
                       lng: selectedFacility.lng,
                     }}
-                    zoom={14}
-                  >
-                    <Marker
-                      position={{
-                        lat: selectedFacility.lat,
-                        lng: selectedFacility.lng,
+                  />
+                </GoogleMap>
+              ) : (
+                <div className="text-white">Loading map...</div>
+              )}
+            </div>
+          </div>
+          {/* Reviews Section */}
+          <div className="w-full bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+            <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                console.log("Submitting review...");
+                const form = e.currentTarget;
+                const content = form.review.value;
+                const rating = form.rating.value;
+
+                const userId = 1; // TODO: replace with real user ID from session/auth
+                if (!selectedFacility) return;
+
+                const locationId = selectedFacility.id;
+
+                if (content.trim().length > 0 && rating) {
+                  try {
+                    const res = await fetch(
+                      "http://crisisrelief.duckdns.org:5001/reviews",
+                      {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          content,
+                          rating: parseInt(rating),
+                          user_id: userId,
+                          location_id: locationId,
+                        }),
+                      }
+                    );
+
+                    if (res.ok) {
+                      alert("Review submitted!");
+                      form.reset();
+                    } else {
+                      const errorMsg = await res.text();
+                      console.error("Error submitting review:", errorMsg);
+                      alert("Failed to submit review.");
+                    }
+                  } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while submitting the review.");
+                  }
+                }
+              }}
+            >
+              <div className="bg-white text-black rounded-lg p-4 space-y-4">
+                <textarea
+                  name="review"
+                  className="w-full h-24 p-2 rounded border border-gray-300"
+                  placeholder="Write your review here..."
+                  required
+                ></textarea>
+
+                {/* Star Rating */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-black font-semibold">Rating:</span>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={`text-2xl cursor-pointer transition-colors ${
+                        ((hoveredRating ?? 0) || (selectedRating ?? 0)) >= star
+                          ? "text-yellow-400"
+                          : "text-gray-400"
+                      }`}
+                      onMouseEnter={() => setHoveredRating(star)}
+                      onMouseLeave={() => setHoveredRating(null)}
+                      onClick={() => {
+                        setSelectedRating(star);
                       }}
-                    />
-                  </GoogleMap>
-                ) : (
-                  <div className="text-white">Loading map...</div>
-                )}
+                    >
+                      ★
+                    </span>
+                  ))}
+                  {/* Hidden input to submit the selected rating */}
+                  <input
+                    type="hidden"
+                    name="rating"
+                    value={selectedRating ?? ""}
+                    required
+                  />
+                </div>
               </div>
+
+              <button
+                type="submit"
+                className="mt-4 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white font-semibold"
+              >
+                Submit Review
+              </button>
+            </form>
+            {/* Display Reviews */}
+            <div className="mt-8 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-bold mb-4">Recent Reviews</h2>
+              {reviews.length === 0 ? (
+                <p className="text-gray-300">No reviews yet.</p>
+              ) : (
+                <ul className="space-y-4">
+                  {reviews.map((review) => (
+                    <li
+                      key={review.review_id}
+                      className="bg-white text-black rounded-lg p-4 shadow"
+                    >
+                      <div className="text-yellow-400 text-lg mb-1">
+                        {"★".repeat(review.rating)}
+                        {"☆".repeat(5 - review.rating)}
+                      </div>
+                      <p className="mb-1">{review.content}</p>
+                      <p className="text-sm text-gray-500">
+                        User #{review.user_id}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
