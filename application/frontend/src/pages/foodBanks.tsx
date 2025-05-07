@@ -9,7 +9,7 @@ interface Review {
 }
 
 interface Facility {
-  id: number;
+  place_id: string;
   name: string;
   address: string;
   phone: string;
@@ -22,8 +22,8 @@ interface Facility {
 
 export default function FoodBanks() {
   const [facilities, setFacilities] = useState<Facility[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const selectedFacility = facilities.find((f) => f.id === selectedId);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedFacility = facilities.find((f) => f.place_id === selectedId);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
@@ -38,7 +38,7 @@ export default function FoodBanks() {
       if (!selectedFacility) return;
       try {
         const res = await fetch(
-          `http://crisisrelief.duckdns.org:5001/reviews?location_id=${selectedFacility.id}`
+          `http://localhost:5001/reviews?location_id=${selectedFacility.place_id}`,
         );
         if (res.ok) {
           const data = await res.json();
@@ -51,7 +51,7 @@ export default function FoodBanks() {
       }
     }
 
-    if (selectedFacility?.id) {
+    if (selectedFacility?.place_id) {
       fetchReviews();
     }
   }, [selectedFacility]);
@@ -96,8 +96,8 @@ export default function FoodBanks() {
 
       if (places.length > 0) {
         console.log(places.length);
-        const googleFacilities = places.map((place, i) => ({
-          id: i + 1,
+        const googleFacilities = places.map((place) => ({
+          place_id: place.id,
           name: place.displayName ?? "Name Unavaiable",
           address: place.formattedAddress ?? "Address Unavaiable",
           phone:
@@ -117,7 +117,7 @@ export default function FoodBanks() {
         }));
 
         setFacilities(googleFacilities);
-        setSelectedId(googleFacilities[0]?.id ?? null);
+        setSelectedId(googleFacilities[0]?.place_id ?? null);
       } else {
         console.log("No results");
       }
@@ -160,13 +160,13 @@ export default function FoodBanks() {
 
         {facilities.map((f) => (
           <button
-            key={f.id}
-            onClick={() => {
-              setSelectedId(f.id);
-              setSidebarOpen(false);
+          key={f.place_id}
+          onClick={() => {
+            setSelectedId(f.place_id);
+            setSidebarOpen(false);
             }}
             className={`w-full text-left p-4 rounded-lg font-medium transition ${
-              selectedId === f.id
+              selectedId === f.place_id
                 ? "bg-[#715FFF] text-white"
                 : "bg-[#1F2A40] hover:bg-[#27354F]"
             }`}
@@ -251,12 +251,12 @@ export default function FoodBanks() {
                 const userId = 1; // TODO: replace with real user ID from session/auth
                 if (!selectedFacility) return;
 
-                const locationId = selectedFacility.id;
+                const locationId = selectedFacility.place_id;
 
                 if (content.trim().length > 0 && rating) {
                   try {
                     const res = await fetch(
-                      "http://crisisrelief.duckdns.org:5001/reviews",
+                      "http://localhost:5001/reviews",
                       {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
