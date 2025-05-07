@@ -29,6 +29,72 @@ export default function WeatherWarning() {
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
 
+  const fetchWeatherData = (data: any) => {
+    const now = new Date();
+    const hourly = data.list
+      .filter((entry: any) => new Date(entry.dt_txt) >= now)
+      .slice(0, 10)
+      .map((entry: any) => {
+        const date = new Date(entry.dt_txt);
+        const hour = date.getHours();
+        const formattedHour = hour % 12 || 12;
+        const ampm = hour >= 12 ? "PM" : "AM";
+        const temp = Math.round(entry.main.temp);
+        const icon = entry.weather[0].main.includes("Rain")
+          ? "⛆"
+          : entry.weather[0].main.includes("Cloud")
+          ? "☁︎"
+          : entry.weather[0].main.includes("Clear")
+          ? "☀︎"
+          : "☁︎";
+        return {
+          time: `${formattedHour}${ampm}`,
+          icon,
+          temp: `${temp}°F`,
+        };
+      });
+
+    const grouped: { [date: string]: any[] } = {};
+    data.list.forEach((entry: any) => {
+      const day = entry.dt_txt.split(" ")[0];
+      if (!grouped[day]) grouped[day] = [];
+      grouped[day].push(entry);
+    });
+
+    const weekly = Object.entries(grouped)
+      .slice(0, 10)
+      .map(([day, entries]: any) => {
+        const noonEntry =
+          entries.find((e: any) => e.dt_txt.includes("12:00:00")) ||
+          entries[Math.floor(entries.length / 2)];
+        const date = new Date(day);
+        const name = date.toLocaleDateString("en-US", { weekday: "long" });
+        const temp = Math.round(noonEntry.main.temp);
+        const description = noonEntry.weather[0].description;
+        const detailedHours = entries.map((e: any) => {
+          const h = new Date(e.dt_txt);
+          const hour = h.getHours();
+          const formattedHour = hour % 12 || 12;
+          const ampm = hour >= 12 ? "PM" : "AM";
+          const temp = Math.round(e.main.temp);
+          const desc = e.weather[0].description;
+          const icon = desc.includes("rain")
+            ? "⛆"
+            : desc.includes("cloud")
+            ? "☁︎"
+            : desc.includes("clear")
+            ? "☀︎"
+            : "☁︎";
+          return `${formattedHour}${ampm}: ${temp}°F – ${icon} ${desc}`;
+        });
+        return { name, temp, description, details: detailedHours };
+      });
+
+    setHourlyForecast(hourly);
+    setWeeklyForecast(weekly);
+    setSelectedDayIndex(null);
+  };
+
   const fetchWeather = async (cityName: string) => {
     try {
       const res = await fetch(
@@ -40,77 +106,16 @@ export default function WeatherWarning() {
 
       if (data.cod !== "200") {
         toast.error("City or ZIP not found!");
-        return;
+        return false;
       }
 
       setCityDisplayName(data.city.name);
       setMapCenter({ lat: data.city.coord.lat, lng: data.city.coord.lon });
-
-      const now = new Date();
-      const hourly = data.list
-        .filter((entry: any) => new Date(entry.dt_txt) >= now)
-        .slice(0, 10)
-        .map((entry: any) => {
-          const date = new Date(entry.dt_txt);
-          const hour = date.getHours();
-          const formattedHour = hour % 12 || 12;
-          const ampm = hour >= 12 ? "PM" : "AM";
-          const temp = Math.round(entry.main.temp);
-          const icon = entry.weather[0].main.includes("Rain")
-            ? "⛆"
-            : entry.weather[0].main.includes("Cloud")
-            ? "☁︎"
-            : entry.weather[0].main.includes("Clear")
-            ? "☀︎"
-            : "☁︎";
-          return {
-            time: `${formattedHour}${ampm}`,
-            icon,
-            temp: `${temp}°F`,
-          };
-        });
-
-      const grouped: { [date: string]: any[] } = {};
-      data.list.forEach((entry: any) => {
-        const day = entry.dt_txt.split(" ")[0];
-        if (!grouped[day]) grouped[day] = [];
-        grouped[day].push(entry);
-      });
-
-      const weekly = Object.entries(grouped)
-        .slice(0, 10)
-        .map(([day, entries]: any, idx) => {
-          const noonEntry =
-            entries.find((e: any) => e.dt_txt.includes("12:00:00")) ||
-            entries[Math.floor(entries.length / 2)];
-          const date = new Date(day);
-          const name = date.toLocaleDateString("en-US", { weekday: "long" });
-          const temp = Math.round(noonEntry.main.temp);
-          const description = noonEntry.weather[0].description;
-          const detailedHours = entries.map((e: any) => {
-            const h = new Date(e.dt_txt);
-            const hour = h.getHours();
-            const formattedHour = hour % 12 || 12;
-            const ampm = hour >= 12 ? "PM" : "AM";
-            const temp = Math.round(e.main.temp);
-            const desc = e.weather[0].description;
-            const icon = desc.includes("rain")
-              ? "⛆"
-              : desc.includes("cloud")
-              ? "☁︎"
-              : desc.includes("clear")
-              ? "☀︎"
-              : "☁︎";
-            return `${formattedHour}${ampm}: ${temp}°F – ${icon} ${desc}`;
-          });
-          return { name, temp, description, details: detailedHours };
-        });
-
-      setHourlyForecast(hourly);
-      setWeeklyForecast(weekly);
-      setSelectedDayIndex(null);
+      fetchWeatherData(data);
+      return true;
     } catch (err) {
-      alert("Something went wrong!");
+      toast.error("Something went wrong while fetching weather!");
+      return false;
     }
   };
 
@@ -121,27 +126,45 @@ export default function WeatherWarning() {
     fetchWeather(selectedCity);
   }, [selectedId]);
 
-  const handleSearch = () => {
-    if (search.trim()) {
-      setCustomLocation(search);
-      const exists = facilities.find(
-        (f) => f.name.toLowerCase() === search.toLowerCase()
-      );
-      if (!exists) {
-        const newId = facilities.length + 1;
-        setFacilities([...facilities, { id: newId, name: search }]);
-        setSelectedId(newId);
-        setTimeout(() => {
-          sidebarRef.current?.scrollTo({
-            top: sidebarRef.current.scrollHeight,
-            behavior: "smooth",
-          });
-        }, 100);
-      } else {
-        const found = facilities.find((f) => f.name === exists.name);
-        setSelectedId(found?.id || 1);
-      }
-      fetchWeather(search);
+  const handleSearch = async () => {
+    if (!search.trim()) return;
+
+    const exists = facilities.find(
+      (f) => f.name.toLowerCase() === search.toLowerCase()
+    );
+
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(
+        search
+      )}&units=imperial&appid=${import.meta.env.VITE_WEATHER_API_KEY}`
+    );
+    const data = await res.json();
+
+    if (data.cod !== "200") {
+      toast.error("City or ZIP not found!");
+      return;
+    }
+
+    setCustomLocation(search);
+    setCityDisplayName(data.city.name);
+    setMapCenter({ lat: data.city.coord.lat, lng: data.city.coord.lon });
+    fetchWeatherData(data);
+
+    if (!exists) {
+      toast.success("Weather loaded. Click below to add!");
+    } else {
+      setSelectedId(exists.id);
+      setCustomLocation(null);
+    }
+  };
+
+  const handleAddLocation = () => {
+    if (customLocation) {
+      const newId = facilities.length + 1;
+      setFacilities([...facilities, { id: newId, name: customLocation }]);
+      setSelectedId(newId);
+      toast.success(`${customLocation} added to the list!`);
+      setCustomLocation(null);
     }
   };
 
@@ -149,7 +172,7 @@ export default function WeatherWarning() {
     <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] relative">
       <aside
         ref={sidebarRef}
-        className={`${
+        className={`$${
           sidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
@@ -186,6 +209,17 @@ export default function WeatherWarning() {
             <h3 className="text-lg font-semibold">{f.name}</h3>
           </button>
         ))}
+        {customLocation &&
+          !facilities.some(
+            (f) => f.name.toLowerCase() === customLocation.toLowerCase()
+          ) && (
+            <button
+              onClick={handleAddLocation}
+              className="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded"
+            >
+              ➕ Add "{customLocation}" to Sidebar
+            </button>
+          )}
       </aside>
 
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
