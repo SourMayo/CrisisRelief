@@ -6,6 +6,7 @@ import {
   medicalIcon,
   overnightIcon,
   weatherIcon,
+  generalSearchIcon,
 } from "../assets";
 
 const Resources = () => {
@@ -32,22 +33,26 @@ const Resources = () => {
             icon: overnightIcon,
             label: "Overnight Shelters",
             description: "Find a roof to stay under",
-
           },
           {
             to: "/foodBanks",
             icon: foodbankIcon,
             label: "Food Banks",
             description: "Get the food you need",
-
           },
           {
             to: "/weatherWarnings",
             icon: weatherIcon,
             label: "Weather Warnings",
             description: "Be prepared for outside",
-
           },
+          {
+            to: "/search",
+            icon: generalSearchIcon,
+            label: "General Search",
+            description: "Don't have anything specific?",
+          }
+
         ].map(({ to, icon, label, description }) => (
           // Display
           <Link

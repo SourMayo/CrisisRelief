@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import { SearchResult } from "../config/SearchResults";
+// import { useNavigate } from "react-router-dom";
 
 const categories = [
   "All Categories",
@@ -12,6 +13,8 @@ const categories = [
 ];
 
 const SearchForm = () => {
+  // const navigate = useNavigate();
+
   // State declarations
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
@@ -113,6 +116,10 @@ const SearchForm = () => {
   // Handle form submission and normalize response data
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // DELETE : temporary redirect search before Francis' version
+    // redirectSearch();
+    
     if (!searchQuery.trim()) {
       toast.error("Please enter a search query");
       return;
@@ -249,6 +256,16 @@ const SearchForm = () => {
       )}
     </div>
   );
+
+  // // Take inputted query and redirect user to search page
+  // async function redirectSearch() {
+  //   const queries = new URLSearchParams({
+  //     search: searchQuery,
+  //     zip: zipQuery
+  //   });
+
+  //   navigate(`/search?${queries.toString()}`);
+  // }
 
   return (
     <form className="max-w-xl mx-auto relative" onSubmit={handleSubmit}>

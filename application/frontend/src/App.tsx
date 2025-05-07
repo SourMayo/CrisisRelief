@@ -14,6 +14,7 @@ import {
   Profile,
   Settings,
   Preferences,
+  MiscSearch,
 } from "./pages";
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
@@ -67,6 +68,8 @@ function App() {
           <Route path="/map" element={<MapView />} />
           {/* Preferences Page */}
           <Route path="/app-preferences" element={<Preferences />} />
+          {/* General Search Page */}
+          <Route path="/search" element={<MiscSearch />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
