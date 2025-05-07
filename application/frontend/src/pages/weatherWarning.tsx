@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
 export default function WeatherWarning() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -12,7 +11,7 @@ export default function WeatherWarning() {
     { id: 1, name: "San Francisco" },
     { id: 2, name: "New York" },
     { id: 3, name: "Alaska" },
-    { id: 4, name: "Bayview, San Francisco" },
+    { id: 4, name: "Chicago" },
     { id: 5, name: "Texas" },
   ]);
 
@@ -20,9 +19,14 @@ export default function WeatherWarning() {
   const [weeklyForecast, setWeeklyForecast] = useState<any[]>([]);
   const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
   const [cityDisplayName, setCityDisplayName] = useState("San Francisco");
-  const [mapCenter, setMapCenter] = useState<[number, number]>([
-    37.7749, -122.4194,
-  ]);
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
+    lat: 37.7749,
+    lng: -122.4194,
+  });
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  });
 
   const fetchWeather = async (cityName: string) => {
     try {
@@ -39,7 +43,7 @@ export default function WeatherWarning() {
       }
 
       setCityDisplayName(data.city.name);
-      setMapCenter([data.city.coord.lat, data.city.coord.lon]);
+      setMapCenter({ lat: data.city.coord.lat, lng: data.city.coord.lon });
 
       const now = new Date();
       const hourly = data.list
@@ -144,7 +148,7 @@ export default function WeatherWarning() {
     <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] relative">
       <aside
         ref={sidebarRef}
-        className={`$${
+        className={`${
           sidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
@@ -242,17 +246,15 @@ export default function WeatherWarning() {
             </section>
 
             <div className="bg-[#1F2A40] rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2">
-              <MapContainer
-                center={mapCenter}
-                zoom={10}
-                className="w-full h-full rounded-md"
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <Marker position={mapCenter} />
-              </MapContainer>
+              {isLoaded && (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
+                  center={mapCenter}
+                  zoom={11}
+                >
+                  <Marker position={mapCenter} />
+                </GoogleMap>
+              )}
             </div>
           </div>
         </div>
