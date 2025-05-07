@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { toast } from "react-toastify";
 
 export default function WeatherWarning() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -38,7 +39,7 @@ export default function WeatherWarning() {
       const data = await res.json();
 
       if (data.cod !== "200") {
-        alert("City or ZIP not found!");
+        toast.error("City or ZIP not found!");
         return;
       }
 
