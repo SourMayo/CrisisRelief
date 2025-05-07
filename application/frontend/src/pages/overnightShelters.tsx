@@ -38,7 +38,7 @@ export default function OvernighShelters() {
       if (!selectedFacility) return;
       try {
         const res = await fetch(
-          `http://crisisrelief.duckdns.org:5001/reviews?location_id=${selectedFacility.id}`
+          `http://localhost:5001/reviews?location_id=${selectedFacility.id}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -88,14 +88,13 @@ export default function OvernighShelters() {
         ],
         language: "en-US",
         maxResultCount: 8,
-        locationBias: { lat: 37.4161493, lng: -122.0812166 }, //Center on SF
+        locationBias: { lat: 37.4161493, lng: -122.0812166 },
         region: "us",
       };
 
       const { places } = await Place.searchByText(request);
 
       if (places.length > 0) {
-        console.log(places.length);
         const googleFacilities = places.map((place, i) => ({
           id: i + 1,
           name: place.displayName ?? "Name Unavaiable",
@@ -130,7 +129,6 @@ export default function OvernighShelters() {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
-      {/* Mobile Toggle Button */}
       <div className="lg:hidden">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -140,9 +138,8 @@ export default function OvernighShelters() {
         </button>
       </div>
 
-      {/* Sidebar */}
       <aside
-        className={`${
+        className={`$${
           sidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
@@ -150,7 +147,6 @@ export default function OvernighShelters() {
           Overnight Shelters
         </h2>
 
-        {/* Close button on mobile only */}
         <div className="lg:hidden mb-2">
           <button
             onClick={() => setSidebarOpen(false)}
@@ -175,15 +171,12 @@ export default function OvernighShelters() {
           >
             <h3 className="text-lg font-semibold">{f.name}</h3>
             <p className="text-med ">{f.address}</p>
-            {/* <span className="text-med text-indigo-300">{f.type}</span> */}
           </button>
         ))}
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
         <div className="bg-[#BCD3F2] p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6">
-          {/* Facility Info */}
           <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 space-y-2">
             <h1 className="text-xl font-bold">🏠 {selectedFacility?.name}</h1>
             <p className="text-gray-300">📍 {selectedFacility?.address}</p>
@@ -204,9 +197,7 @@ export default function OvernighShelters() {
             </p>
           </div>
 
-          {/* Middle Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Hours Box */}
             <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
@@ -216,7 +207,6 @@ export default function OvernighShelters() {
               </ul>
             </div>
 
-            {/* Map */}
             <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[300px] lg:h-[400px]">
               {isLoaded && selectedFacility ? (
                 <GoogleMap
@@ -240,36 +230,30 @@ export default function OvernighShelters() {
             </div>
           </div>
 
-          {/* Reviews Section */}
           <div className="w-full bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
             <form
               onSubmit={async (e) => {
-                console.log("Submitting review...");
                 e.preventDefault();
                 const form = e.currentTarget;
                 const content = form.review.value;
                 const rating = form.rating.value;
-
-                const userId = 1; // TODO: replace with real user ID from session/auth
+                const userId = 1;
                 if (!selectedFacility) return;
                 const locationId = selectedFacility.id;
 
                 if (content.trim().length > 0 && rating) {
                   try {
-                    const res = await fetch(
-                      "http://crisisrelief.duckdns.org:5001/reviews",
-                      {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          content,
-                          rating: parseInt(rating),
-                          user_id: userId,
-                          location_id: locationId,
-                        }),
-                      }
-                    );
+                    const res = await fetch("http://localhost:5001/reviews", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        content,
+                        rating: parseInt(rating),
+                        user_id: userId,
+                        location_id: locationId,
+                      }),
+                    });
 
                     if (res.ok) {
                       alert("Review submitted!");
@@ -294,7 +278,6 @@ export default function OvernighShelters() {
                   required
                 ></textarea>
 
-                {/* Star Rating */}
                 <div className="flex items-center space-x-2">
                   <span className="text-black font-semibold">Rating:</span>
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -314,7 +297,6 @@ export default function OvernighShelters() {
                       ★
                     </span>
                   ))}
-                  {/* Hidden input to submit the selected rating */}
                   <input
                     type="hidden"
                     name="rating"
@@ -331,7 +313,7 @@ export default function OvernighShelters() {
                 Submit Review
               </button>
             </form>
-            {/* Display Reviews */}
+
             <div className="mt-8 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-bold mb-4">Recent Reviews</h2>
               {reviews.length === 0 ? (

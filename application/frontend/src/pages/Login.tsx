@@ -26,17 +26,14 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://crisisrelief.duckdns.org:5001/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-          credentials: "include", // this is important for session cookies
-        }
-      );
+      const response = await fetch("http://localhost:5001/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include", // important for session cookies
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -77,9 +74,7 @@ const Login = () => {
 
         {/* Header and caption */}
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-bold text-gray-800 text-5xl">
-            Login
-          </h2>
+          <h2 className="font-bold text-gray-800 text-5xl">Login</h2>
           <p className="mt-2 text-lg/8 text-gray-700">
             Who are we helping today?
           </p>
