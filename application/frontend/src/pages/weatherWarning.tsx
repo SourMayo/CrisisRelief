@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 export default function WeatherWarning() {
@@ -8,7 +8,6 @@ export default function WeatherWarning() {
   const [search, setSearch] = useState("");
   const [customLocation, setCustomLocation] = useState<string | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
-
   const [facilities, setFacilities] = useState([
     { id: 1, name: "San Francisco" },
     { id: 2, name: "New York" },
@@ -18,7 +17,8 @@ export default function WeatherWarning() {
   ]);
 
   const [hourlyForecast, setHourlyForecast] = useState<any[]>([]);
-  const [weeklyForecast, setWeeklyForecast] = useState<string[]>([]);
+  const [weeklyForecast, setWeeklyForecast] = useState<any[]>([]);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
   const [cityDisplayName, setCityDisplayName] = useState("San Francisco");
   const [mapCenter, setMapCenter] = useState<[number, number]>([
     37.7749, -122.4194,
@@ -59,7 +59,8 @@ export default function WeatherWarning() {
             ? "☀︎"
             : "☁︎";
           return {
-            time: `${formattedHour}${ampm} ${icon}`,
+            time: `${formattedHour}${ampm}`,
+            icon,
             temp: `${temp}°F`,
           };
         });
@@ -73,7 +74,7 @@ export default function WeatherWarning() {
 
       const weekly = Object.entries(grouped)
         .slice(0, 10)
-        .map(([day, entries]: any) => {
+        .map(([day, entries]: any, idx) => {
           const noonEntry =
             entries.find((e: any) => e.dt_txt.includes("12:00:00")) ||
             entries[Math.floor(entries.length / 2)];
@@ -81,11 +82,28 @@ export default function WeatherWarning() {
           const name = date.toLocaleDateString("en-US", { weekday: "long" });
           const temp = Math.round(noonEntry.main.temp);
           const description = noonEntry.weather[0].description;
-          return `☁︎ ${name} ${temp}°F – ${description}`;
+          const detailedHours = entries.map((e: any) => {
+            const h = new Date(e.dt_txt);
+            const hour = h.getHours();
+            const formattedHour = hour % 12 || 12;
+            const ampm = hour >= 12 ? "PM" : "AM";
+            const temp = Math.round(e.main.temp);
+            const desc = e.weather[0].description;
+            const icon = desc.includes("rain")
+              ? "⛆"
+              : desc.includes("cloud")
+              ? "☁︎"
+              : desc.includes("clear")
+              ? "☀︎"
+              : "☁︎";
+            return `${formattedHour}${ampm}: ${temp}°F – ${icon} ${desc}`;
+          });
+          return { name, temp, description, details: detailedHours };
         });
 
       setHourlyForecast(hourly);
       setWeeklyForecast(weekly);
+      setSelectedDayIndex(null);
     } catch (err) {
       alert("Something went wrong!");
     }
@@ -171,7 +189,6 @@ export default function WeatherWarning() {
             {cityDisplayName}
           </h1>
 
-          {/* Hourly Forecast */}
           <section className="bg-gray-800 bg-opacity-60 rounded-lg p-6 mb-8 shadow-md">
             <h2 className="text-lg font-small text-[#BCD3F2] mb-4 text-left">
               Hourly Forecast
@@ -182,14 +199,13 @@ export default function WeatherWarning() {
                   key={index}
                   className="bg-gray-700 text-white rounded-lg p-3 flex flex-col items-center justify-center transform transition duration-300 hover:scale-105"
                 >
-                  <span>{hour.time}</span>
+                  <span className="text-sm font-semibold">{hour.time}</span>
                   <span className="text-base font-bold">{hour.temp}</span>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Weekly + Map */}
           <div className="flex flex-wrap lg:flex-nowrap justify-between gap-6">
             <section className="bg-gray-800 bg-opacity-60 rounded-lg p-8 shadow-md w-full lg:w-1/2 xl:w-1/2">
               <h2 className="text-xl font-normal text-[#BCD3F2] mb-6 text-left">
@@ -197,11 +213,32 @@ export default function WeatherWarning() {
               </h2>
               <ul className="text-white text-left divide-y divide-gray-500">
                 {weeklyForecast.map((forecast, index) => (
-                  <li key={index} className="py-3 text-lg">
-                    {forecast}
+                  <li
+                    key={index}
+                    onClick={() => setSelectedDayIndex(index)}
+                    className={`py-3 text-lg cursor-pointer hover:bg-[#715FFF] px-2 rounded transition ${
+                      selectedDayIndex === index
+                        ? "bg-[#715FFF] text-white"
+                        : ""
+                    }`}
+                  >
+                    ☁︎ {forecast.name} {forecast.temp}°F –{" "}
+                    {forecast.description}
                   </li>
                 ))}
               </ul>
+              {selectedDayIndex !== null && (
+                <div className="mt-4 text-white">
+                  <h3 className="text-md font-semibold mb-2">Details:</h3>
+                  <ul className="pl-4 list-disc space-y-1">
+                    {weeklyForecast[selectedDayIndex].details.map(
+                      (d: string, i: number) => (
+                        <li key={i}>{d}</li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              )}
             </section>
 
             <div className="bg-[#1F2A40] rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2">
