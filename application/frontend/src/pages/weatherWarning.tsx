@@ -1,67 +1,96 @@
-import { useState, useEffect } from "react";
-import { Map } from "../assets";
+import { useState, useEffect, useRef } from "react";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default function WeatherWarning() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedId, setSelectedId] = useState(1);
   const [search, setSearch] = useState("");
   const [customLocation, setCustomLocation] = useState<string | null>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
-  const facilities = [
+  const [facilities, setFacilities] = useState([
     { id: 1, name: "San Francisco" },
-    { id: 2, name: "Mission District" },
-    { id: 3, name: "Sunset" },
-    { id: 4, name: "Bayview" },
-    { id: 5, name: "Tenderloin" },
-  ];
+    { id: 2, name: "New York" },
+    { id: 3, name: "Alaska" },
+    { id: 4, name: "Bayview, San Francisco" },
+    { id: 5, name: "Texas" },
+  ]);
 
-  const [hourlyForecast, setHourlyForecast] = useState<string[]>([]);
+  const [hourlyForecast, setHourlyForecast] = useState<any[]>([]);
   const [weeklyForecast, setWeeklyForecast] = useState<string[]>([]);
   const [cityDisplayName, setCityDisplayName] = useState("San Francisco");
+  const [mapCenter, setMapCenter] = useState<[number, number]>([
+    37.7749, -122.4194,
+  ]);
 
   const fetchWeather = async (cityName: string) => {
     try {
       const res = await fetch(
-        `http://localhost:5001/weather?city=${encodeURIComponent(cityName)}`,
-        {
-          credentials: "include",
-        }
+        `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(
+          cityName
+        )}&units=imperial&appid=${import.meta.env.VITE_WEATHER_API_KEY}`
       );
-
       const data = await res.json();
 
-      if (!data || !data.location || !data.current) {
+      if (data.cod !== "200") {
         alert("City or ZIP not found!");
         return;
       }
 
-      setCityDisplayName(data.location.name);
+      setCityDisplayName(data.city.name);
+      setMapCenter([data.city.coord.lat, data.city.coord.lon]);
 
-      // Generate mock hourly info from "current"
-      const hourly = [
-        `🌡️ Temp: ${data.current.temp_f}°F`,
-        `💨 Wind: ${data.current.wind_mph} mph ${data.current.wind_dir}`,
-        `💧 Humidity: ${data.current.humidity}%`,
-        `☁️ Condition: ${data.current.condition.text}`,
-        `🌫️ Visibility: ${data.current.vis_miles} mi`,
-        `🔽 Feels Like: ${data.current.feelslike_f}°F`,
-        `🔬 AQI (EPA): ${data.current.air_quality["us-epa-index"]}`,
-      ];
+      const now = new Date();
+      const hourly = data.list
+        .filter((entry: any) => new Date(entry.dt_txt) >= now)
+        .slice(0, 10)
+        .map((entry: any) => {
+          const date = new Date(entry.dt_txt);
+          const hour = date.getHours();
+          const formattedHour = hour % 12 || 12;
+          const ampm = hour >= 12 ? "PM" : "AM";
+          const temp = Math.round(entry.main.temp);
+          const icon = entry.weather[0].main.includes("Rain")
+            ? "⛆"
+            : entry.weather[0].main.includes("Cloud")
+            ? "☁︎"
+            : entry.weather[0].main.includes("Clear")
+            ? "☀︎"
+            : "☁︎";
+          return {
+            time: `${formattedHour}${ampm} ${icon}`,
+            temp: `${temp}°F`,
+          };
+        });
 
-      // Weekly forecast mock until you support real forecast
-      const weekly = [...Array(7)].map((_, i) => {
-        const day = new Date();
-        day.setDate(day.getDate() + i);
-        const name = day.toLocaleDateString("en-US", { weekday: "long" });
-        return `☁︎ ${name} ${data.current.temp_f}°F`;
+      const grouped: { [date: string]: any[] } = {};
+      data.list.forEach((entry: any) => {
+        const day = entry.dt_txt.split(" ")[0];
+        if (!grouped[day]) grouped[day] = [];
+        grouped[day].push(entry);
       });
+
+      const weekly = Object.entries(grouped)
+        .slice(0, 10)
+        .map(([day, entries]: any) => {
+          const noonEntry =
+            entries.find((e: any) => e.dt_txt.includes("12:00:00")) ||
+            entries[Math.floor(entries.length / 2)];
+          const date = new Date(day);
+          const name = date.toLocaleDateString("en-US", { weekday: "long" });
+          const temp = Math.round(noonEntry.main.temp);
+          const description = noonEntry.weather[0].description;
+          return `☁︎ ${name} ${temp}°F – ${description}`;
+        });
 
       setHourlyForecast(hourly);
       setWeeklyForecast(weekly);
     } catch (err) {
-      alert("Something went wrong fetching weather!");
+      alert("Something went wrong!");
     }
   };
+
   useEffect(() => {
     const selectedCity =
       facilities.find((f) => f.id === selectedId)?.name || "San Francisco";
@@ -72,30 +101,38 @@ export default function WeatherWarning() {
   const handleSearch = () => {
     if (search.trim()) {
       setCustomLocation(search);
+      const exists = facilities.find(
+        (f) => f.name.toLowerCase() === search.toLowerCase()
+      );
+      if (!exists) {
+        const newId = facilities.length + 1;
+        setFacilities([...facilities, { id: newId, name: search }]);
+        setSelectedId(newId);
+        setTimeout(() => {
+          sidebarRef.current?.scrollTo({
+            top: sidebarRef.current.scrollHeight,
+            behavior: "smooth",
+          });
+        }, 100);
+      } else {
+        const found = facilities.find((f) => f.name === exists.name);
+        setSelectedId(found?.id || 1);
+      }
       fetchWeather(search);
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
-      <div className="lg:hidden">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="w-full bg-[#1F2A40] text-white py-3 text-xl font-semibold tracking-wide"
-        >
-          {sidebarOpen ? "▲ Hide Facilities" : "▼ Show Facilities"}
-        </button>
-      </div>
-
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] relative">
       <aside
-        className={`${
+        ref={sidebarRef}
+        className={`$${
           sidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
         <h2 className="text-[30px] font-bold text-black mb-4">
           Weather Forecast
         </h2>
-
         <input
           type="text"
           placeholder="Search any city or zip..."
@@ -105,11 +142,10 @@ export default function WeatherWarning() {
         />
         <button
           onClick={handleSearch}
-          className="mt-2 w-full bg-[#1F2A40] hover:bg-[#27354F] text-white font-semibold py-2 rounded"
+          className="mt-2 w-full bg-[#1F2A40] hover:bg-gradient-to-r hover:from-[#715FFF] hover:to-[#66B2EF] text-white font-semibold py-2 rounded"
         >
           + Add Location
         </button>
-
         {facilities.map((f) => (
           <button
             key={f.id}
@@ -118,9 +154,9 @@ export default function WeatherWarning() {
               setCustomLocation(null);
               setSidebarOpen(false);
             }}
-            className={`w-full text-left p-4 rounded-lg font-medium transition ${
+            className={`w-full text-left p-4 rounded-lg font-medium transform transition duration-200 hover:scale-105 ${
               selectedId === f.id && !customLocation
-                ? "bg-[#715FFF] text-white"
+                ? "bg-[#715FFF] text-white border-l-4 border-white"
                 : "bg-[#1F2A40] hover:bg-[#27354F]"
             }`}
           >
@@ -144,9 +180,10 @@ export default function WeatherWarning() {
               {hourlyForecast.map((hour, index) => (
                 <div
                   key={index}
-                  className="bg-gray-700 text-white rounded-lg p-3 flex items-center justify-center"
+                  className="bg-gray-700 text-white rounded-lg p-3 flex flex-col items-center justify-center transform transition duration-300 hover:scale-105"
                 >
-                  {hour}
+                  <span>{hour.time}</span>
+                  <span className="text-base font-bold">{hour.temp}</span>
                 </div>
               ))}
             </div>
@@ -168,11 +205,17 @@ export default function WeatherWarning() {
             </section>
 
             <div className="bg-[#1F2A40] rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2">
-              <img
-                src={Map}
-                alt="Map preview"
-                className="w-full h-full object-cover rounded-md"
-              />
+              <MapContainer
+                center={mapCenter}
+                zoom={10}
+                className="w-full h-full rounded-md"
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={mapCenter} />
+              </MapContainer>
             </div>
           </div>
         </div>
