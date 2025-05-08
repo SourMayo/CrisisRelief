@@ -46,7 +46,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://crisisrelief.duckdns.org:5001/login/logout", {
+      await fetch("http://localhost:5001/login/logout", {
         method: "POST",
         credentials: "include",
       });

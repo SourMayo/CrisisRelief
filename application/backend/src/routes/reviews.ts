@@ -4,7 +4,8 @@ import { db } from "../db";
 export const reviewsRouter = Router();
 
 reviewsRouter.post("/", async (req, res) => {
-  const { content, rating, user_id, location_id: place_id } = req.body;
+  const { content, rating, location_id: place_id } = req.body;
+  const user_id = req.session.user?.id;
 
   if (!content || !rating || !user_id || !place_id) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -67,11 +68,21 @@ reviewsRouter.get("/", async (req, res) => {
       .first();
 
     if (!location) {
-      return res.json([]); 
+      return res.json([]);
     }
 
     const reviews = await db("reviews")
-      .where({ location_id: location.location_id })
+      .join("users", "reviews.user_id", "users.user_id")
+      .select(
+        "reviews.content",
+        "reviews.rating",
+        "reviews.created_at",
+        "users.user_id",
+        "users.username",
+        "users.first_name",
+        "users.last_name"
+      )
+      .where("reviews.location_id", location.location_id)
       .orderBy("created_at", "desc");
 
     res.json(reviews);

@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { Map } from "../assets";
 
+const facilities = [
+  { id: 1, name: "San Francisco" },
+  { id: 2, name: "Mission District" },
+  { id: 3, name: "Sunset" },
+  { id: 4, name: "Bayview" },
+  { id: 5, name: "Tenderloin" },
+];
+
 export default function WeatherWarning() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedId, setSelectedId] = useState(1);
   const [search, setSearch] = useState("");
   const [customLocation, setCustomLocation] = useState<string | null>(null);
-
-  const facilities = [
-    { id: 1, name: "San Francisco" },
-    { id: 2, name: "Mission District" },
-    { id: 3, name: "Sunset" },
-    { id: 4, name: "Bayview" },
-    { id: 5, name: "Tenderloin" },
-  ];
 
   const [hourlyForecast, setHourlyForecast] = useState<string[]>([]);
   const [weeklyForecast, setWeeklyForecast] = useState<string[]>([]);
@@ -58,7 +58,7 @@ export default function WeatherWarning() {
 
       setHourlyForecast(hourly);
       setWeeklyForecast(weekly);
-    } catch (err) {
+    } catch {
       alert("Something went wrong fetching weather!");
     }
   };

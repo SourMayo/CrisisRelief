@@ -20,6 +20,16 @@ interface Facility {
   hours: string[];
 }
 
+interface Review {
+  review_id: number;
+  content: string;
+  rating: number;
+  user_id: number;
+  first_name: string;
+  last_name: string;
+  username: string;
+}
+
 export default function MedicalResources() {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -38,7 +48,7 @@ export default function MedicalResources() {
       if (!selectedFacility) return;
       try {
         const res = await fetch(
-          `http://localhost:5001/reviews?location_id=${selectedFacility.place_id}`,
+          `http://localhost:5001/reviews?location_id=${selectedFacility.place_id}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -160,10 +170,10 @@ export default function MedicalResources() {
 
         {facilities.map((f) => (
           <button
-          key={f.place_id}
-          onClick={() => {
-            setSelectedId(f.place_id);
-            setSidebarOpen(false);
+            key={f.place_id}
+            onClick={() => {
+              setSelectedId(f.place_id);
+              setSidebarOpen(false);
             }}
             className={`w-full text-left p-4 rounded-lg font-medium transition ${
               selectedId === f.place_id
@@ -247,27 +257,22 @@ export default function MedicalResources() {
                 const form = e.currentTarget;
                 const content = form.review.value;
                 const rating = form.rating.value;
-
-                const userId = 1; // TODO: replace with real user ID from session/auth
                 if (!selectedFacility) return;
 
                 const locationId = selectedFacility.place_id;
 
                 if (content.trim().length > 0 && rating) {
                   try {
-                    const res = await fetch(
-                      "http://localhost:5001/reviews",
-                      {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          content,
-                          rating: parseInt(rating),
-                          user_id: userId,
-                          location_id: locationId,
-                        }),
-                      }
-                    );
+                    const res = await fetch("http://localhost:5001/reviews", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      credentials: "include",
+                      body: JSON.stringify({
+                        content,
+                        rating: parseInt(rating),
+                        location_id: locationId,
+                      }),
+                    });
 
                     if (res.ok) {
                       alert("Review submitted!");
@@ -347,7 +352,8 @@ export default function MedicalResources() {
                       </div>
                       <p className="mb-1">{review.content}</p>
                       <p className="text-sm text-gray-500">
-                        User #{review.user_id}
+                        {review.first_name} {review.last_name} (@
+                        {review.username})
                       </p>
                     </li>
                   ))}

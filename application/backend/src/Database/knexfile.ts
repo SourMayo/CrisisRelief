@@ -8,7 +8,7 @@ const config: { [key: string]: Knex.Config } = {
     client: "pg",
     connection:
       process.env.DATABASE_URL ||
-      "postgres://postgres:password@localhost:5432/myapp",
+      "ostgresql://crisisuser:Penknife8AnointerEngorge@crisisreliefdatabase.duckdns.org:5432/crisisdatabase",
     migrations: {
       directory: "./src/migrations",
       extension: "ts",
