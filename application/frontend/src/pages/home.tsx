@@ -13,10 +13,13 @@ import { Link } from "react-router-dom";
 import { Card, CardHeader, CardBody, Image } from "@heroui/react";
 import { useNavigate as UseNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { speakText } from "../../utils/speech";
+import { useState, useEffect } from "react";
 
-const home = () => {
+const Home = () => {
   const navigate = UseNavigate();
   const { isColorBlindMode, toggleColorBlindMode } = useTheme();
+  const [voiceOn, setVoiceOn] = useState(false);
 
   const textColor = isColorBlindMode ? "text-[#002366]" : "text-gray-800";
   const bgColor = isColorBlindMode
@@ -26,16 +29,27 @@ const home = () => {
     ? "bg-[#F8E474] text-[#002366] font-bold hover:bg-yellow-300 border border-[#002366]"
     : "bg-gray-800 text-white hover:bg-gray-700";
 
+  useEffect(() => {
+    if (voiceOn) {
+      speakText(
+        "We are here to help bring you a better tomorrow. Crisis Helper is a student-led project that aims to help low-income communities in San Francisco. This website helps families receive basic needs."
+      );
+    }
+  }, [voiceOn]);
+
   return (
     <div className="@container overflow-x-hidden">
       <div className={`min-h-screen ${bgColor}`}>
         <div className="pt-32 px-10 justify-center items-center flex flex-col md:flex-row max-w-[1500px] mx-auto">
-          <div className="">
+          <div>
             <div className="max-w-[617px] md:min-w-[500px]">
-              <h1 className={`text-5xl font-bold mb-8 ${textColor}`}>
-                We are here to help bring you a better tomorrow
-              </h1>
-              <p className={`font-light text-2xl mb-8 ${textColor}`}>
+              <div className="flex items-center gap-2 mb-4">
+                <h1 className={`text-5xl font-bold ${textColor}`}>
+                  We are here to help bring you a better tomorrow
+                </h1>
+              </div>
+
+              <p className={`font-light text-2xl mb-6 ${textColor}`}>
                 Crisis Helper is a student-led project that aims to help
                 low-income communities in San Francisco. This website is built
                 with the intention of reducing the number of families struggling
@@ -43,30 +57,43 @@ const home = () => {
                 lives.
               </p>
 
-              <label
-                className={`flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded border shadow ${
-                  isColorBlindMode
-                    ? "bg-[#F8E474] text-[#002366] border-[#002366]"
-                    : "bg-[#F8E474] text-[#002366] border-[#002366]"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={isColorBlindMode}
-                  onChange={toggleColorBlindMode}
-                  className="accent-blue-700"
-                />
-                Enable Color Blind Mode
-              </label>
-
-              <div className="mt-4">
-                <button
-                  onClick={() => navigate("/resources")}
-                  className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold transition ${buttonColor}`}
+              <div className="flex flex-col md:flex-row gap-3 mb-6">
+                <label
+                  className={`flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded border shadow ${
+                    isColorBlindMode
+                      ? "bg-[#F8E474] text-[#002366] border-[#002366]"
+                      : "bg-[#F8E474] text-[#002366] border-[#002366]"
+                  }`}
                 >
-                  Find Local Support Services
-                </button>
+                  <input
+                    type="checkbox"
+                    checked={isColorBlindMode}
+                    onChange={toggleColorBlindMode}
+                    className="accent-blue-700"
+                  />
+                  Enable Color Blind Mode
+                </label>
+
+                <label
+                  className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded border shadow bg-[#dbeafe] text-[#1e3a8a] border-[#1e3a8a] hover:bg-blue-100 cursor-pointer"
+                  title="Enable voice narration for visually impaired users"
+                >
+                  <input
+                    type="checkbox"
+                    checked={voiceOn}
+                    onChange={() => setVoiceOn(!voiceOn)}
+                    className="accent-blue-700"
+                  />
+                  🗣️ Narration Mode
+                </label>
               </div>
+
+              <button
+                onClick={() => navigate("/resources")}
+                className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold transition ${buttonColor}`}
+              >
+                Find Local Support Services
+              </button>
             </div>
           </div>
 
@@ -185,4 +212,4 @@ const home = () => {
   );
 };
 
-export default home;
+export default Home;

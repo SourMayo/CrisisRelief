@@ -1,4 +1,4 @@
-import {anshajImg, kyleImg, geoartImg, karlaImg} from "../assets";
+import { anshajImg, kyleImg, geoartImg, karlaImg } from "../assets";
 import { francisImg } from "../assets";
 import { ayeshaImg } from "../assets";
 
@@ -43,8 +43,9 @@ const teamMembers = [
     id: "kyleNguyen",
     name: "Kyle Nguyen",
     image: kyleImg,
-    bio: "Hello. I am Kyle Nguyen. I am on my final year at SFSU and am looking forward to working with all of you" +
-        "I enjoy going out with my friends during my free time",
+    bio:
+      "Hello. I am Kyle Nguyen. I am on my final year at SFSU and am looking forward to working with all of you" +
+      "I enjoy going out with my friends during my free time",
     role: "Technical Writer",
     skills: ["Node.js", "Python", "C++", "React"],
   },
@@ -66,8 +67,7 @@ const teamMembers = [
           I'm looking forward to working with all of you this semester!
           In my free time, I enjoy watching movies and hanging out with friends.`,
     role: "Database Administrator ",
-    skills: ["Node.js", "C++","C", "HTML"],
+    skills: ["Node.js", "C++", "C", "HTML"],
   },
-
 ];
 export default teamMembers;

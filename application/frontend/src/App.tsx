@@ -15,6 +15,7 @@ import {
   Settings,
   Preferences,
 } from "./pages";
+
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
 import MapView from "./components/mapView";
@@ -32,42 +33,27 @@ function App() {
         theme="colored"
         style={{
           zIndex: 2000,
-          marginTop: "4rem", // Add space for navbar
+          marginTop: "4rem", // navbar space
         }}
       />
       <Navbar />
       <PageTransition>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* About page that lists all members */}
           <Route path="/about" element={<About />} />
-          {/* Nested route for member details under /about */}
           <Route path="/about/:memberId" element={<MemberPage />} />
-          {/* Sign Up page */}
           <Route path="/Register" element={<SignUp />} />
-          {/* Login page */}
           <Route path="/Login" element={<Login />} />
-          {/* Home page */}
           <Route path="/Home" element={<Home />} />
-          {/* Login page */}
           <Route path="/Resources" element={<Resources />} />
-          {/* Medical Resources Page */}
           <Route path="/medicalResources" element={<MedicalResources />} />
-          {/* Food Banks Page */}
-          <Route path="/foodBanks" element={<FoodBanks />} />{" "}
-          {/* Overnight Shelters Page */}
+          <Route path="/foodBanks" element={<FoodBanks />} />
           <Route path="/overnightShelters" element={<OvernightShelters />} />
-          {/* Weather Warning Page */}
           <Route path="/weatherWarnings" element={<WeatherWarning />} />
-          {/* User Profile Page */}
           <Route path="/profile" element={<Profile />} />
-          {/* Settings Page */}
           <Route path="/settings" element={<Settings />} />
-          {/* Map View Page */}
           <Route path="/map" element={<MapView />} />
-          {/* Preferences Page */}
           <Route path="/app-preferences" element={<Preferences />} />
-          {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
