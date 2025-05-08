@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import { SearchResult } from "../config/SearchResults";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   "All Categories",
@@ -13,7 +13,7 @@ const categories = [
 ];
 
 const SearchForm = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // State declarations
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -117,8 +117,7 @@ const SearchForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // DELETE : temporary redirect search before Francis' version
-    // redirectSearch();
+    redirectSearch();
     
     if (!searchQuery.trim()) {
       toast.error("Please enter a search query");
@@ -204,6 +203,19 @@ const SearchForm = () => {
       }}
     >
       <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+        {/* Accept ZIP code input */}
+          <input
+            ref={inputRef}
+            type="text"
+            id="search-zip"
+            value={zipQuery}
+            onChange={(e) => setZipQuery(e.target.value)}
+            className="block ml-2 p-2.5 w-40 z-20 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+            placeholder={`Enter ZIP Code...`}
+            autoComplete="off"
+          /> 
+
+        {/* Category Buttons */}
         {categories.map((category) => (
           <li key={category}>
             <button
@@ -213,6 +225,7 @@ const SearchForm = () => {
             >
               {category}
             </button>
+            
           </li>
         ))}
       </ul>
@@ -258,14 +271,14 @@ const SearchForm = () => {
   );
 
   // // Take inputted query and redirect user to search page
-  // async function redirectSearch() {
-  //   const queries = new URLSearchParams({
-  //     search: searchQuery,
-  //     zip: zipQuery
-  //   });
+  async function redirectSearch() {
+    const queries = new URLSearchParams({
+      search: searchQuery,
+      zip: zipQuery
+    });
 
-  //   navigate(`/search?${queries.toString()}`);
-  // }
+    navigate(`/search?${queries.toString()}`);
+  }
 
   return (
     <form className="max-w-xl mx-auto relative" onSubmit={handleSubmit}>
@@ -301,19 +314,6 @@ const SearchForm = () => {
         {isDropdownOpen &&
           portalContainer &&
           createPortal(categoryDropdown, portalContainer)}
-
-        {/* Accept ZIP code input */}
-        <input
-          ref={inputRef}
-          type="text"
-          id="search-zip"
-          value={zipQuery}
-          onChange={(e) => setZipQuery(e.target.value)}
-          className="block p-2.5 w-[59px] z-20 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-          placeholder={`ZIP`}
-          autoComplete="off"
-        />
-
         <div className="relative w-full">
           
           {/* Regular search input */}
