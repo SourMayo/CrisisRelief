@@ -16,6 +16,7 @@ import {
   Preferences,
   MiscSearch,
   ProfileSettings,
+  PrivacyPolicy,
 } from "./pages";
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
@@ -73,6 +74,8 @@ function App() {
           <Route path="/search" element={<MiscSearch />} />
           {/* General Search Page */}
           <Route path="/profile-settings" element={<ProfileSettings />} />
+          {/* Privacy Policy Page */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>

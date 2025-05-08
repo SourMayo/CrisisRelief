@@ -13,4 +13,5 @@ export { default as Profile } from "./profile";
 export { default as Settings } from "./settings";
 export { default as Preferences } from "./preferences";
 export { default as MiscSearch } from "./miscSearch";
+export {default as PrivacyPolicy} from "./privacyPolicy";
 export { default as ProfileSettings } from "./ProfileSettings";

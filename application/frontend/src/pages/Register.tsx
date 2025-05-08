@@ -293,7 +293,12 @@ const signUp = () => {
               </div>
               <Label className="text-sm/6 text-gray-700">
                 By selecting this, you agree to our{" "}
-                <a href="#" className="font-semibold text-indigo-600">
+                <a
+                  href="/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-indigo-600 underline hover:text-indigo-800"
+                >
                   privacy&nbsp;policy
                 </a>
                 .
