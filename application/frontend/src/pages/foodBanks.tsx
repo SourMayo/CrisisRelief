@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { useLocation } from "react-router-dom";
 
 interface Review {
   review_id: number;
@@ -28,10 +29,22 @@ export default function FoodBanks() {
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [inputtedLat, setInputtedLat] = useState("");
+  const [inputtedLang, setInputtedLang] = useState("");
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
   });
+
+  const currentUrl = useLocation();
+
+  // TEMPORARY : Detects change of url
+  useEffect (() => {
+      const queries = new URLSearchParams(currentUrl.search)
+      setInputtedLat(queries.get("lat") ?? "");
+      setInputtedLang(queries.get("lang") ?? "");
+
+  }, [currentUrl.search]);
 
   useEffect(() => {
     async function fetchReviews() {
@@ -92,6 +105,9 @@ export default function FoodBanks() {
         region: "us",
       };
 
+      request.locationBias.lat = Number(inputtedLat);
+      request.locationBias.lng = Number(inputtedLang);
+
       const { places } = await Place.searchByText(request);
 
       if (places.length > 0) {
@@ -126,7 +142,7 @@ export default function FoodBanks() {
     if (isLoaded) {
       FindFoodBanks();
     }
-  }, [isLoaded]);
+  }, [isLoaded, currentUrl]); 
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">

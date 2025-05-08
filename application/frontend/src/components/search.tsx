@@ -301,9 +301,6 @@ const SearchForm = () => {
       lngQuery = number;
     });
 
-    console.log(latQuery);
-    console.log(lngQuery);
-
     const queries = new URLSearchParams({
       search: searchQuery,
       zip: zipQuery,
@@ -311,7 +308,12 @@ const SearchForm = () => {
       lang: lngQuery
     });
 
-    navigate(`/search?${queries.toString()}`);
+    if (selectedCategory == "Food Banks") {
+      navigate(`/foodBanks?${queries.toString()}`);
+    }
+    else{
+      navigate(`/search?${queries.toString()}`);
+    }
   }
 
   return (
