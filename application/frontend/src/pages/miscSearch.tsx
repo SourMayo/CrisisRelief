@@ -40,7 +40,6 @@ export default function MiscSearch() {
 
     const currentUrl = useLocation();
 
-    // TEMPORARY : Detects change of url
     useEffect (() => {
         const queries = new URLSearchParams(currentUrl.search)
         setInputtedSearch(queries.get("search") ?? "");
@@ -74,6 +73,8 @@ export default function MiscSearch() {
     }, [selectedFacility]);
 
     useEffect(() => {
+        if (!inputtedSearch || !inputtedLat || !inputtedLang || !isLoaded) return;
+
         async function CustomSearch() {
             if (typeof google === "undefined" || !google.maps?.importLibrary) {
                 console.warn("Google Maps API not yet loaded.");
@@ -147,8 +148,7 @@ export default function MiscSearch() {
     if (isLoaded) {
         CustomSearch();
     }
-}, [isLoaded, currentUrl]);
-    // TODO ^  : Delete currentURL when Francis' check works
+}, [isLoaded, currentUrl, inputtedSearch, inputtedZip, inputtedLat, inputtedLang]);
 
     return (
         <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">

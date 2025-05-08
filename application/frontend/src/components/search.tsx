@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { SearchResult } from "../config/SearchResults";
 import { useNavigate } from "react-router-dom";
 
@@ -20,15 +20,15 @@ const SearchForm = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [zipQuery, setZipQuery] = useState("");
+  const [zipQuery, setZipQuery] = useState("90001");
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null
   );
-  const [resultsPosition, setResultsPosition] = useState({
-    top: 0,
-    left: 0,
-    width: 0,
-  });
+  // const [resultsPosition, setResultsPosition] = useState({
+  //   top: 0,
+  //   left: 0,
+  //   width: 0,
+  // });
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -93,16 +93,16 @@ const SearchForm = () => {
   }, [isDropdownOpen]);
 
   // Positioning for search results dropdown
-  useEffect(() => {
-    if (inputRef.current && searchResults.length > 0) {
-      const rect = inputRef.current.getBoundingClientRect();
-      setResultsPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-      });
-    }
-  }, [searchResults]);
+  // useEffect(() => {
+  //   if (inputRef.current && searchResults.length > 0) {
+  //     const rect = inputRef.current.getBoundingClientRect();
+  //     setResultsPosition({
+  //       top: rect.bottom + window.scrollY,
+  //       left: rect.left + window.scrollX,
+  //       width: rect.width,
+  //     });
+  //   }
+  // }, [searchResults]);
 
   // Handlers
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
@@ -119,76 +119,76 @@ const SearchForm = () => {
     
     redirectSearch();
     
-    if (!searchQuery.trim()) {
-      toast.error("Please enter a search query");
-      return;
-    }
+    // if (!searchQuery.trim()) {
+    //   toast.error("Please enter a search query");
+    //   return;
+    // }
 
-    const toastId = toast.loading(
-      `Searching for "${searchQuery}" in ${selectedCategory}...`
-    );
+    // const toastId = toast.loading(
+    //   `Searching for "${searchQuery}" in ${selectedCategory}...`
+    // );
 
-    try {
-      const response = await fetch(
-        `http://crisisrelief.duckdns.org:5001/search?query=${encodeURIComponent(
-          searchQuery
-        )}&category=${encodeURIComponent(selectedCategory)}&zip=${encodeURIComponent(
-          zipQuery
-        )}`
-      );
+    // try {
+    //   const response = await fetch(
+    //     `http://crisisrelief.duckdns.org:5001/search?query=${encodeURIComponent(
+    //       searchQuery
+    //     )}&category=${encodeURIComponent(selectedCategory)}&zip=${encodeURIComponent(
+    //       zipQuery
+    //     )}`
+    //   );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Search failed");
-      }
+    //   if (!response.ok) {
+    //     const errorData = await response.json().catch(() => ({}));
+    //     throw new Error(errorData.error || "Search failed");
+    //   }
 
-      const data = await response.json();
+    //   const data = await response.json();
 
-      // Normalize response format
-      let formattedResults: SearchResult[] = [];
-      if (selectedCategory === "All Categories") {
-        formattedResults = [
-          ...(data.locations || []).map((item: SearchResult) => ({
-            ...item,
-            type: "location",
-          })),
-          ...(data.weatherZones || []).map((item: SearchResult) => ({
-            ...item,
-            type: "weather",
-          })),
-          ...(data.reviews || []).map((item: SearchResult) => ({
-            ...item,
-            type: "review",
-          })),
-          ...(data.foodBanks || []).map((item: SearchResult) => ({
-            ...item,
-            type: "food",
-          })),
-        ];
-      } else {
-        formattedResults = data.map((item: SearchResult) => ({
-          ...item,
-          type: selectedCategory.toLowerCase(),
-        }));
-      }
+    //   // Normalize response format
+    //   let formattedResults: SearchResult[] = [];
+    //   if (selectedCategory === "All Categories") {
+    //     formattedResults = [
+    //       ...(data.locations || []).map((item: SearchResult) => ({
+    //         ...item,
+    //         type: "location",
+    //       })),
+    //       ...(data.weatherZones || []).map((item: SearchResult) => ({
+    //         ...item,
+    //         type: "weather",
+    //       })),
+    //       ...(data.reviews || []).map((item: SearchResult) => ({
+    //         ...item,
+    //         type: "review",
+    //       })),
+    //       ...(data.foodBanks || []).map((item: SearchResult) => ({
+    //         ...item,
+    //         type: "food",
+    //       })),
+    //     ];
+    //   } else {
+    //     formattedResults = data.map((item: SearchResult) => ({
+    //       ...item,
+    //       type: selectedCategory.toLowerCase(),
+    //     }));
+    //   }
 
-      setSearchResults(formattedResults);
-      toast.update(toastId, {
-        render: `Found ${formattedResults.length} results`,
-        type: "success",
-        isLoading: false,
-        autoClose: 3000,
-      });
-    } catch (error) {
-      toast.update(toastId, {
-        render: "Search failed. Please try again.",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000,
-      });
-      console.error("Search error:", error);
-      setSearchResults([]);
-    }
+    //   setSearchResults(formattedResults);
+    //   toast.update(toastId, {
+    //     render: `Found ${formattedResults.length} results`,
+    //     type: "success",
+    //     isLoading: false,
+    //     autoClose: 3000,
+    //   });
+    // } catch (error) {
+    //   toast.update(toastId, {
+    //     render: "Search failed. Please try again.",
+    //     type: "error",
+    //     isLoading: false,
+    //     autoClose: 3000,
+    //   });
+    //   console.error("Search error:", error);
+    //   setSearchResults([]);
+    // }
   };
 
   // Category dropdown component rendered via portal
@@ -233,45 +233,48 @@ const SearchForm = () => {
   );
 
   // Search results dropdown rendered via portal with white background and dark text
-  const searchResultsDropdown = (
-    <div
-      ref={searchResultsRef}
-      className="z-[1000] bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
-      style={{
-        position: "absolute",
-        top: resultsPosition.top,
-        left: resultsPosition.left,
-        width: resultsPosition.width,
-        minWidth: "176px",
-      }}
-    >
-      {searchResults.map((result) => (
-        <div
-          key={`${result.type}-${result.location_id || result.id}`}
-          className="px-4 py-2 cursor-pointer text-gray-800 hover:bg-gray-100 border-b border-gray-200 last:border-0"
-          onClick={() => setSearchResults([])}
-        >
-          <div className="flex justify-between items-center">
-            <span>{result.name}</span>
-            {result.type && (
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
-                {result.type}
-              </span>
-            )}
-          </div>
-          {result.location_name && (
-            <div className="text-sm text-gray-600">{result.location_name}</div>
-          )}
-        </div>
-      ))}
-      {searchResults.length === 0 && (
-        <div className="px-4 py-2 text-gray-500">No results found</div>
-      )}
-    </div>
-  );
+  // const searchResultsDropdown = (
+  //   <div
+  //     ref={searchResultsRef}
+  //     className="z-[1000] bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
+  //     style={{
+  //       position: "absolute",
+  //       top: resultsPosition.top,
+  //       left: resultsPosition.left,
+  //       width: resultsPosition.width,
+  //       minWidth: "176px",
+  //     }}
+  //   >
+  //     {searchResults.map((result) => (
+  //       <div
+  //         key={`${result.type}-${result.location_id || result.id}`}
+  //         className="px-4 py-2 cursor-pointer text-gray-800 hover:bg-gray-100 border-b border-gray-200 last:border-0"
+  //         onClick={() => setSearchResults([])}
+  //       >
+  //         <div className="flex justify-between items-center">
+  //           <span>{result.name}</span>
+  //           {result.type && (
+  //             <span className="text-xs px-2 py-1 rounded-full bg-gray-100">
+  //               {result.type}
+  //             </span>
+  //           )}
+  //         </div>
+  //         {result.location_name && (
+  //           <div className="text-sm text-gray-600">{result.location_name}</div>
+  //         )}
+  //       </div>
+  //     ))}
+  //     {searchResults.length === 0 && (
+  //       <div className="px-4 py-2 text-gray-500">No results found</div>
+  //     )}
+  //   </div>
+  // );
 
 
   async function GetLat(zipcode: string) :Promise<string>{
+    if (zipcode == "") {
+      zipcode = "90001";
+    };
     const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
     const reponse = await fetch(URL)
     const data = await reponse.json();
@@ -280,6 +283,9 @@ const SearchForm = () => {
   }
   
   async function GetLng(zipcode: string) :Promise<string>{
+    if (zipcode == "") {
+      zipcode = "90001";
+    };
     const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
     const reponse = await fetch(URL)
     const data = await reponse.json();
@@ -386,9 +392,9 @@ const SearchForm = () => {
           </button>
         </div>
       </div>
-      {searchResults.length > 0 &&
+      {/* {searchResults.length > 0 &&
         portalContainer &&
-        createPortal(searchResultsDropdown, portalContainer)}
+        createPortal(searchResultsDropdown, portalContainer)} */}
     </form>
   );
 };
