@@ -20,7 +20,7 @@ const SearchForm = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [zipQuery, setZipQuery] = useState("90001");
+  const [zipQuery, setZipQuery] = useState("94114");
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null
   );
@@ -273,7 +273,7 @@ const SearchForm = () => {
 
   async function GetLat(zipcode: string) :Promise<string>{
     if (zipcode == "") {
-      zipcode = "90001";
+      zipcode = "94114";
     };
     const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
     const reponse = await fetch(URL)
@@ -284,7 +284,7 @@ const SearchForm = () => {
   
   async function GetLng(zipcode: string) :Promise<string>{
     if (zipcode == "") {
-      zipcode = "90001";
+      zipcode = "94114";
     };
     const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
     const reponse = await fetch(URL)
