@@ -38,9 +38,9 @@ The following step should be performed by every student in the team, including t
    |    #1    |  Anshaj Vats                    |     avats@sfsu.edu                  |     AnshajVats                 |       Anshaj Vats                |     Team-lead     |             Yes            |
    |    #2    |           Francis Aviles           |              faviles1@sfsu.edu         |        AviGeck              |          Ghome            | Database Admin |             Yes              |
    |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Backend Lead       |             Yes              |
-   |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master     |             Yes              |
-   |    #5    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |     Frontend    |             Yes              |
-   |    #6    |           Kyle Nguyen           |            knguyen68@sfsu.edu           |           KyleNguyen00           |           ky_n            |     Technical Writer      |             Yes              |
+   |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master / Co-Frontend Lead     |             Yes              |
+   |    #5    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |         |             Yes              |
+   |    #6    |           Kyle Nguyen           |            knguyen68@sfsu.edu           |           KyleNguyen00           |           ky_n            |     Technical Writer / Co-Frontend Lead     |             Yes              |
    |    #7    |                      |                       |                      |                       |           |             No              |
 
    - A role, in this course, indicates the main responsibility each student will handle, but **EVERY STUDENT** must 
@@ -66,7 +66,7 @@ project. It is crucial to ensure that the URL is always functional and accessibl
 
    |      Team Alias       |     Name of the Project     |     URL of the Project      | Decision-Making Policy (Consensus or Majority Rule) |
    |:---------------------:|:---------------------------:|:---------------------------:|:---------------------------------------------------:|
-   |           Horse            |            Crisis Relief Platform             |            http://crisisrelief.duckdns.org:3000/             |           Majority Rule                                      |
+   |           Horse            |            Crisis Relief Platform             |            http://crisisrelief.duckdns.org:5173/             |           Majority Rule                                      |
 
 
 **Important:** Remember to complete the copyright section at the bottom.
