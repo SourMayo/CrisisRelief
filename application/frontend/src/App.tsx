@@ -15,6 +15,7 @@ import {
   Settings,
   Preferences,
   MiscSearch,
+  ProfileSettings,
 } from "./pages";
 import Navbar from "./components/navbar";
 import PageTransition from "./components/PageTransition";
@@ -70,6 +71,8 @@ function App() {
           <Route path="/app-preferences" element={<Preferences />} />
           {/* General Search Page */}
           <Route path="/search" element={<MiscSearch />} />
+          {/* General Search Page */}
+          <Route path="/profile-settings" element={<ProfileSettings />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>

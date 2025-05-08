@@ -20,7 +20,7 @@ const Settings = () => {
             to: "/profile-settings",
             emoji: "👤",
             title: "Profile Settings",
-            description: "Update your personal information and preferences",
+            description: "Manage your account",
           },
           {
             to: "/notification-settings",

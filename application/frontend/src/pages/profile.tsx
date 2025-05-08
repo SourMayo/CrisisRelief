@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Profile = () => {
     return (
         <section className="relative isolate overflow-hidden min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] px-6 py-24 sm:py-32 lg:px-8">
@@ -42,8 +44,44 @@ const Profile = () => {
                     </div>
                 </figcaption>
                 </figure>
+            
             </div>
-            </section>
+            
+        {/* Profile Settings Button from the settings page */}
+        <div className="mt-8 grid grid-cols-1 gap-6 px-4 pb-8 max-w-[400px] mx-auto">
+                {[
+                {
+                    to: "/profile-settings",
+                    emoji: "👤",
+                    title: "Profile Settings",
+                    description: "Manage your account",
+                },
+                
+                ].map(({ to, emoji, title, description }) => (
+                <Link
+                    to={to}
+                    key={title}
+                    className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6"
+                >
+                    <div className="flex flex-col md:flex-row items-center gap-4">
+                    <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
+                        <span className="text-4xl" aria-hidden="true">
+                        {emoji}
+                        </span>
+                    </div>
+                    <div className="text-center md:text-left">
+                        <h3 className="text-xl font-semibold text-gray-800 group-hover:text-[#1F2A40] transition-colors">
+                        {title}
+                        </h3>
+                        <p className="mt-2 text-gray-600 text-sm italic">
+                        {description}
+                        </p>
+                    </div>
+                    </div>
+                </Link>
+                ))}
+            </div>
+        </section>
     );
 
 }
