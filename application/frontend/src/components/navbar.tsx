@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { logo } from "../assets";
 import SearchForm from "./search";
 import { toast } from "react-toastify";
+import { useTheme } from "../context/ThemeContext";
 import "react-toastify/dist/ReactToastify.css";
 
 function classNames(...classes: string[]) {
@@ -24,6 +25,8 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isColorBlindMode } = useTheme(); // ✅ use theme context
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -46,7 +49,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://crisisrelief.duckdns.org:5001/login/logout", {
+      await fetch("http://localhost:5001/login/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -59,10 +62,23 @@ export default function Navbar() {
       console.error("Logout failed:", error);
     }
   };
+
+  const navStyle = (href: string) => {
+    const isActive = location.pathname === href;
+    if (isColorBlindMode) {
+      return isActive
+        ? "bg-yellow-200 text-blue-900 font-semibold"
+        : "text-blue-100 hover:bg-yellow-300 hover:text-blue-900";
+    }
+    return isActive
+      ? "bg-gray-900 text-white"
+      : "text-gray-300 hover:bg-gray-700 hover:text-white";
+  };
+
   return (
     <Disclosure
       as="nav"
-      className="bg-linear-to-r from-[#1F2A40] via-[#344466] to-[#1F2A40]"
+      className="bg-gradient-to-r from-[#1F2A40] via-[#344466] to-[#1F2A40]"
     >
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
@@ -81,16 +97,13 @@ export default function Navbar() {
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
-              {/* Navigation buttons */}
               <div className="flex space-x-4">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
                     className={classNames(
-                      location.pathname === item.href
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      navStyle(item.href),
                       "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
@@ -121,9 +134,7 @@ export default function Navbar() {
                     key={item.name}
                     to={item.href}
                     className={classNames(
-                      location.pathname === item.href
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      navStyle(item.href),
                       "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
@@ -133,6 +144,7 @@ export default function Navbar() {
               </div>
             </div>
           )}
+
           {isLoggedIn && (
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <button
@@ -147,7 +159,7 @@ export default function Navbar() {
                   <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                     <img
                       alt="User Profile"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
                       className="size-8 rounded-full"
                     />
                   </MenuButton>
@@ -191,7 +203,7 @@ export default function Navbar() {
                           "block px-4 py-2 text-sm text-gray-700"
                         )}
                       >
-                        log out
+                        Log out
                       </a>
                     )}
                   </MenuItem>
@@ -203,7 +215,6 @@ export default function Navbar() {
       </div>
 
       <DisclosurePanel className="sm:hidden">
-        {/* Normal Navigation Buttons */}
         <div className="space-y-1 px-2 pt-2 pb-1">
           {navigation.map((item) => (
             <DisclosureButton
@@ -211,9 +222,7 @@ export default function Navbar() {
               as={Link}
               to={item.href}
               className={classNames(
-                location.pathname === item.href
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                navStyle(item.href),
                 "block rounded-md px-3 py-2 text-base font-medium"
               )}
             >
@@ -222,7 +231,6 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Login Navigation Buttons */}
         {!isLoggedIn && (
           <div className="px-2 pb-3">
             {loginnav.map((item) => (
@@ -231,9 +239,7 @@ export default function Navbar() {
                 as={Link}
                 to={item.href}
                 className={classNames(
-                  location.pathname === item.href
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                  navStyle(item.href),
                   "block rounded-md px-3 py-2 text-base font-medium"
                 )}
               >

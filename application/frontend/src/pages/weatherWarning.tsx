@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import { toast } from "react-toastify";
+import { useTheme } from "../context/ThemeContext";
 
 export default function WeatherWarning() {
+  const { isColorBlindMode } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedId, setSelectedId] = useState(1);
   const [search, setSearch] = useState("");
@@ -28,6 +30,25 @@ export default function WeatherWarning() {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
+
+  const mainBg = isColorBlindMode
+    ? "bg-[#FFFDD0] text-[#002366]"
+    : "bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] text-white";
+  const sectionBg = isColorBlindMode
+    ? "bg-[#F8E474] text-[#002366]"
+    : "bg-gray-800 bg-opacity-60 text-white";
+  const sideBg = isColorBlindMode
+    ? "bg-[#FFFDD0] text-[#002366]"
+    : "bg-[#BCD3F2] text-white";
+  const highlightBtn = isColorBlindMode
+    ? "bg-[#002366] text-yellow-200 font-bold"
+    : "bg-[#715FFF] text-white border-l-4 border-white";
+  const normalBtn = isColorBlindMode
+    ? "bg-[#F8E474] text-[#002366] hover:bg-yellow-300"
+    : "bg-[#1F2A40] hover:bg-[#27354F] text-white";
+  const forecastCard = isColorBlindMode
+    ? "bg-[#F8E474] text-[#002366] border border-[#002366]"
+    : "bg-gray-700 text-white";
 
   const fetchWeatherData = (data: any) => {
     const now = new Date();
@@ -169,46 +190,46 @@ export default function WeatherWarning() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] relative">
+    <div
+      className={`flex flex-col lg:flex-row min-h-screen ${mainBg} relative`}
+    >
+      {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`$${
+        className={`${
           sidebarOpen ? "block" : "hidden"
-        } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
+        } lg:block w-full lg:w-80 ${sideBg} rounded-lg p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
         <h2 className="text-[30px] font-bold text-black mb-4">
           Weather Forecast
         </h2>
+
+        {/* Input */}
         <input
           type="text"
           placeholder="Search any city or zip..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-2 text-black rounded"
+          className={`w-full p-2 rounded-lg border-2 text-lg placeholder-opacity-80 ${
+            isColorBlindMode
+              ? "bg-[#F8E474] text-[#002366] placeholder-[#002366] border-[#002366] font-semibold focus:outline-none focus:ring-2 focus:ring-[#002366]"
+              : "bg-white text-black placeholder-gray-500 border-gray-300"
+          }`}
         />
+
+        {/* Search Button */}
         <button
           onClick={handleSearch}
-          className="mt-2 w-full bg-[#1F2A40] hover:bg-gradient-to-r hover:from-[#715FFF] hover:to-[#66B2EF] text-white font-semibold py-2 rounded"
+          className={`mt-2 w-full py-2 rounded-lg font-semibold transition ${
+            isColorBlindMode
+              ? "bg-[#F8E474] text-[#002366] border border-[#002366] hover:bg-yellow-300"
+              : "bg-[#1F2A40] text-white hover:bg-[#27354F]"
+          }`}
         >
           + Add Location
         </button>
-        {facilities.map((f) => (
-          <button
-            key={f.id}
-            onClick={() => {
-              setSelectedId(f.id);
-              setCustomLocation(null);
-              setSidebarOpen(false);
-            }}
-            className={`w-full text-left p-4 rounded-lg font-medium transform transition duration-200 hover:scale-105 ${
-              selectedId === f.id && !customLocation
-                ? "bg-[#715FFF] text-white border-l-4 border-white"
-                : "bg-[#1F2A40] hover:bg-[#27354F]"
-            }`}
-          >
-            <h3 className="text-lg font-semibold">{f.name}</h3>
-          </button>
-        ))}
+
+        {/* Optional Add Confirmation */}
         {customLocation &&
           !facilities.some(
             (f) => f.name.toLowerCase() === customLocation.toLowerCase()
@@ -220,23 +241,44 @@ export default function WeatherWarning() {
               ➕ Add "{customLocation}" to Sidebar
             </button>
           )}
+
+        {/* Location Buttons */}
+        {facilities.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => {
+              setSelectedId(f.id);
+              setCustomLocation(null);
+              setSidebarOpen(false);
+            }}
+            className={`w-full text-left p-4 rounded-lg font-medium transform transition duration-200 hover:scale-105 ${
+              selectedId === f.id && !customLocation ? highlightBtn : normalBtn
+            }`}
+          >
+            <h3 className="text-lg font-semibold">{f.name}</h3>
+          </button>
+        ))}
       </aside>
 
+      {/* Main Content */}
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
-        <div className="bg-[#BCD3F2] p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6">
+        <div
+          className={`${sideBg} p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6`}
+        >
           <h1 className="text-3xl font-bold text-black text-center mb-6">
             {cityDisplayName}
           </h1>
 
-          <section className="bg-gray-800 bg-opacity-60 rounded-lg p-6 mb-8 shadow-md">
-            <h2 className="text-lg font-small text-[#BCD3F2] mb-4 text-left">
+          {/* Hourly */}
+          <section className={`${sectionBg} rounded-lg p-6 mb-8 shadow-md`}>
+            <h2 className="text-lg font-semibold mb-4 text-left">
               Hourly Forecast
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-4 text-sm text-center">
               {hourlyForecast.map((hour, index) => (
                 <div
                   key={index}
-                  className="bg-gray-700 text-white rounded-lg p-3 flex flex-col items-center justify-center transform transition duration-300 hover:scale-105"
+                  className={`${forecastCard} rounded-lg p-3 flex flex-col items-center justify-center transform transition duration-300 hover:scale-105`}
                 >
                   <span className="text-sm font-semibold">{hour.time}</span>
                   <span className="text-base font-bold">{hour.temp}</span>
@@ -245,19 +287,22 @@ export default function WeatherWarning() {
             </div>
           </section>
 
+          {/* Weekly */}
           <div className="flex flex-wrap lg:flex-nowrap justify-between gap-6">
-            <section className="bg-gray-800 bg-opacity-60 rounded-lg p-8 shadow-md w-full lg:w-1/2 xl:w-1/2">
-              <h2 className="text-xl font-normal text-[#BCD3F2] mb-6 text-left">
+            <section
+              className={`${sectionBg} rounded-lg p-8 shadow-md w-full lg:w-1/2 xl:w-1/2`}
+            >
+              <h2 className="text-xl font-semibold mb-6 text-left">
                 10 - Day Forecast
               </h2>
-              <ul className="text-white text-left divide-y divide-gray-500">
+              <ul className="divide-y divide-gray-400">
                 {weeklyForecast.map((forecast, index) => (
                   <li
                     key={index}
                     onClick={() => setSelectedDayIndex(index)}
-                    className={`py-3 text-lg cursor-pointer hover:bg-[#715FFF] px-2 rounded transition ${
+                    className={`py-3 text-lg cursor-pointer hover:bg-[#002366] hover:text-yellow-100 px-2 rounded transition ${
                       selectedDayIndex === index
-                        ? "bg-[#715FFF] text-white"
+                        ? "bg-[#002366] text-yellow-100"
                         : ""
                     }`}
                   >
@@ -267,7 +312,7 @@ export default function WeatherWarning() {
                 ))}
               </ul>
               {selectedDayIndex !== null && (
-                <div className="mt-4 text-white">
+                <div className="mt-4">
                   <h3 className="text-md font-semibold mb-2">Details:</h3>
                   <ul className="pl-4 list-disc space-y-1">
                     {weeklyForecast[selectedDayIndex].details.map(
@@ -280,7 +325,10 @@ export default function WeatherWarning() {
               )}
             </section>
 
-            <div className="bg-[#1F2A40] rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2">
+            {/* Map */}
+            <div
+              className={`${sectionBg} rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2`}
+            >
               {isLoaded && (
                 <GoogleMap
                   mapContainerStyle={{ width: "100%", height: "100%" }}

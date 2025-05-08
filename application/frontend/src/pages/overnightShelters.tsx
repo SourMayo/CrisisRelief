@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { useTheme } from "../context/ThemeContext"; // ✅ Color blind support
 
 interface Review {
   review_id: number;
@@ -20,7 +21,7 @@ interface Facility {
   hours: string[];
 }
 
-export default function OvernighShelters() {
+export default function MedicalResources() {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const selectedFacility = facilities.find((f) => f.id === selectedId);
@@ -28,36 +29,56 @@ export default function OvernighShelters() {
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { isColorBlindMode } = useTheme();
+
+  const bgMain = isColorBlindMode
+    ? "bg-[#FFFDD0] text-[#002366]"
+    : "bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] text-white";
+  const cardBg = isColorBlindMode
+    ? "bg-[#F8E474] text-[#002366]"
+    : "bg-[#1F2A40] text-white";
+  const sidebarBg = isColorBlindMode
+    ? "bg-[#FFFDD0] text-[#002366]"
+    : "bg-[#BCD3F2] text-black";
+  const selectedButton = isColorBlindMode
+    ? "bg-[#002366] text-yellow-200 font-bold"
+    : "bg-[#715FFF] text-white";
+  const defaultButton = isColorBlindMode
+    ? "bg-[#F8E474] text-[#002366] hover:bg-yellow-300"
+    : "bg-[#1F2A40] hover:bg-[#27354F] text-white";
+  const reviewCard = isColorBlindMode
+    ? "bg-[#FFFDD0] text-[#002366] border border-[#002366]"
+    : "bg-white text-black";
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
   });
 
-  useEffect(() => {
-    async function fetchReviews() {
-      if (!selectedFacility) return;
-      try {
-        const res = await fetch(
-          `http://localhost:5001/reviews?location_id=${selectedFacility.id}`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setReviews(data);
-        } else {
-          console.error("Failed to fetch reviews.");
-        }
-      } catch (err) {
-        console.error("Error fetching reviews:", err);
+  const fetchReviews = async () => {
+    if (!selectedFacility) return;
+    try {
+      const res = await fetch(
+        `http://localhost:5001/reviews?location_id=${selectedFacility.id}`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setReviews(data);
+      } else {
+        console.error("Failed to fetch reviews.");
       }
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
     }
+  };
 
+  useEffect(() => {
     if (selectedFacility?.id) {
       fetchReviews();
     }
   }, [selectedFacility]);
 
   useEffect(() => {
-    async function FindOvernightShelters() {
+    async function FindHospitals() {
       if (typeof google === "undefined" || !google.maps?.importLibrary) {
         console.warn("Google Maps API not yet loaded.");
         return;
@@ -68,7 +89,7 @@ export default function OvernighShelters() {
       )) as google.maps.PlacesLibrary;
 
       const request = {
-        textQuery: "Homeless Shelter",
+        textQuery: "Hospital",
         fields: [
           "id",
           "editorialSummary",
@@ -97,8 +118,8 @@ export default function OvernighShelters() {
       if (places.length > 0) {
         const googleFacilities = places.map((place, i) => ({
           id: i + 1,
-          name: place.displayName ?? "Name Unavaiable",
-          address: place.formattedAddress ?? "Address Unavaiable",
+          name: place.displayName ?? "Name Unavailable",
+          address: place.formattedAddress ?? "Address Unavailable",
           phone:
             place.internationalPhoneNumber ??
             place.nationalPhoneNumber ??
@@ -123,12 +144,14 @@ export default function OvernighShelters() {
     }
 
     if (isLoaded) {
-      FindOvernightShelters();
+      FindHospitals();
     }
   }, [isLoaded]);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
+    <div
+      className={`flex flex-col lg:flex-row min-h-screen ${bgMain} relative`}
+    >
       <div className="lg:hidden">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -139,14 +162,11 @@ export default function OvernighShelters() {
       </div>
 
       <aside
-        className={`$${
+        className={`${
           sidebarOpen ? "block" : "hidden"
-        } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
+        } lg:block w-full lg:w-80 ${sidebarBg} rounded-lg p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
-        <h2 className="text-[30px] font-bold text-black mb-4">
-          Overnight Shelters
-        </h2>
-
+        <h2 className="text-[30px] font-bold mb-4">Medical Help</h2>
         <div className="lg:hidden mb-2">
           <button
             onClick={() => setSidebarOpen(false)}
@@ -164,27 +184,25 @@ export default function OvernighShelters() {
               setSidebarOpen(false);
             }}
             className={`w-full text-left p-4 rounded-lg font-medium transition ${
-              selectedId === f.id
-                ? "bg-[#715FFF] text-white"
-                : "bg-[#1F2A40] hover:bg-[#27354F]"
+              selectedId === f.id ? selectedButton : defaultButton
             }`}
           >
             <h3 className="text-lg font-semibold">{f.name}</h3>
-            <p className="text-med ">{f.address}</p>
+            <p className="text-med">{f.address}</p>
           </button>
         ))}
       </aside>
 
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
-        <div className="bg-[#BCD3F2] p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6">
-          <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 space-y-2">
-            <h1 className="text-xl font-bold">🏠 {selectedFacility?.name}</h1>
-            <p className="text-gray-300">📍 {selectedFacility?.address}</p>
-            <p className="text-gray-300">📞 Phone: {selectedFacility?.phone}</p>
-            <p className="text-gray-300">
-              📝 Description: {selectedFacility?.description}
-            </p>
-            <p className="text-gray-300">
+        <div
+          className={`${sidebarBg} p-8 rounded-xl border border-black shadow-lg w-full max-w-6xl space-y-6`}
+        >
+          <div className={`${cardBg} rounded-xl shadow-md p-6 space-y-2`}>
+            <h1 className="text-xl font-bold">🏥 {selectedFacility?.name}</h1>
+            <p>📍 {selectedFacility?.address}</p>
+            <p>📞 Phone: {selectedFacility?.phone}</p>
+            <p>📝 Description: {selectedFacility?.description}</p>
+            <p>
               🌐 Website:{" "}
               <a
                 href={selectedFacility?.website}
@@ -198,16 +216,18 @@ export default function OvernighShelters() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+            <div className={`${cardBg} rounded-xl shadow-md p-6`}>
               <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
               <ul className="space-y-2 text-med leading-relaxed">
-                {selectedFacility?.hours.map((hour: string, index: number) => (
+                {selectedFacility?.hours.map((hour, index) => (
                   <li key={index}>{hour}</li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-[#1F2A40] rounded-xl shadow-md p-4 h-[300px] lg:h-[400px]">
+            <div
+              className={`${cardBg} rounded-xl shadow-md p-4 h-[300px] lg:h-[400px]`}
+            >
               {isLoaded && selectedFacility ? (
                 <GoogleMap
                   mapContainerStyle={{ width: "100%", height: "100%" }}
@@ -230,7 +250,7 @@ export default function OvernighShelters() {
             </div>
           </div>
 
-          <div className="w-full bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+          <div className={`${cardBg} rounded-xl shadow-md p-6`}>
             <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
             <form
               onSubmit={async (e) => {
@@ -258,6 +278,8 @@ export default function OvernighShelters() {
                     if (res.ok) {
                       alert("Review submitted!");
                       form.reset();
+                      setSelectedRating(null);
+                      fetchReviews(); // ✅ Refresh reviews
                     } else {
                       const errorMsg = await res.text();
                       console.error("Error submitting review:", errorMsg);
@@ -314,7 +336,7 @@ export default function OvernighShelters() {
               </button>
             </form>
 
-            <div className="mt-8 bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
+            <div className={`mt-8 ${cardBg} rounded-xl shadow-md p-6`}>
               <h2 className="text-xl font-bold mb-4">Recent Reviews</h2>
               {reviews.length === 0 ? (
                 <p className="text-gray-300">No reviews yet.</p>
@@ -323,7 +345,7 @@ export default function OvernighShelters() {
                   {reviews.map((review) => (
                     <li
                       key={review.review_id}
-                      className="bg-white text-black rounded-lg p-4 shadow"
+                      className={`rounded-lg p-4 shadow ${reviewCard}`}
                     >
                       <div className="text-yellow-400 text-lg mb-1">
                         {"★".repeat(review.rating)}

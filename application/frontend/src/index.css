@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+.cb-mode body {
+    @apply bg-yellow-100 text-black;
+}
+
+.cb-mode .bg-linear-to-br\/increasing {
+    @apply bg-yellow-100 text-black;
+}
+
+.cb-mode .text-gray-800 {
+    @apply text-black;
+}
+
+.cb-mode .bg-gray-800 {
+    @apply bg-black text-yellow-200;
+}
+
+.cb-mode .hover\:bg-gray-700:hover {
+    @apply hover:bg-yellow-300;
+}
+
+.cb-mode .text-white {
+    @apply text-black;
+}

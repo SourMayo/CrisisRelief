@@ -1,12 +1,23 @@
 import { Link } from "react-router-dom";
 import { teamMembers } from "../config";
+import { useTheme } from "../context/ThemeContext"; // ✅ Add this
 
 export default function About() {
+  const { isColorBlindMode } = useTheme(); // ✅ Access color blind mode
+
+  const mainBg = isColorBlindMode
+    ? "bg-[#FFFDD0] text-[#002366]"
+    : "bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] text-gray-800";
+
+  const badgeStyle = isColorBlindMode
+    ? "bg-[#F8E474] text-[#002366]"
+    : "bg-indigo-100 text-indigo-700";
+
   return (
-    <div className="min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
+    <div className={`min-h-screen ${mainBg}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
-          <h2 className="pb-8 px-4 text-center font-bold text-gray-800 text-4xl">
+          <h2 className="pb-8 px-4 text-center font-bold text-4xl">
             Meet Our Team
           </h2>
 
@@ -19,7 +30,7 @@ export default function About() {
                     src={member.image}
                     className="w-full rounded-lg bg-white object-cover group-hover:opacity-75 max-sm:h-80 sm:aspect-2/1 lg:aspect-square"
                   />
-                  <h3 className="mt-6 text-sm text-gray-700 text-center">
+                  <h3 className="mt-6 text-sm text-center">
                     <span className="absolute inset-0" />
                     {member.name}
                   </h3>
@@ -28,7 +39,7 @@ export default function About() {
                   {member.skills.map((skill) => (
                     <li
                       key={skill}
-                      className="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full shadow-sm"
+                      className={`${badgeStyle} text-xs px-3 py-1 rounded-full shadow-sm`}
                     >
                       {skill}
                     </li>

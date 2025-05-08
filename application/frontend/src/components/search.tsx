@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 import { SearchResult } from "../config/SearchResults";
+import { useTheme } from "../context/ThemeContext";
 
 const categories = [
   "All Categories",
@@ -12,7 +13,7 @@ const categories = [
 ];
 
 const SearchForm = () => {
-  // State declarations
+  const { isColorBlindMode } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -32,7 +33,6 @@ const SearchForm = () => {
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Create portal container dynamically if not present
   useEffect(() => {
     let container = document.getElementById(
       "search-dropdown-portal"
@@ -45,7 +45,6 @@ const SearchForm = () => {
     setPortalContainer(container);
   }, []);
 
-  // Click outside and Escape key handling to close dropdown/results
   const handleClickOutside = useCallback((event: MouseEvent) => {
     const target = event.target as HTMLElement;
     if (
@@ -77,7 +76,6 @@ const SearchForm = () => {
     };
   }, [isDropdownOpen, searchResults.length, handleClickOutside, handleKeyDown]);
 
-  // Positioning for category dropdown
   useEffect(() => {
     if (isDropdownOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -88,7 +86,6 @@ const SearchForm = () => {
     }
   }, [isDropdownOpen]);
 
-  // Positioning for search results dropdown
   useEffect(() => {
     if (inputRef.current && searchResults.length > 0) {
       const rect = inputRef.current.getBoundingClientRect();
@@ -100,7 +97,6 @@ const SearchForm = () => {
     }
   }, [searchResults]);
 
-  // Handlers
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   const handleCategorySelect = (category: string) => {
@@ -109,33 +105,24 @@ const SearchForm = () => {
     inputRef.current?.focus();
   };
 
-  // Handle form submission and normalize response data
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchQuery.trim()) {
       toast.error("Please enter a search query");
       return;
     }
-
     const toastId = toast.loading(
       `Searching for "${searchQuery}" in ${selectedCategory}...`
     );
-
     try {
       const response = await fetch(
-        `http://crisisrelief.duckdns.org:5001/search?query=${encodeURIComponent(
+        `http://localhost:5001/search?query=${encodeURIComponent(
           searchQuery
         )}&category=${encodeURIComponent(selectedCategory)}`
       );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Search failed");
-      }
-
+      if (!response.ok) throw new Error("Search failed");
       const data = await response.json();
-
-      // Normalize response format
       let formattedResults: SearchResult[] = [];
       if (selectedCategory === "All Categories") {
         formattedResults = [
@@ -162,7 +149,6 @@ const SearchForm = () => {
           type: selectedCategory.toLowerCase(),
         }));
       }
-
       setSearchResults(formattedResults);
       toast.update(toastId, {
         render: `Found ${formattedResults.length} results`,
@@ -177,29 +163,35 @@ const SearchForm = () => {
         isLoading: false,
         autoClose: 3000,
       });
-      console.error("Search error:", error);
       setSearchResults([]);
     }
   };
 
-  // Category dropdown component rendered via portal
   const categoryDropdown = (
     <div
       ref={categoryDropdownRef}
-      className="z-[1000] bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700"
+      className="z-[1000] divide-y divide-gray-100 rounded-lg shadow-sm w-44"
       style={{
         position: "absolute",
         top: dropdownPosition.top,
         left: dropdownPosition.left,
+        backgroundColor: isColorBlindMode ? "#fffccf" : "white",
       }}
     >
-      <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+      <ul
+        className="py-2 text-sm"
+        style={{ color: isColorBlindMode ? "#002244" : undefined }}
+      >
         {categories.map((category) => (
           <li key={category}>
             <button
               type="button"
               onClick={() => handleCategorySelect(category)}
-              className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              className={`w-full px-4 py-2 text-left ${
+                isColorBlindMode
+                  ? "hover:bg-blue-100 text-[#0a224e]"
+                  : "hover:bg-gray-100"
+              }`}
             >
               {category}
             </button>
@@ -209,17 +201,16 @@ const SearchForm = () => {
     </div>
   );
 
-  // Search results dropdown rendered via portal with white background and dark text
   const searchResultsDropdown = (
     <div
       ref={searchResultsRef}
-      className="z-[1000] bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
+      className="z-[1000] divide-y divide-gray-100 rounded-lg shadow-sm"
       style={{
         position: "absolute",
         top: resultsPosition.top,
         left: resultsPosition.left,
         width: resultsPosition.width,
-        minWidth: "176px",
+        backgroundColor: isColorBlindMode ? "#fffccf" : "white",
       }}
     >
       {searchResults.map((result) => (
@@ -249,7 +240,6 @@ const SearchForm = () => {
 
   return (
     <form className="max-w-xl mx-auto relative" onSubmit={handleSubmit}>
-      {/* If not set globally, add <ToastContainer position="top-right" /> at your app root */}
       <div className="flex relative">
         <label htmlFor="search-dropdown" className="sr-only">
           Search
@@ -258,12 +248,16 @@ const SearchForm = () => {
           ref={buttonRef}
           type="button"
           onClick={toggleDropdown}
-          className="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+          className="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium border rounded-s-lg"
+          style={{
+            backgroundColor: isColorBlindMode ? "#fffccf" : "#f3f4f6",
+            color: isColorBlindMode ? "#002244" : "#111827",
+            borderColor: isColorBlindMode ? "#0022cc" : "#d1d5db",
+          }}
         >
           {selectedCategory}
           <svg
             className="w-2.5 h-2.5 ms-2.5"
-            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 10 6"
@@ -289,17 +283,25 @@ const SearchForm = () => {
             id="search-dropdown"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+            className="block p-2.5 w-full z-20 text-sm rounded-e-lg border focus:ring-blue-500 focus:border-blue-500"
             placeholder={`Search ${selectedCategory.toLowerCase()}...`}
+            style={{
+              backgroundColor: isColorBlindMode ? "#fffdd0" : "#f9fafb",
+              color: isColorBlindMode ? "#002244" : "#111827",
+              borderColor: isColorBlindMode ? "#0022cc" : "#d1d5db",
+            }}
             autoComplete="off"
           />
           <button
             type="submit"
-            className="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white border rounded-e-lg focus:ring-4"
+            style={{
+              backgroundColor: isColorBlindMode ? "#0022cc" : "#1d4ed8",
+              borderColor: isColorBlindMode ? "#0022cc" : "#1d4ed8",
+            }}
           >
             <svg
               className="w-4 h-4"
-              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 20 20"

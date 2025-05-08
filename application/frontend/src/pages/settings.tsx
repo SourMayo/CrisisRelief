@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 const Settings = () => {
+  const { isColorBlindMode, toggleColorBlindMode } = useTheme();
+
   return (
     <div className="@container min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
       {/* Page Heading */}
@@ -63,6 +66,30 @@ const Settings = () => {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* ✅ Color Blind Mode Toggle */}
+      <div className="max-w-4xl mx-auto px-4 pb-12">
+        <div className="flex items-center justify-between bg-white rounded-xl shadow p-6">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800">
+              Color Blind Mode
+            </h3>
+            <p className="text-gray-600 text-sm mt-1">
+              Enable high-contrast and accessible color palette.
+            </p>
+          </div>
+          <button
+            onClick={toggleColorBlindMode}
+            className={`px-4 py-2 rounded font-medium transition ${
+              isColorBlindMode
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-[#1F2A40] text-white hover:bg-[#27354F]"
+            }`}
+          >
+            {isColorBlindMode ? "Disable" : "Enable"}
+          </button>
+        </div>
       </div>
     </div>
   );

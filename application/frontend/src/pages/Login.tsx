@@ -3,9 +3,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
-// Code adapted from ./Register.tsx
-// Originally authored by Anshaj Vats
-
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -26,13 +23,13 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5001/register", {
+      const response = await fetch("http://localhost:5001/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-        credentials: "include", // important for session cookies
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -54,33 +51,18 @@ const Login = () => {
       setLoading(false);
     }
   };
+
   return (
-    // Background gradient
-    <div className="min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
+    <div className="min-h-screen bg-[#FFFDD0] text-[#002366]">
       <ToastContainer />
       <div className="isolate px-6 py-24 sm:py-32 lg:px-8">
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 top-[-10rem] -z-10 pointer-events-none transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
-        >
-          <div
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-            className="relative left-1/2 -z-10 aspect-1155/678 w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
-          />
-        </div>
-
-        {/* Header and caption */}
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-bold text-gray-800 text-5xl">Login</h2>
-          <p className="mt-2 text-lg/8 text-gray-700">
+          <h2 className="font-bold text-[#002366] text-5xl">Login</h2>
+          <p className="mt-2 text-lg/8 text-[#002366]">
             Who are we helping today?
           </p>
         </div>
 
-        {/* Username and Password */}
         <form
           onSubmit={handleSubmit}
           className="mx-auto mt-16 max-w-xl sm:mt-20"
@@ -90,7 +72,7 @@ const Login = () => {
             <div className="sm:col-span-2">
               <label
                 htmlFor="username"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-[#002366]"
               >
                 Username
               </label>
@@ -102,7 +84,7 @@ const Login = () => {
                   autoComplete="username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                  className="block w-full rounded-md bg-[#E6EEFF] px-3.5 py-2 text-base text-[#002366] outline-1 -outline-offset-1 outline-[#002366] placeholder:text-[#002366] focus:outline-2 focus:-outline-offset-2 focus:outline-[#002366]"
                 />
               </div>
             </div>
@@ -111,7 +93,7 @@ const Login = () => {
             <div className="sm:col-span-2">
               <label
                 htmlFor="password"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-[#002366]"
               >
                 Password
               </label>
@@ -120,10 +102,10 @@ const Login = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
+                  autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                  className="block w-full rounded-md bg-[#E6EEFF] px-3.5 py-2 text-base text-[#002366] outline-1 -outline-offset-1 outline-[#002366] placeholder:text-[#002366] focus:outline-2 focus:-outline-offset-2 focus:outline-[#002366]"
                 />
               </div>
             </div>
@@ -134,9 +116,9 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="block w-full rounded-md bg-[#002366] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#002366]"
             >
-              {"Login"}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>
