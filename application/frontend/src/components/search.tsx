@@ -270,11 +270,45 @@ const SearchForm = () => {
     </div>
   );
 
+
+  async function GetLat(zipcode: string) :Promise<string>{
+    const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
+    const reponse = await fetch(URL)
+    const data = await reponse.json();
+    const coords = parseFloat(data.results[0].geometry.location.lat).toString();
+    return coords;
+  }
+  
+  async function GetLng(zipcode: string) :Promise<string>{
+    const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
+    const reponse = await fetch(URL)
+    const data = await reponse.json();
+    const coords = parseFloat(data.results[0].geometry.location.lng).toString();
+    return coords;
+  }
+
   // // Take inputted query and redirect user to search page
   async function redirectSearch() {
+
+    var latQuery!: string;
+    var lngQuery!: string;
+
+    await GetLat(zipQuery).then((number) => {
+      latQuery = number;
+    });
+
+    await GetLng(zipQuery).then((number) => {
+      lngQuery = number;
+    });
+
+    console.log(latQuery);
+    console.log(lngQuery);
+
     const queries = new URLSearchParams({
       search: searchQuery,
-      zip: zipQuery
+      zip: zipQuery,
+      lat: latQuery,
+      lang: lngQuery
     });
 
     navigate(`/search?${queries.toString()}`);

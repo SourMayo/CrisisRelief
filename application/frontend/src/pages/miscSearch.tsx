@@ -30,8 +30,10 @@ export default function MiscSearch() {
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [inputtedSearch, setInputtedSearch] = useState("");
-    // const [inputtedZip, setInputtedZip] = useState(""); 
-    
+    const [inputtedZip, setInputtedZip] = useState(""); 
+    const [inputtedLat, setInputtedLat] = useState("");
+    const [inputtedLang, setInputtedLang] = useState("");
+
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
     });
@@ -42,7 +44,9 @@ export default function MiscSearch() {
     useEffect (() => {
         const queries = new URLSearchParams(currentUrl.search)
         setInputtedSearch(queries.get("search") ?? "");
-        // setInputtedZip(queries.get("zip") ?? "");  
+        setInputtedZip(queries.get("zip") ?? "");  
+        setInputtedLat(queries.get("lat") ?? "");
+        setInputtedLang(queries.get("lang") ?? "");
 
     }, [currentUrl.search]);
 
@@ -105,6 +109,10 @@ export default function MiscSearch() {
                 region: "us",
             };
 
+            console.log(inputtedZip);
+            request.locationBias.lat = Number(inputtedLat);
+            request.locationBias.lng = Number(inputtedLang);
+            
             const { places } = await Place.searchByText(request);
 
             if (places.length > 0) {
