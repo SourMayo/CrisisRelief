@@ -29,6 +29,8 @@ export default function FoodBanks() {
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [inputtedSearch, setInputtedSearch] = useState("");
+  const [inputtedZip, setInputtedZip] = useState("");
   const [inputtedLat, setInputtedLat] = useState("");
   const [inputtedLang, setInputtedLang] = useState("");
 
@@ -38,9 +40,10 @@ export default function FoodBanks() {
 
   const currentUrl = useLocation();
 
-  // TEMPORARY : Detects change of url
   useEffect (() => {
       const queries = new URLSearchParams(currentUrl.search)
+      setInputtedSearch(queries.get("search") ?? "");
+      setInputtedZip(queries.get("zip") ?? "");
       setInputtedLat(queries.get("lat") ?? "");
       setInputtedLang(queries.get("lang") ?? "");
 
@@ -70,6 +73,8 @@ export default function FoodBanks() {
   }, [selectedFacility]);
 
   useEffect(() => {
+    if (!inputtedSearch || !inputtedLat || !inputtedLang || !isLoaded) return;
+
     async function FindFoodBanks() {
       if (typeof google === "undefined" || !google.maps?.importLibrary) {
         console.warn("Google Maps API not yet loaded.");
@@ -81,7 +86,7 @@ export default function FoodBanks() {
       )) as google.maps.PlacesLibrary;
 
       const request = {
-        textQuery: "Food Bank",
+        textQuery: inputtedSearch,
         fields: [
           "id",
           "editorialSummary",
@@ -142,7 +147,7 @@ export default function FoodBanks() {
     if (isLoaded) {
       FindFoodBanks();
     }
-  }, [isLoaded, currentUrl]); 
+  }, [isLoaded, currentUrl, inputtedSearch, inputtedZip, inputtedLat, inputtedLang]); 
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
