@@ -28,12 +28,14 @@ const MapView = () => {
   const [places, setPlaces] = useState<Place[]>([]);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ", 
+    googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
   });
 
   useEffect(() => {
     // Call backend /google/places endpoint
-    fetch("http://localhost:5001/google/places?query=shelters&lat=37.7749&lng=-122.4194&type=lodging")
+    fetch(
+      "http://crisisrelief.duckdns.org/:5001/google/places?query=shelters&lat=37.7749&lng=-122.4194&type=lodging"
+    )
       .then((res) => res.json())
       .then((data) => {
         setPlaces(data.results || []);
@@ -46,7 +48,11 @@ const MapView = () => {
   if (!isLoaded) return <div>Loading map...</div>;
 
   return (
-    <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={13}>
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={defaultCenter}
+      zoom={13}
+    >
       {places.map((place, index) => (
         <Marker
           key={index}

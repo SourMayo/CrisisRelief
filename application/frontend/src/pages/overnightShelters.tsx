@@ -38,7 +38,7 @@ export default function OvernighShelters() {
       if (!selectedFacility) return;
       try {
         const res = await fetch(
-          `http://localhost:5001/reviews?location_id=${selectedFacility.place_id}`,
+          `http://crisisrelief.duckdns.org/:5001/reviews?location_id=${selectedFacility.place_id}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -97,7 +97,7 @@ export default function OvernighShelters() {
       if (places.length > 0) {
         console.log(places.length);
         const googleFacilities = places.map((place) => ({
-           place_id: place.id,
+          place_id: place.id,
           name: place.displayName ?? "Name Unavaiable",
           address: place.formattedAddress ?? "Address Unavaiable",
           phone:
@@ -258,7 +258,7 @@ export default function OvernighShelters() {
                 if (content.trim().length > 0 && rating) {
                   try {
                     const res = await fetch(
-                      "http://localhost:5001/reviews",
+                      "http://crisisrelief.duckdns.org/:5001/reviews",
                       {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

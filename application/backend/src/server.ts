@@ -17,7 +17,7 @@ const port = 5001;
 // Update CORS config to allow credentials
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://crisisrelief.duckdns.org:3000/",
     credentials: true,
   })
 );

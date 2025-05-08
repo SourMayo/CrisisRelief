@@ -26,14 +26,17 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5001/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include", // this is important for session cookies
-      });
+      const response = await fetch(
+        "http://crisisrelief.duckdns.org/:5001/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include", // this is important for session cookies
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
