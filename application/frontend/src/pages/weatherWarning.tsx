@@ -1,67 +1,124 @@
-import { useState, useEffect } from "react";
-import { Map } from "../assets";
-
-const facilities = [
-  { id: 1, name: "San Francisco" },
-  { id: 2, name: "Mission District" },
-  { id: 3, name: "Sunset" },
-  { id: 4, name: "Bayview" },
-  { id: 5, name: "Tenderloin" },
-];
+import { useState, useEffect, useRef } from "react";
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { toast } from "react-toastify";
 
 export default function WeatherWarning() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedId, setSelectedId] = useState(1);
   const [search, setSearch] = useState("");
   const [customLocation, setCustomLocation] = useState<string | null>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [facilities, setFacilities] = useState([
+    { id: 1, name: "San Francisco" },
+    { id: 2, name: "New York" },
+    { id: 3, name: "Alaska" },
+    { id: 4, name: "Chicago" },
+    { id: 5, name: "Texas" },
+  ]);
 
-  const [hourlyForecast, setHourlyForecast] = useState<string[]>([]);
-  const [weeklyForecast, setWeeklyForecast] = useState<string[]>([]);
+  const [hourlyForecast, setHourlyForecast] = useState<any[]>([]);
+  const [weeklyForecast, setWeeklyForecast] = useState<any[]>([]);
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number | null>(null);
   const [cityDisplayName, setCityDisplayName] = useState("San Francisco");
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
+    lat: 37.7749,
+    lng: -122.4194,
+  });
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  });
+
+  const fetchWeatherData = (data: any) => {
+    const now = new Date();
+    const hourly = data.list
+      .filter((entry: any) => new Date(entry.dt_txt) >= now)
+      .slice(0, 10)
+      .map((entry: any) => {
+        const date = new Date(entry.dt_txt);
+        const hour = date.getHours();
+        const formattedHour = hour % 12 || 12;
+        const ampm = hour >= 12 ? "PM" : "AM";
+        const temp = Math.round(entry.main.temp);
+        const icon = entry.weather[0].main.includes("Rain")
+          ? "⛆"
+          : entry.weather[0].main.includes("Cloud")
+          ? "☁︎"
+          : entry.weather[0].main.includes("Clear")
+          ? "☀︎"
+          : "☁︎";
+        return {
+          time: `${formattedHour}${ampm}`,
+          icon,
+          temp: `${temp}°F`,
+        };
+      });
+
+    const grouped: { [date: string]: any[] } = {};
+    data.list.forEach((entry: any) => {
+      const day = entry.dt_txt.split(" ")[0];
+      if (!grouped[day]) grouped[day] = [];
+      grouped[day].push(entry);
+    });
+
+    const weekly = Object.entries(grouped)
+      .slice(0, 10)
+      .map(([day, entries]: any) => {
+        const noonEntry =
+          entries.find((e: any) => e.dt_txt.includes("12:00:00")) ||
+          entries[Math.floor(entries.length / 2)];
+        const date = new Date(day);
+        const name = date.toLocaleDateString("en-US", { weekday: "long" });
+        const temp = Math.round(noonEntry.main.temp);
+        const description = noonEntry.weather[0].description;
+        const detailedHours = entries.map((e: any) => {
+          const h = new Date(e.dt_txt);
+          const hour = h.getHours();
+          const formattedHour = hour % 12 || 12;
+          const ampm = hour >= 12 ? "PM" : "AM";
+          const temp = Math.round(e.main.temp);
+          const desc = e.weather[0].description;
+          const icon = desc.includes("rain")
+            ? "⛆"
+            : desc.includes("cloud")
+            ? "☁︎"
+            : desc.includes("clear")
+            ? "☀︎"
+            : "☁︎";
+          return `${formattedHour}${ampm}: ${temp}°F – ${icon} ${desc}`;
+        });
+        return { name, temp, description, details: detailedHours };
+      });
+
+    setHourlyForecast(hourly);
+    setWeeklyForecast(weekly);
+    setSelectedDayIndex(null);
+  };
 
   const fetchWeather = async (cityName: string) => {
     try {
       const res = await fetch(
-        `http://localhost:5001/weather?city=${encodeURIComponent(cityName)}`,
-        {
-          credentials: "include",
-        }
+        `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(
+          cityName
+        )}&units=imperial&appid=${import.meta.env.VITE_WEATHER_API_KEY}`
       );
-
       const data = await res.json();
 
-      if (!data || !data.location || !data.current) {
-        alert("City or ZIP not found!");
-        return;
+      if (data.cod !== "200") {
+        toast.error("City or ZIP not found!");
+        return false;
       }
 
-      setCityDisplayName(data.location.name);
-
-      // Generate mock hourly info from "current"
-      const hourly = [
-        `🌡️ Temp: ${data.current.temp_f}°F`,
-        `💨 Wind: ${data.current.wind_mph} mph ${data.current.wind_dir}`,
-        `💧 Humidity: ${data.current.humidity}%`,
-        `☁️ Condition: ${data.current.condition.text}`,
-        `🌫️ Visibility: ${data.current.vis_miles} mi`,
-        `🔽 Feels Like: ${data.current.feelslike_f}°F`,
-        `🔬 AQI (EPA): ${data.current.air_quality["us-epa-index"]}`,
-      ];
-
-      // Weekly forecast mock until you support real forecast
-      const weekly = [...Array(7)].map((_, i) => {
-        const day = new Date();
-        day.setDate(day.getDate() + i);
-        const name = day.toLocaleDateString("en-US", { weekday: "long" });
-        return `☁︎ ${name} ${data.current.temp_f}°F`;
-      });
-
-      setHourlyForecast(hourly);
-      setWeeklyForecast(weekly);
-    } catch {
-      alert("Something went wrong fetching weather!");
+      setCityDisplayName(data.city.name);
+      setMapCenter({ lat: data.city.coord.lat, lng: data.city.coord.lon });
+      fetchWeatherData(data);
+      return true;
+    } catch (err) {
+      toast.error("Something went wrong while fetching weather!");
+      return false;
     }
   };
+
   useEffect(() => {
     const selectedCity =
       facilities.find((f) => f.id === selectedId)?.name || "San Francisco";
@@ -69,33 +126,59 @@ export default function WeatherWarning() {
     fetchWeather(selectedCity);
   }, [selectedId]);
 
-  const handleSearch = () => {
-    if (search.trim()) {
-      setCustomLocation(search);
-      fetchWeather(search);
+  const handleSearch = async () => {
+    if (!search.trim()) return;
+
+    const exists = facilities.find(
+      (f) => f.name.toLowerCase() === search.toLowerCase()
+    );
+
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(
+        search
+      )}&units=imperial&appid=${import.meta.env.VITE_WEATHER_API_KEY}`
+    );
+    const data = await res.json();
+
+    if (data.cod !== "200") {
+      toast.error("City or ZIP not found!");
+      return;
+    }
+
+    setCustomLocation(search);
+    setCityDisplayName(data.city.name);
+    setMapCenter({ lat: data.city.coord.lat, lng: data.city.coord.lon });
+    fetchWeatherData(data);
+
+    if (!exists) {
+      toast.success("Weather loaded. Click below to add!");
+    } else {
+      setSelectedId(exists.id);
+      setCustomLocation(null);
+    }
+  };
+
+  const handleAddLocation = () => {
+    if (customLocation) {
+      const newId = facilities.length + 1;
+      setFacilities([...facilities, { id: newId, name: customLocation }]);
+      setSelectedId(newId);
+      toast.success(`${customLocation} added to the list!`);
+      setCustomLocation(null);
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
-      <div className="lg:hidden">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="w-full bg-[#1F2A40] text-white py-3 text-xl font-semibold tracking-wide"
-        >
-          {sidebarOpen ? "▲ Hide Facilities" : "▼ Show Facilities"}
-        </button>
-      </div>
-
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-[#66B2EF] to-[#AC94FB] relative">
       <aside
-        className={`${
+        ref={sidebarRef}
+        className={`$${
           sidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
         <h2 className="text-[30px] font-bold text-black mb-4">
           Weather Forecast
         </h2>
-
         <input
           type="text"
           placeholder="Search any city or zip..."
@@ -105,11 +188,10 @@ export default function WeatherWarning() {
         />
         <button
           onClick={handleSearch}
-          className="mt-2 w-full bg-[#1F2A40] hover:bg-[#27354F] text-white font-semibold py-2 rounded"
+          className="mt-2 w-full bg-[#1F2A40] hover:bg-gradient-to-r hover:from-[#715FFF] hover:to-[#66B2EF] text-white font-semibold py-2 rounded"
         >
           + Add Location
         </button>
-
         {facilities.map((f) => (
           <button
             key={f.id}
@@ -118,15 +200,26 @@ export default function WeatherWarning() {
               setCustomLocation(null);
               setSidebarOpen(false);
             }}
-            className={`w-full text-left p-4 rounded-lg font-medium transition ${
+            className={`w-full text-left p-4 rounded-lg font-medium transform transition duration-200 hover:scale-105 ${
               selectedId === f.id && !customLocation
-                ? "bg-[#715FFF] text-white"
+                ? "bg-[#715FFF] text-white border-l-4 border-white"
                 : "bg-[#1F2A40] hover:bg-[#27354F]"
             }`}
           >
             <h3 className="text-lg font-semibold">{f.name}</h3>
           </button>
         ))}
+        {customLocation &&
+          !facilities.some(
+            (f) => f.name.toLowerCase() === customLocation.toLowerCase()
+          ) && (
+            <button
+              onClick={handleAddLocation}
+              className="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded"
+            >
+              ➕ Add "{customLocation}" to Sidebar
+            </button>
+          )}
       </aside>
 
       <main className="flex-1 flex justify-center p-10 overflow-y-auto">
@@ -135,7 +228,6 @@ export default function WeatherWarning() {
             {cityDisplayName}
           </h1>
 
-          {/* Hourly Forecast */}
           <section className="bg-gray-800 bg-opacity-60 rounded-lg p-6 mb-8 shadow-md">
             <h2 className="text-lg font-small text-[#BCD3F2] mb-4 text-left">
               Hourly Forecast
@@ -144,15 +236,15 @@ export default function WeatherWarning() {
               {hourlyForecast.map((hour, index) => (
                 <div
                   key={index}
-                  className="bg-gray-700 text-white rounded-lg p-3 flex items-center justify-center"
+                  className="bg-gray-700 text-white rounded-lg p-3 flex flex-col items-center justify-center transform transition duration-300 hover:scale-105"
                 >
-                  {hour}
+                  <span className="text-sm font-semibold">{hour.time}</span>
+                  <span className="text-base font-bold">{hour.temp}</span>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Weekly + Map */}
           <div className="flex flex-wrap lg:flex-nowrap justify-between gap-6">
             <section className="bg-gray-800 bg-opacity-60 rounded-lg p-8 shadow-md w-full lg:w-1/2 xl:w-1/2">
               <h2 className="text-xl font-normal text-[#BCD3F2] mb-6 text-left">
@@ -160,19 +252,44 @@ export default function WeatherWarning() {
               </h2>
               <ul className="text-white text-left divide-y divide-gray-500">
                 {weeklyForecast.map((forecast, index) => (
-                  <li key={index} className="py-3 text-lg">
-                    {forecast}
+                  <li
+                    key={index}
+                    onClick={() => setSelectedDayIndex(index)}
+                    className={`py-3 text-lg cursor-pointer hover:bg-[#715FFF] px-2 rounded transition ${
+                      selectedDayIndex === index
+                        ? "bg-[#715FFF] text-white"
+                        : ""
+                    }`}
+                  >
+                    ☁︎ {forecast.name} {forecast.temp}°F –{" "}
+                    {forecast.description}
                   </li>
                 ))}
               </ul>
+              {selectedDayIndex !== null && (
+                <div className="mt-4 text-white">
+                  <h3 className="text-md font-semibold mb-2">Details:</h3>
+                  <ul className="pl-4 list-disc space-y-1">
+                    {weeklyForecast[selectedDayIndex].details.map(
+                      (d: string, i: number) => (
+                        <li key={i}>{d}</li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              )}
             </section>
 
             <div className="bg-[#1F2A40] rounded-xl shadow-md p-6 h-[500px] w-full lg:w-1/2 xl:w-1/2">
-              <img
-                src={Map}
-                alt="Map preview"
-                className="w-full h-full object-cover rounded-md"
-              />
+              {isLoaded && (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "100%" }}
+                  center={mapCenter}
+                  zoom={11}
+                >
+                  <Marker position={mapCenter} />
+                </GoogleMap>
+              )}
             </div>
           </div>
         </div>
