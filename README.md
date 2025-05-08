@@ -37,10 +37,10 @@ The following step should be performed by every student in the team, including t
    |:--------:|:--------------------:|:---------------------:|:--------------------:|:---------------------:|:---------:|:---------------------------:|
    |    #1    |  Anshaj Vats                    |     avats@sfsu.edu                  |     AnshajVats                 |       Anshaj Vats                |     Team-lead     |             Yes            |
    |    #2    |           Francis Aviles           |              faviles1@sfsu.edu         |        AviGeck              |          Ghome            | Database Admin |             Yes              |
-   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Backend Lead / Database       |             Yes              |
-   |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master / Frontend Lead     |             Yes              |
+   |    #3    |         Ayesha Irum             |      airum@sfsu.edu                 |      AyeshaIrum                |        ayeshairum               |   Backend Lead       |             Yes              |
+   |    #4    |     Geoart Corral                 |            gcorral2@sfsu.edu            |      SourMayo               |          sourmayo             |      GitHub Master     |             Yes              |
    |    #5    |           Karla Cardenas Andrade           |      kcardenasandrade@sfsu.edu                 |             KCAndrade         |               karla_C        |     Frontend    |             Yes              |
-   |    #6    |           Kyle Nguyen           |            knguyen68@sfsu.edu           |           KyleNguyen00           |           ky_n            |     Technical Writer / Frontend      |             Yes              |
+   |    #6    |           Kyle Nguyen           |            knguyen68@sfsu.edu           |           KyleNguyen00           |           ky_n            |     Technical Writer      |             Yes              |
    |    #7    |                      |                       |                      |                       |           |             No              |
 
    - A role, in this course, indicates the main responsibility each student will handle, but **EVERY STUDENT** must 
