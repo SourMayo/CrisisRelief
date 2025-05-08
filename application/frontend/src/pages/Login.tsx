@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        "http://crisisrelief.duckdns.org/:5001/login",
+        "http://crisisrelief.duckdns.org:5001/login",
         {
           method: "POST",
           headers: {

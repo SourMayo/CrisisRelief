@@ -34,7 +34,7 @@ const MapView = () => {
   useEffect(() => {
     // Call backend /google/places endpoint
     fetch(
-      "http://crisisrelief.duckdns.org/:5001/google/places?query=shelters&lat=37.7749&lng=-122.4194&type=lodging"
+      "http://crisisrelief.duckdns.org:5001/google/places?query=shelters&lat=37.7749&lng=-122.4194&type=lodging"
     )
       .then((res) => res.json())
       .then((data) => {

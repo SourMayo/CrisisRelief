@@ -48,7 +48,7 @@ export default function MedicalResources() {
       if (!selectedFacility) return;
       try {
         const res = await fetch(
-          `hhttp://crisisrelief.duckdns.org/:5001/reviews?location_id=${selectedFacility.place_id}`
+          `http://crisisrelief.duckdns.org:5001/reviews?location_id=${selectedFacility.place_id}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -264,7 +264,7 @@ export default function MedicalResources() {
                 if (content.trim().length > 0 && rating) {
                   try {
                     const res = await fetch(
-                      "http://crisisrelief.duckdns.org/:5001/reviews",
+                      "http://crisisrelief.duckdns.org:5001/reviews",
                       {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
