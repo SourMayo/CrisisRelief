@@ -278,13 +278,11 @@ const SearchForm = () => {
     const data = await reponse.json();
     
     //If zipcode is invalide, return the latitude for SF
-    if(data.status == "ZERO_RESULTS"){
+    if(data.status == "ZERO_RESULTS")
       Lat = "37.7561438";
-    }
 
-    else{
+    else
       Lat = parseFloat(data.results[0].geometry.location.lat).toString();
-    }
 
     return Lat;
   }
@@ -302,7 +300,7 @@ const SearchForm = () => {
     //If zipcode is invalide, return the longitude for SF
     if(data.status == "ZERO_RESULTS")
       Lat = "-122.4325682"; 
-    
+
     else
       Lat = parseFloat(data.results[0].geometry.location.lng).toString();
 
