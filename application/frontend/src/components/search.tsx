@@ -272,25 +272,41 @@ const SearchForm = () => {
 
 
   async function GetLat(zipcode: string) :Promise<string>{
-    if (zipcode == "") {
-      zipcode = "94114";
-    };
+    var Lat;
     const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
     const reponse = await fetch(URL)
     const data = await reponse.json();
-    const coords = parseFloat(data.results[0].geometry.location.lat).toString();
-    return coords;
+    
+    //If zipcode is invalide, return the latitude for SF
+    if(data.status == "ZERO_RESULTS"){
+      Lat = "37.7561438";
+    }
+
+    else{
+      Lat = parseFloat(data.results[0].geometry.location.lat).toString();
+    }
+
+    return Lat;
   }
   
   async function GetLng(zipcode: string) :Promise<string>{
     if (zipcode == "") {
       zipcode = "94114";
     };
+
+    var Lat;
     const URL = 'https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:' + zipcode + '&key=AIzaSyA8kBvyVuMIntoFV4idRZXleBRXiLl6-mQ';
     const reponse = await fetch(URL)
     const data = await reponse.json();
-    const coords = parseFloat(data.results[0].geometry.location.lng).toString();
-    return coords;
+    
+    //If zipcode is invalide, return the longitude for SF
+    if(data.status == "ZERO_RESULTS")
+      Lat = "-122.4325682"; 
+    
+    else
+      Lat = parseFloat(data.results[0].geometry.location.lng).toString();
+
+    return Lat;
   }
 
   // // Take inputted query and redirect user to search page
