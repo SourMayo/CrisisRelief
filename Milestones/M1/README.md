@@ -723,7 +723,7 @@ in your default branch (Master or Main branch)**
 
       | **Item**               | **Credentials**                                      |
       |------------------------|------------------------------------------------------|
-      | **Website URL**        | http://crisisrelief.duckdns.org:3000/                                         |
+      | **Website URL**        | http://crisisrelief.duckdns.org:5173/                                         |
       | **SSH URL**            | ssh -i ./application/credentials/CSC648Team5PairKey.pem ec2-user@crisisrelief.duckdns.org                                     |
       | **SSH Username**       | ec2-user                                |
       | **SSH Password/Key**   | In credentials folder                            |

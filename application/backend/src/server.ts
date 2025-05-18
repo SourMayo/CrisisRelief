@@ -10,20 +10,25 @@ import {
 } from "./routes";
 import { searchController } from "./controllers/searchController";
 import { sessionMiddleware } from "./middlewares/sessions";
+import dotenv from "dotenv";
 
 const app = express();
 const port = 5001;
 
+dotenv.config();
+
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+
 // Update CORS config to allow credentials
 app.use(
   cors({
-    origin: "http://crisisrelief.duckdns.org:5173",
+    origin: allowedOrigin,
     credentials: true,
   })
 );
 
 //cors({
-// origin: "http://crisisrelief.duckdns.org:3000",
+// origin: process.env.FRONTEND_URL,
 //credentials: true,
 
 app.use(sessionMiddleware);

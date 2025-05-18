@@ -9,7 +9,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
-  const apiUrl = "http://crisisrelief.duckdns.org:5001";
+  const apiUrl = `${import.meta.env.VITE_API_URL}`;
   const [formData, setFormData] = UseState({
     firstName: "",
     lastName: "",

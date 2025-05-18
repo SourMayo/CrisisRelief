@@ -130,7 +130,7 @@ const SearchForm = () => {
 
     // try {
     //   const response = await fetch(
-    //     `http://crisisrelief.duckdns.org:5001/search?query=${encodeURIComponent(
+    //     `${import.meta.env.VITE_API_URL}/search?query=${encodeURIComponent(
     //       searchQuery
     //     )}&category=${encodeURIComponent(selectedCategory)}&zip=${encodeURIComponent(
     //       zipQuery

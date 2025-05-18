@@ -4,6 +4,13 @@ FROM node:18-alpine AS builder
 # Set the working directory
 WORKDIR /app
 
+# Accept the build arg
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+# Set the VITE_API_URL in .env before build
+RUN echo "VITE_API_URL=$VITE_API_URL" > .env
+
 # Copy package.json and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install

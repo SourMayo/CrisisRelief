@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        "http://crisisrelief.duckdns.org:5001/login",
+        `${import.meta.env.VITE_API_URL}/login`,
         {
           method: "POST",
           headers: {

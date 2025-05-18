@@ -70,7 +70,7 @@ const ProfileSettings = () => {
       try {
         const response = await fetch(
           // TODO - No backend yet
-          // "http://crisisrelief.duckdns.org:5001/profile-settings",
+          // `${import.meta.env.VITE_API_URL}/profile-settings`,
           {
             method: "POST",
             headers: {

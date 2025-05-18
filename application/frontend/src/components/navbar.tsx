@@ -27,7 +27,7 @@ export default function Navbar() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch("http://crisisrelief.duckdns.org:5001/auth/check", {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/check`, {
           credentials: "include",
         });
         setIsLoggedIn(response.ok);
@@ -46,7 +46,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://crisisrelief.duckdns.org:5001/login/logout", {
+      await fetch(`${import.meta.env.VITE_API_URL}/login/logout`, {
         method: "POST",
         credentials: "include",
       });

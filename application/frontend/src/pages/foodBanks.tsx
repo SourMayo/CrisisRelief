@@ -42,10 +42,10 @@ export default function FoodBanks() {
 
   useEffect (() => {
       const queries = new URLSearchParams(currentUrl.search)
-      setInputtedSearch(queries.get("search") ?? "");
-      setInputtedZip(queries.get("zip") ?? "");
-      setInputtedLat(queries.get("lat") ?? "");
-      setInputtedLang(queries.get("lang") ?? "");
+      setInputtedSearch(queries.get("search") ?? "food banks");
+      setInputtedZip(queries.get("zip") ?? "94114");
+      setInputtedLat(queries.get("lat") ?? "37.7561438");
+      setInputtedLang(queries.get("lang") ?? "-122.4325682");
 
   }, [currentUrl.search]);
 
@@ -54,7 +54,7 @@ export default function FoodBanks() {
       if (!selectedFacility) return;
       try {
         const res = await fetch(
-          `http://crisisrelief.duckdns.org:5001/reviews?location_id=${selectedFacility.place_id}`,
+          `${import.meta.env.VITE_API_URL}/reviews?location_id=${selectedFacility.place_id}`,
         );
         if (res.ok) {
           const data = await res.json();
@@ -277,7 +277,7 @@ export default function FoodBanks() {
                 if (content.trim().length > 0 && rating) {
                   try {
                     const res = await fetch(
-                      "http://crisisrelief.duckdns.org:5001/reviews",
+                      `${import.meta.env.VITE_API_URL}/reviews`,
                       {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
