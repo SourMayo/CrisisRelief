@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import {Card, CardHeader, CardBody, Image} from "@heroui/react";
+import { useState } from "react";
 
 import {
   foodbankIcon,
@@ -9,51 +10,89 @@ import {
   generalSearchIcon,
 } from "../assets";
 
+// Define language type
+type Lang = "en" | "vi";
+
+// Translation strings for English and Vietnamese
+const translations: Record<Lang, { [key: string]: string }> = {
+  en: {
+    prompt: "What kind of support are you looking for?",
+    medicalAssistance: "Medical Assistance",
+    medicalDescription: "Find care according to your needs",
+    overnightShelters: "Overnight Shelters",
+    overnightDescription: "Find a roof to stay under",
+    foodBanks: "Food Banks",
+    foodDescription: "Get the food you need",
+    weatherWarnings: "Weather Warnings",
+    weatherDescription: "Be prepared for outside",
+    generalSearch: "General Search",
+    generalDescription: "Don't have anything specific?",
+    language: "Language",
+  },
+  vi: {
+    prompt: "Bạn đang tìm kiếm hỗ trợ gì?",
+    medicalAssistance: "Hỗ Trợ Y Tế",
+    medicalDescription: "Tìm dịch vụ chăm sóc theo nhu cầu của bạn",
+    overnightShelters: "Nơi Trú Ẩn Qua Đêm",
+    overnightDescription: "Tìm nơi trú ẩn",
+    foodBanks: "Ngân Hàng Thực Phẩm",
+    foodDescription: "Nhận thực phẩm bạn cần",
+    weatherWarnings: "Cảnh Báo Thời Tiết",
+    weatherDescription: "Chuẩn bị cho thời tiết bên ngoài",
+    generalSearch: "Tìm Kiếm Chung",
+    generalDescription: "Không có nhu cầu cụ thể?",
+    language: "Ngôn ngữ",
+  },
+};
+
 const Resources = () => {
+  const [lang, setLang] = useState<Lang>("en");
+  const t = translations[lang];
+
+  const resourceOptions = [
+    {
+      to: "/medicalResources",
+      icon: medicalIcon,
+      label: t.medicalAssistance,
+      description: t.medicalDescription,
+    },
+    {
+      to: "/overnightShelters",
+      icon: overnightIcon,
+      label: t.overnightShelters,
+      description: t.overnightDescription,
+    },
+    {
+      to: "/foodBanks",
+      icon: foodbankIcon,
+      label: t.foodBanks,
+      description: t.foodDescription,
+    },
+    {
+      to: "/weatherWarnings",
+      icon: weatherIcon,
+      label: t.weatherWarnings,
+      description: t.weatherDescription,
+    },
+    {
+      to: "/search",
+      icon: generalSearchIcon,
+      label: t.generalSearch,
+      description: t.generalDescription,
+    }
+  ];
+
   return (
     <div className="@container min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB]">
       {/* Prompt */}
       <div className="py-16"/>
       <p className="pb-8 px-4 text-center font-bold text-gray-800 text-4xl">
-        What kind of support are you looking for?
+        {t.prompt}
       </p>
 
       {/* Resource Options */}
       <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 sm:gap-8 p-4">
-        {[
-          // Contents
-          {
-            to: "/medicalResources",
-            icon: medicalIcon,
-            label: "Medical Assistance",
-            description: "Find care according to your needs",
-          },
-          {
-            to: "/overnightShelters",
-            icon: overnightIcon,
-            label: "Overnight Shelters",
-            description: "Find a roof to stay under",
-          },
-          {
-            to: "/foodBanks",
-            icon: foodbankIcon,
-            label: "Food Banks",
-            description: "Get the food you need",
-          },
-          {
-            to: "/weatherWarnings",
-            icon: weatherIcon,
-            label: "Weather Warnings",
-            description: "Be prepared for outside",
-          },
-          {
-            to: "/search",
-            icon: generalSearchIcon,
-            label: "General Search",
-            description: "Don't have anything specific?",
-          }
-
-        ].map(({ to, icon, label, description }) => (
+        {resourceOptions.map(({ to, icon, label, description }) => (
           // Display
           <Link
             to={to}
@@ -76,29 +115,24 @@ const Resources = () => {
             </Card>
           </Link>
         ))}
+      </div>
 
-        {/* Original navigation icon code before use of cards */}
-          {/* 
-          <Link
-            to={to}
-            key={label}
-            className="w-full sm:w-[45%] md:w-[30%] lg:w-[22%] p-2"
+      {/* Language Switcher */}
+      <div className="flex justify-center mt-8 pb-8">
+        <div className="flex items-center gap-x-2">
+          <label htmlFor="language-select" className="text-gray-800 font-semibold">
+            {t.language}:
+          </label>
+          <select
+            id="language-select"
+            onChange={(e) => setLang(e.target.value as Lang)}
+            value={lang}
+            className="p-2 rounded border border-gray-300 bg-white text-gray-800"
           >
-            <div className="flex flex-col items-center text-center hover:scale-105 transition-transform duration-300">
-              <div className="w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
-                <img
-                  src={icon}
-                  alt={`${label} Icon`}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <p className="mt-4 text-gray-800 font-bold text-sm md:text-lg">
-                {label}
-              </p>
-            </div>
-          </Link> 
-          */}
-
+            <option value="en">English</option>
+            <option value="vi">Tiếng Việt</option>
+          </select>
+        </div>
       </div>
     </div>
   );

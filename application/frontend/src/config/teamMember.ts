@@ -46,7 +46,7 @@ const teamMembers = [
     bio: "Hello. I am Kyle Nguyen. I am on my final year at SFSU and am looking forward to working with all of you" +
         "I enjoy going out with my friends during my free time",
     role: "Technical Writer",
-    skills: ["Node.js", "Python", "C++", "React"],
+    skills: ["Node.js", "Python", "C++", "React","HTML","CSS"],
   },
   {
     id: "geoartCorral",

@@ -1,6 +1,57 @@
 import { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 
+// Define language type
+type Lang = "en" | "vi";
+
+// Translation strings for English and Vietnamese
+const translations: Record<Lang, { [key: string]: string }> = {
+  en: {
+    title: "Medical Help",
+    hideFacilities: "▲ Hide Facilities",
+    showFacilities: "▼ Show Facilities",
+    hoursOpen: "Hours Open",
+    phone: "Phone",
+    description: "Description",
+    website: "Website",
+    loadingMap: "Loading map...",
+    leaveReview: "Leave a Review",
+    reviewContent: "Your review",
+    submitReview: "Submit Review",
+    reviews: "Reviews",
+    noReviews: "No reviews yet. Be the first to leave one!",
+    language: "Language",
+    dayUnavailable: "Day Unavailable",
+    numberUnavailable: "Number Unavailable",
+    websiteUnavailable: "Website Unavailable",
+    descriptionUnavailable: "Description Unavailable",
+    nameUnavailable: "Name Unavaiable",
+    addressUnavailable: "Address Unavaiable",
+  },
+  vi: {
+    title: "Hỗ Trợ Y Tế",
+    hideFacilities: "▲ Ẩn Cơ Sở",
+    showFacilities: "▼ Hiển Thị Cơ Sở",
+    hoursOpen: "Giờ Mở Cửa",
+    phone: "Điện thoại",
+    description: "Mô tả",
+    website: "Trang web",
+    loadingMap: "Đang tải bản đồ...",
+    leaveReview: "Để Lại Đánh Giá",
+    reviewContent: "Đánh giá của bạn",
+    submitReview: "Gửi Đánh Giá",
+    reviews: "Đánh Giá",
+    noReviews: "Chưa có đánh giá nào. Hãy là người đầu tiên để lại đánh giá!",
+    language: "Ngôn ngữ",
+    dayUnavailable: "Không có thông tin ngày",
+    numberUnavailable: "Không có số điện thoại",
+    websiteUnavailable: "Không có trang web",
+    descriptionUnavailable: "Không có mô tả",
+    nameUnavailable: "Không có tên",
+    addressUnavailable: "Không có địa chỉ",
+  },
+};
+
 interface Review {
   review_id: number;
   content: string;
@@ -38,6 +89,8 @@ export default function MedicalResources() {
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [lang, setLang] = useState<Lang>("en");
+  const t = translations[lang];
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyDfeXWLWeO3WA15MY8AD55aprDhvuTOKFQ",
@@ -96,7 +149,7 @@ export default function MedicalResources() {
           "websiteURI",
           "userRatingCount",
         ],
-        language: "en-US",
+        language: lang === "en" ? "en-US" : "vi",
         maxResultCount: 8,
         locationBias: { lat: 37.4161493, lng: -122.0812166 }, //Center on SF
         region: "us",
@@ -108,21 +161,21 @@ export default function MedicalResources() {
         console.log(places.length);
         const googleFacilities = places.map((place) => ({
           place_id: place.id,
-          name: place.displayName ?? "Name Unavaiable",
-          address: place.formattedAddress ?? "Address Unavaiable",
+          name: place.displayName ?? t.nameUnavailable,
+          address: place.formattedAddress ?? t.addressUnavailable,
           phone:
             place.internationalPhoneNumber ??
             place.nationalPhoneNumber ??
-            "Number Unavailable",
-          website: place.websiteURI ?? "Website Unavailable",
+            t.numberUnavailable,
+          website: place.websiteURI ?? t.websiteUnavailable,
           lat: place.location?.lat() ?? 0,
           lng: place.location?.lng() ?? 0,
-          description: place.editorialSummary ?? "Description Unavailable",
+          description: place.editorialSummary ?? t.descriptionUnavailable,
           hours: Array.from(
             { length: 7 },
             (_, j) =>
               place.regularOpeningHours?.weekdayDescriptions?.[j] ??
-              "Day Unavailable"
+              t.dayUnavailable
           ),
         }));
 
@@ -136,7 +189,7 @@ export default function MedicalResources() {
     if (isLoaded) {
       FindHospitals();
     }
-  }, [isLoaded]);
+  }, [isLoaded, lang, t]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-linear-to-br/increasing from-[#66B2EF] to-[#AC94FB] relative">
@@ -146,7 +199,7 @@ export default function MedicalResources() {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="w-full bg-[#1F2A40] text-white py-3 text-xl font-semibold tracking-wide"
         >
-          {sidebarOpen ? "▲ Hide Facilities" : "▼ Show Facilities"}
+          {sidebarOpen ? t.hideFacilities : t.showFacilities}
         </button>
       </div>
 
@@ -156,7 +209,7 @@ export default function MedicalResources() {
           sidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-80 bg-[#BCD3F2] rounded-lg text-white p-6 space-y-4 max-h-[95vh] overflow-y-auto mt-4 lg:mt-8 lg:static absolute z-50`}
       >
-        <h2 className="text-[30px] font-bold text-black mb-4">Medical Help</h2>
+        <h2 className="text-[30px] font-bold text-black mb-4">{t.title}</h2>
 
         {/* Close button on mobile only */}
         <div className="lg:hidden mb-2">
@@ -164,7 +217,7 @@ export default function MedicalResources() {
             onClick={() => setSidebarOpen(false)}
             className="text-black bg-white rounded px-3 py-1 font-semibold hover:bg-gray-200 transition"
           >
-            ▲ Hide Facilities
+            {t.hideFacilities}
           </button>
         </div>
 
@@ -183,9 +236,23 @@ export default function MedicalResources() {
           >
             <h3 className="text-lg font-semibold">{f.name}</h3>
             <p className="text-med ">{f.address}</p>
-            {/* <span className="text-med text-indigo-300">{f.type}</span> */}
           </button>
         ))}
+        
+        {/* Language Switcher */}
+        <div className="mt-4">
+          <label className="block text-black font-semibold mb-2">
+            {t.language}:
+          </label>
+          <select
+            onChange={(e) => setLang(e.target.value as Lang)}
+            value={lang}
+            className="p-2 rounded border border-gray-300 bg-white text-gray-800 w-full"
+          >
+            <option value="en">English</option>
+            <option value="vi">Tiếng Việt</option>
+          </select>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -195,12 +262,12 @@ export default function MedicalResources() {
           <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6 space-y-2">
             <h1 className="text-xl font-bold">🏥 {selectedFacility?.name}</h1>
             <p className="text-gray-300">📍 {selectedFacility?.address}</p>
-            <p className="text-gray-300">📞 Phone: {selectedFacility?.phone}</p>
+            <p className="text-gray-300">📞 {t.phone}: {selectedFacility?.phone}</p>
             <p className="text-gray-300">
-              📝 Description: {selectedFacility?.description}
+              📝 {t.description}: {selectedFacility?.description}
             </p>
             <p className="text-gray-300">
-              🌐 Website:{" "}
+              🌐 {t.website}:{" "}
               <a
                 href={selectedFacility?.website}
                 target="_blank"
@@ -216,7 +283,7 @@ export default function MedicalResources() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Hours Box */}
             <div className="bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
-              <h2 className="text-[20px] font-bold mb-4">Hours Open</h2>
+              <h2 className="text-[20px] font-bold mb-4">{t.hoursOpen}</h2>
               <ul className="space-y-2 text-med leading-relaxed">
                 {selectedFacility?.hours.map((hour: string, index: number) => (
                   <li key={index}>{hour}</li>
@@ -243,17 +310,17 @@ export default function MedicalResources() {
                   />
                 </GoogleMap>
               ) : (
-                <div className="text-white">Loading map...</div>
+                <div className="text-white">{t.loadingMap}</div>
               )}
             </div>
           </div>
           {/* Reviews Section */}
           <div className="w-full bg-[#1F2A40] text-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
+            <h2 className="text-xl font-bold mb-4">{t.leaveReview}</h2>
             <form
               onSubmit={async (e) => {
-                e.preventDefault();
                 console.log("Submitting review...");
+                e.preventDefault();
                 const form = e.currentTarget;
                 const content = form.review.value;
                 const rating = form.rating.value;
@@ -334,7 +401,7 @@ export default function MedicalResources() {
                 type="submit"
                 className="mt-4 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white font-semibold"
               >
-                Submit Review
+                {t.submitReview}
               </button>
             </form>
             {/* Display Reviews */}

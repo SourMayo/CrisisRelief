@@ -7,6 +7,59 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate as UseNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
+// Define language type
+type Lang = "en" | "vi";
+
+// Translation strings for English and Vietnamese
+const translations: Record<Lang, { [key: string]: string }> = {
+  en: {
+    register: "Register",
+    subtitle: "Detailed information about the Help near you.",
+    firstName: "First name",
+    lastName: "Last name",
+    username: "Username",
+    email: "Email",
+    password: "Password",
+    phoneNumber: "Phone number",
+    agreePolicy: "By selecting this, you agree to our",
+    privacyPolicy: "privacy policy",
+    devMode: "Development mode (disable validations)",
+    signUp: "Sign Up",
+    saving: "Saving...",
+    loading: "Loading...",
+    passwordRequirements: "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
+    invalidEmail: "Please enter a valid email address",
+    usernameNoSpaces: "Username should not contain spaces",
+    invalidPassword: "Password does not meet security requirements",
+    regFailed: "Registration failed",
+    regSuccess: "Request simulated successfully! Redirecting...",
+    regError: "An error occurred while registering",
+  },
+  vi: {
+    register: "Đăng ký",
+    subtitle: "Thông tin chi tiết về Trợ giúp gần bạn.",
+    firstName: "Tên",
+    lastName: "Họ",
+    username: "Tên người dùng",
+    email: "Email",
+    password: "Mật khẩu",
+    phoneNumber: "Số điện thoại",
+    agreePolicy: "Bằng cách chọn, bạn đồng ý với",
+    privacyPolicy: "chính sách bảo mật",
+    devMode: "Chế độ phát triển (tắt xác thực)",
+    signUp: "Đăng ký",
+    saving: "Đang lưu...",
+    loading: "Đang tải...",
+    passwordRequirements: "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.",
+    invalidEmail: "Vui lòng nhập địa chỉ email hợp lệ",
+    usernameNoSpaces: "Tên người dùng không được chứa khoảng trắng",
+    invalidPassword: "Mật khẩu không đáp ứng yêu cầu bảo mật",
+    regFailed: "Đăng ký thất bại",
+    regSuccess: "Yêu cầu đã được mô phỏng thành công! Đang chuyển hướng...",
+    regError: "Đã xảy ra lỗi khi đăng ký",
+  },
+};
+
 const signUp = () => {
   const [agreed, setAgreed] = UseState(false);
   const apiUrl = `${import.meta.env.VITE_API_URL}`;
@@ -24,6 +77,8 @@ const signUp = () => {
 
   const [showPassword, setShowPassword] = UseState(false);
   const [isPasswordValid, setIsPasswordValid] = UseState(true);
+  const [lang, setLang] = UseState<Lang>("en");
+  const t = translations[lang];
 
   const validatePassword = (password: string) => {
     const minLength = password.length >= 8;
@@ -46,19 +101,19 @@ const signUp = () => {
     if (!devMode) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
-        toast.error("Please enter a valid email address");
+        toast.error(t.invalidEmail);
         return;
       }
       if (formData.username.includes(" ")) {
-        toast.error("Username should not contain spaces");
+        toast.error(t.usernameNoSpaces);
         return;
       }
       if (!validatePassword(formData.password)) {
-        toast.error("Password does not meet security requirements");
+        toast.error(t.invalidPassword);
         return;
       }
     }
-    const toastId = toast.loading("Loading...");
+    const toastId = toast.loading(t.loading);
     setLoading(true);
     // Simulate a backend request
     try {
@@ -70,17 +125,17 @@ const signUp = () => {
       if (!response.ok) {
         const errorData = await response.json();
         toast.dismiss(toastId);
-        toast.error(errorData.message || "Registration failed");
+        toast.error(errorData.message || t.regFailed);
         return;
       }
       toast.dismiss(toastId);
-      toast.success("Request simulated successfully! Redirecting...");
+      toast.success(t.regSuccess);
       setTimeout(() => {
         navigate("/Login");
       }, 1000);
     } catch (error) {
       toast.dismiss(toastId);
-      toast.error("An error occurred while registering");
+      toast.error(t.regError);
       console.error("Registration error:", error);
     } finally {
       setLoading(false);
@@ -104,9 +159,9 @@ const signUp = () => {
           />
         </div>
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-bold text-gray-800 text-5xl">Register</h2>
+          <h2 className="font-bold text-gray-800 text-5xl">{t.register}</h2>
           <p className="mt-2 text-lg/8 text-gray-700">
-            Detailed information about the Help near you.
+            {t.subtitle}
           </p>
         </div>
         <form
@@ -119,7 +174,7 @@ const signUp = () => {
                 htmlFor="firstName"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                First name
+                {t.firstName}
               </label>
               <div className="mt-2.5">
                 <input
@@ -138,7 +193,7 @@ const signUp = () => {
                 htmlFor="lastName"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Last name
+                {t.lastName}
               </label>
               <div className="mt-2.5">
                 <input
@@ -157,7 +212,7 @@ const signUp = () => {
                 htmlFor="username"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Username
+                {t.username}
               </label>
               <div className="mt-2.5">
                 <input
@@ -176,7 +231,7 @@ const signUp = () => {
                 htmlFor="email"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Email
+                {t.email}
               </label>
               <div className="mt-2.5">
                 <input
@@ -195,7 +250,7 @@ const signUp = () => {
                 htmlFor="password"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Password
+                {t.password}
               </label>
               <div className="relative mt-2.5">
                 <input
@@ -227,8 +282,7 @@ const signUp = () => {
 
               {!isPasswordValid && (
                 <p className="text-red-500 text-sm mt-2">
-                  Password must be at least 8 characters, include uppercase,
-                  lowercase, number, and special character.
+                  {t.passwordRequirements}
                 </p>
               )}
             </div>
@@ -237,7 +291,7 @@ const signUp = () => {
                 htmlFor="phone-number"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Phone number
+                {t.phoneNumber}
               </label>
               <div className="mt-2.5">
                 <div className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
@@ -286,14 +340,14 @@ const signUp = () => {
                 </Switch>
               </div>
               <Label className="text-sm/6 text-gray-700">
-                By selecting this, you agree to our{" "}
+                {t.agreePolicy}{" "}
                 <a
                   href="/privacy-policy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-semibold text-indigo-600 underline hover:text-indigo-800"
                 >
-                  privacy&nbsp;policy
+                  {t.privacyPolicy}
                 </a>
                 .
               </Label>
@@ -308,7 +362,7 @@ const signUp = () => {
               className="mr-2"
             />
             <label htmlFor="devMode" className="text-sm text-gray-700">
-              Development mode (disable validations)
+              {t.devMode}
             </label>
           </div>
           <div className="mt-10">
@@ -317,8 +371,20 @@ const signUp = () => {
               disabled={loading}
               className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              {loading ? "Saving..." : "Sign Up"}
+              {loading ? t.saving : t.signUp}
             </button>
+          </div>
+          
+          {/* Language Switcher */}
+          <div className="mt-4 flex justify-end">
+            <select
+              onChange={(e) => setLang(e.target.value as Lang)}
+              value={lang}
+              className="p-2 rounded border border-gray-300 bg-white text-gray-800"
+            >
+              <option value="en">English</option>
+              <option value="vi">Tiếng Việt</option>
+            </select>
           </div>
         </form>
       </div>
