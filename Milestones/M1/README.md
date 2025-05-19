@@ -727,9 +727,10 @@ in your default branch (Master or Main branch)**
       | **SSH URL**            | ssh -i ./application/credentials/CSC648Team5PairKey.pem ec2-user@crisisrelief.duckdns.org                                     |
       | **SSH Username**       | ec2-user                                |
       | **SSH Password/Key**   | In credentials folder                            |
-      | **Database URL**       | http://crisisreliefdatabase.duckdns.org:3000/                                |
-      | **Database Username**  | root                           |
-      | **Database Password**  | hApq*9&TrZVps4                           |
+      | **Database URL**       | postgresql://crisisuser:Penknife8AnointerEngorge@crisisreliefdatabase.duckdns.org:5432/crisisdatabase
+                                |
+      | **Database Username**  | crisisuser                           |
+      | **Database Password**  | Penknife8AnointerEngorge                           |
 
       **Additional Information:**
 
