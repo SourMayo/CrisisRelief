@@ -1,13 +1,16 @@
 # CrisisRelief
-This project was the result of a semester-long internship-format Software Engineering Course. 
+This project was the result of a semester-long internship-format Software Engineering Course.\
+CrisisRelief aimed to provide a service that could help those in immediate or future need with services 
+that are important for such scenarios.
 
 ## Documentation
-The final state of the project's documentation can be found at the following:
-```
-CrisisRelief/Milestones/M5/M5.pdf
-```
+The final state of the project's documentation can be found at the following:\
+[Milestone 5](Milestones/M5/M5.pdf)
 
-**The original state of the project at the end of the course is preserved below.**
+### The original state of the project at the end of the course is preserved below:
+</br>
+
+# CSC648-848 Repository
 
 ## Initial Setup Instructions
 
