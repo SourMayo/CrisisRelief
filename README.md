@@ -1,5 +1,13 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/S6mMKvo9)
-# CSC648-848 Repository
+# CrisisRelief
+This project was the result of a semester-long internship-format Software Engineering Course. 
+
+## Documentation
+The final state of the project's documentation can be found at the following:
+```
+CrisisRelief/Milestones/M5/M5.pdf
+```
+
+**The original state of the project at the end of the course is preserved below.**
 
 ## Initial Setup Instructions
 
